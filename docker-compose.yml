@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: equipment
+        volumes:
+            - .:/var/www
+        depends_on:
+            - mysql
+        networks:
+            - equipment_network
+    nginx:
+        image: nginx:latest
+        container_name: equipment_nginx
+        ports:
+            - "8000:80"
+        volumes:
+            - .:/var/www
+            - C:/laragon/www/equipment/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - app
+        networks:
+            - equipment_network
+    mysql:
+        image: 'mysql:5.7'
+        container_name: equipment_mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: equipment
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+        ports:
+            - '3306:3306'
+        networks:
+            - equipment_network
+        volumes:
+            - mysql_data:/var/lib/mysql
+
+
+networks:
+    equipment_network:
+        driver: bridge
+
+volumes:
+    mysql_data:
