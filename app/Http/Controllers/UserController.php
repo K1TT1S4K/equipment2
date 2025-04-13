@@ -14,39 +14,41 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('prefix')->paginate(10); // ดึงข้อมูลบุคลากรพร้อมคำนำหน้า
-        return view('livewire.users.show', compact('users'));
+        return view('page.users.show', compact('users'));
     }
     // ค้นหาบุคลากร
     public function search(Request $request)
     {
-        $query = $request->input('query'); // ค้นหาจากชื่อผู้ใช้
-        $userType = $request->input('user_type'); // ค้นหาจากประเภทผู้ใช้
+        // รับค่าค้นหาจาก request
+        $search = $request->get('search');
+        $userType = $request->get('user_type');  // รับค่าระดับผู้ใช้
 
-        $users = User::with('prefix');
+        // ค้นหาผู้ใช้โดยกรองข้อมูล
+        $users = User::when($search, function ($query, $search) {
+            return $query->where('username', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%")
+                         ->orWhereHas('prefix', function($q) use ($search) {
+                             $q->where('name', 'like', "%{$search}%");
+                         });
+        })
+        ->when($userType, function ($query, $userType) {
+            return $query->where('user_type', $userType); // กรองตามระดับผู้ใช้
+        })
+        ->paginate(10); // ใช้การแบ่งหน้าหากข้อมูลมีจำนวนมาก
 
-        if (!empty($query)) { // ค้นหาจากชื่อผู้ใช้
-            $users->where('username', 'like', "%{$query}%");
-        }
-
-        if (!empty($userType)) { // ค้นหาจากประเภทผู้ใช้
-            $users->where('user_type', $userType);
-        }
-
-        $users = $users->paginate(10); // แสดงผลลัพธ์ที่ค้นพบ
-
-        return view('livewire.users.show', compact('users')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
+        return view('page.users.show', compact('users'));
     }
     // แสดงฟอร์มเพิ่มบุคลากร
     public function create()
     {
         $prefixes = Prefix::all(); // ดึงคำนำหน้าทั้งหมดจากฐานข้อมูล
-        return view('livewire.users.add', compact('prefixes'));
+        return view('page.users.add', compact('prefixes'));
     }
     // แสดงข้อมูลบุคลากร
     public function show($id)
     {
         $user = User::findOrFail($id); // ดึงข้อมูลบุคลากรตาม ID
-        return view('livewire.users.show', compact('user'));
+        return view('page.users.show', compact('user'));
     }
 
     // บันทึกข้อมูลบุคลากรใหม่
@@ -81,7 +83,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $prefixes = Prefix::all();
-        return view('livewire.users.edit', compact('user', 'prefixes'));
+        return view('page.users.edit', compact('user', 'prefixes'));
     }
 
     // อัปเดตข้อมูลบุคลากร

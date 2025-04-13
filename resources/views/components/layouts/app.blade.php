@@ -18,11 +18,11 @@
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 </head>
 
-<body>
+<body style="background-color: var(--bs-light-green);">
     <x-layouts.app.sidebar>
     </x-layouts.app.sidebar>
     <main>
-        <div class="container-fluid mt-4">
+        <div class="container mt-5 pt-5">
             {{ $slot }}
         </div>
     </main>

@@ -11,7 +11,7 @@ class DocumentController extends Controller
     public function index()
     {
         $documents = Document::paginate(10);
-        return view('livewire.documents.show', compact('documents'));
+        return view('page.documents.show', compact('documents'));
     }
 
     public function search(Request $request)
@@ -31,12 +31,12 @@ class DocumentController extends Controller
 
         $documents = $documents->paginate(10); // แสดงผลลัพธ์ที่ค้นพบ
 
-        return view('livewire.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
+        return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
     }
 
     public function create() // แสดงฟอร์มสำหรับเพิ่มเอกสาร
     {
-        return view('livewire.documents.add');
+        return view('page.documents.add');
     }
 
     public function store(Request $request) // บันทึกเอกสารใหม่
@@ -62,7 +62,7 @@ class DocumentController extends Controller
     public function edit($id) // แสดงฟอร์มสำหรับแก้ไขเอกสาร
     {
         $document = Document::findOrFail($id); // ค้นหาเอกสารตาม ID ที่ส่งมา
-        return view('livewire.documents.edit', compact('document')); // ส่งเอกสารไปยัง view
+        return view('page.documents.edit', compact('document')); // ส่งเอกสารไปยัง view
     }
 
     public function update(Request $request, $id) // อัปเดตเอกสาร
@@ -91,7 +91,7 @@ class DocumentController extends Controller
     public function show($id) // แสดงรายละเอียดเอกสาร
     {
         $document = Document::findOrFail($id); // ค้นหาเอกสารตาม ID ที่ส่งมา
-        return view('livewire.documents.show', compact('document')); // ส่งเอกสารไปยัง view
+        return view('page.documents.show', compact('document')); // ส่งเอกสารไปยัง view
     }
 
     public function destroy($id) // ลบเอกสาร

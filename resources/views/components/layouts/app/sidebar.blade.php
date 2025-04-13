@@ -11,7 +11,7 @@
 <body class="min-vh-100 bg-white text-light">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
         <div class="container-fluid">
             <!-- Logo -->
             <a class="navbar-brand" href="{{ route('dashboard') }}">
@@ -33,7 +33,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active {{ request()->routeIs('equipments') ? 'active' : '' }}" href="{{ route('equipment') }}">
+                        <a class="nav-link active {{ request()->routeIs('equipments') ? 'active' : '' }}" href="{{ route('equipment.index') }}">
                             <i class="bi bi-house-door"></i> ครุภัณฑ์
                         </a>
                     </li>

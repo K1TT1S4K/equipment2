@@ -31,17 +31,20 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('equipment', [EquipmentController::class, 'index'])->name('equipment');
+    Route::get('equipment', [EquipmentController::class, 'index'])->name('equipment.index');
     Route::get('equipment/add', [EquipmentController::class, 'create'])->name('equipment.add');
     Route::post('equipment', [EquipmentController::class, 'store'])->name('equipment.store');
     Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
     Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
+    Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
+    Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('user', [UserController::class, 'index'])->name('user');
     Route::get('user/add', [UserController::class, 'create'])->name('user.add');
+    Route::get('user/search', [UserController::class, 'search'])->name('user.search');
     Route::post('user', [UserController::class, 'store'])->name('user.store');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
     Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
