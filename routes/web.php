@@ -3,8 +3,6 @@
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\UserController;
-// use App\Http\Livewire\Actions\DocumentsLivewire;
-// use App\Http\Livewire\DocumentsLivewire;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -16,19 +14,9 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-// Route::resource('documents', DocumentController::class);
 Route::middleware(['auth'])->group(function () {
     Route::get('documents', [DocumentController::class, 'index'])->name('document.index');
 });
-// Route::view('equipment', 'livewire.equipments.show')
-//     ->middleware(['auth', 'verified'])
-//     ->name('equipment');
-
-// Route::middleware(['auth'])->group(function () {
-//     // ใช้ Livewire component สำหรับการจัดการเอกสาร
-//     Route::get('/documents', DocumentsLivewire::class)->name('document.index');
-// });
-
 
 Route::middleware(['auth'])->group(function () {
     Route::get('equipment', [EquipmentController::class, 'index'])->name('equipment.index');
