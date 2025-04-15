@@ -22,7 +22,7 @@
     <x-layouts.app.sidebar>
     </x-layouts.app.sidebar>
     <main>
-        <div class="container mt-5 pt-5">
+        <div class="container-fluid mt-5 pt-5">
             {{ $slot }}
         </div>
     </main>

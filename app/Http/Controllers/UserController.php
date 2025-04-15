@@ -27,6 +27,9 @@ class UserController extends Controller
         $users = User::when($search, function ($query, $search) {
             return $query->where('username', 'like', "%{$search}%")
                          ->orWhere('email', 'like', "%{$search}%")
+                         ->orWhere('firstname', 'like', "%{$search}%")
+                         ->orWhere('lastname', 'like', "%{$search}%")
+                         ->orWhere('user_type', 'like', "%{$search}%")
                          ->orWhereHas('prefix', function($q) use ($search) {
                              $q->where('name', 'like', "%{$search}%");
                          });

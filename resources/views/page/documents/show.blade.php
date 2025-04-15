@@ -1,11 +1,11 @@
 <x-layouts.app>
-    <h3 class="text-dark">เอกสาร</h3>
+    <h3 class="text-dark mb-4">เอกสาร</h3>
     <div class="card shadow p-3 mb-4 bg-body border border-dark">
         <form action="{{ route('document.search') }}" method="GET">
             <div class="row">
                 <div class="col-md mb-3 mb-sm-0">
                     <label for="query" class="form-label">ค้นหา</label>
-                    <input type="text" id="query" name="query" class="form-control" placeholder="ค้นหาด้วยชื่อไฟล์, หมายเลขครุภัณฑ์ ฯลฯ"                        value="{{ request('query') }}">
+                    <input type="text" id="query" name="query" class="form-control" placeholder="เอกสารอ้างอิง, ประเภทเอกสาร ฯลฯ" value="{{ request('query') }}">
                 </div>
 
                 <div class="col-md mb-3 mb-sm-0">
@@ -52,9 +52,10 @@
                 </tr>
             </thead>
             <tbody class="align-middle p-3">
-                @foreach ($documents as $document)
+                @foreach ($documents as $key => $document)
                 <tr class="text-center">
-                    <td class="text-center">{{ $document->id }}</td>
+                    <td class="text-center">{{ $key + 1 }}</td>
+                    {{-- <td class="text-center">{{ $document->id }}</td> --}}
                     <td>{{ $document->document_type }}</td>
                     <td class="text-center">{{ $document->date }}</td>
                     <td class="text-center">
@@ -84,6 +85,6 @@
 
             </tbody>
         </table>
-        {{$documents->links()}}
+        {{-- {{$documents->links()}} --}}
     </div>
 </x-layouts.app>

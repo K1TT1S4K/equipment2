@@ -14,9 +14,13 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('documents', [DocumentController::class, 'index'])->name('document.index');
-});
+Route::view('recycle', 'recycle')
+    ->middleware(['auth', 'verified'])
+    ->name('recycle');
+
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('bin', [RecycleController::class, 'index'])->name('recycle.index');
+// });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('equipment', [EquipmentController::class, 'index'])->name('equipment.index');

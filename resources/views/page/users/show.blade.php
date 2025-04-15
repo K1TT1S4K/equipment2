@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <h3 class="text-dark">จัดการบัญชีผู้ใช้</h3>
+    <h3 class="text-dark mb-4">จัดการบัญชีผู้ใช้</h3>
     <form method="GET" action="{{ route('user.search') }}" class="mb-3">
         <div class="d-flex">
             <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded" placeholder="ค้นหาบัญชีผู้ใช้..." value="{{ request()->get('search') }}">

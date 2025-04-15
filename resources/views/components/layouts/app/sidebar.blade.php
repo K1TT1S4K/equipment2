@@ -33,7 +33,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active {{ request()->routeIs('equipments') ? 'active' : '' }}" href="{{ route('equipment.index') }}">
+                        <a class="nav-link active" href="{{ route('equipment.index') }}">
                             <i class="bi bi-house-door"></i> ครุภัณฑ์
                         </a>
                     </li>
@@ -43,8 +43,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active {{ request()->routeIs('users') ? 'active' : '' }}" href="{{ route('user') }}">
+                        <a class="nav-link active" href="{{ route('user') }}">
                             <i class="bi bi-house-door"></i> บุคลากร
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ route('recycle')}}">
+                            <i class="bi bi-house-door"></i> ถังขยะ
                         </a>
                     </li>
                     <li class="nav-item">
