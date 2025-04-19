@@ -49,6 +49,7 @@
         {{-- <a href="#" class="btn btn-success px-3">
             Export Excel
         </a> --}}
+        {{-- <a href="{{ route('equipment.trash')}}" class="btn btn-danger">ถังขยะ</a> --}}
         <a href="{{ route('equipment.add')}}" class="btn btn-success px-3">เพิ่มครุภัณฑ์</a>
     </div>
     <table class="table table-striped table-hover shadow-lg p-3 mb-5 bg-body rounded">
@@ -97,7 +98,7 @@
                             @csrf
                             @method('DELETE') <!-- ใช้ HTTP DELETE สำหรับการลบ -->
                             <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('คุณต้องการลบข้อมูลนี้จริงหรือไม่?')">ลบ</button>
+                                onclick="return confirm('คุณต้องการย้ายข้อมูลนี้ไปยังถังขยะหรือไม่?')">ลบ</button>
                         </form>
                     </td>
                 </tr>

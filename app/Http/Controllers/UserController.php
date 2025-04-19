@@ -117,12 +117,21 @@ class UserController extends Controller
         return redirect()->route('user')->with('success', 'แก้ไขข้อมูลเรียบร้อยแล้ว');
     }
     // ลบบุคลากร
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $user = User::findOrFail($id);
-        $user->delete(); // ลบข้อมูลบุคลากร
-        return redirect()->route('user')->with('success', 'ลบบุคลากรเรียบร้อยแล้ว');
-    }
+        // รับค่าที่ส่งมาจาก checkbox
+        $selectedUsers = $request->input('selected_users', []);
+
+        if (empty($selectedUsers)) {
+            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
+        }
+
+        // ลบผู้ใช้ตาม ID ที่เลือก
+        User::whereIn('id', $selectedUsers)->delete();
+
+        return redirect()->route('user.index')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+}
+
 
     public function profile()
     {
@@ -152,5 +161,122 @@ class UserController extends Controller
 
         return redirect()->route('profile')->with('success', 'อัปเดตโปรไฟล์เรียบร้อยแล้ว');
     }
+
+    public function trashed()
+    {
+        $trashedUsers = User::onlyTrashed()->paginate(10);
+        return view('page.users.trash', compact('trashedUsers'));
+    }
+
+    public function restore($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+
+        return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้เรียบร้อยแล้ว');
+}
+    public function forceDelete($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->forceDelete();
+
+        return redirect()->route('user.trashed')->with('success', 'ลบบัญชีผู้ใช้ถาวรเรียบร้อยแล้ว');
+    }
+    // public function searchTrash(Request $request)
+    // {
+    //     $search = $request->get('search');
+
+    //     $users = User::onlyTrashed()
+    //         ->where(function ($query) use ($search) {
+    //             $query->where('username', 'like', "%{$search}%")
+    //                 ->orWhere('email', 'like', "%{$search}%")
+    //                 ->orWhere('firstname', 'like', "%{$search}%")
+    //                 ->orWhere('lastname', 'like', "%{$search}%");
+    //         })
+    //         ->paginate(10);
+
+    //     return view('page.users.trash', compact('users'));
+    // }
+    public function deleteSelected(Request $request)
+    {
+        $selectedUsers = $request->input('selected_users', []);
+
+        if (empty($selectedUsers)) {
+            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
+        }
+
+        User::whereIn('id', $selectedUsers)->delete();
+
+        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+    }
+    public function deleteAll(Request $request)
+    {
+        $selectedUsers = $request->input('selected_users', []);
+
+        if (empty($selectedUsers)) {
+            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
+        }
+
+        User::onlyTrashed()->whereIn('id', $selectedUsers)->forceDelete();
+
+        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+    }
+    public function restoreSelected(Request $request)
+    {
+        // รับข้อมูล ID ของผู้ใช้ที่เลือก
+        $ids = $request->input('selected_users', []);
+
+        // กู้คืนผู้ใช้ที่เลือก
+        User::onlyTrashed()->whereIn('id', $ids)->restore();
+
+        // กลับไปที่หน้าผู้ใช้ที่ถูกลบพร้อมข้อความ success
+        return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+    }
+    public function restoreAllUsers()
+    {
+        User::onlyTrashed()->restore(); // กู้คืนผู้ใช้ทั้งหมด
+        return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ทั้งหมดเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
+    }
+    public function deleteSelectedAll(Request $request)
+    {
+        $selectedUsers = $request->input('selected_users', []);
+
+        if (empty($selectedUsers)) {
+            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
+        }
+
+        User::onlyTrashed()->whereIn('id', $selectedUsers)->forceDelete();
+
+        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+    }
+
+    public function searchTrash(Request $request)
+{
+    // ใช้ User::onlyTrashed() เพื่อค้นหาผู้ใช้ที่ถูกลบ
+    $query = User::onlyTrashed();
+
+    // ค้นหาผู้ใช้โดยใช้คำค้นในฟิลด์ชื่อผู้ใช้หรืออีเมล
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('username', 'like', "%$search%")
+              ->orWhere('email', 'like', "%$search%")
+            //   ->orWhere('prefix', 'like', "%$search%")
+              ->orWhere('firstname', 'like', "%$search%")
+              ->orWhere('lastname', 'like', "%$search%");
+        });
+    }
+
+    // กรองตามประเภทผู้ใช้ (user_type) ถ้ามีการส่งข้อมูลมา
+    if ($request->filled('user_type')) {
+        $query->where('user_type', $request->input('user_type'));
+    }
+
+    // สั่งเรียงตามวันที่ถูกลบ (deleted_at) และแบ่งหน้า
+    $users = $query->orderBy('deleted_at', 'desc')->paginate(10);
+
+    // ส่งข้อมูลผู้ใช้ที่ถูกลบไปยังวิว
+    return view('page.users.trash', compact('users'));
+}
 
 }
