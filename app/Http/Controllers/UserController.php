@@ -26,18 +26,18 @@ class UserController extends Controller
         // ค้นหาผู้ใช้โดยกรองข้อมูล
         $users = User::when($search, function ($query, $search) {
             return $query->where('username', 'like', "%{$search}%")
-                         ->orWhere('email', 'like', "%{$search}%")
-                         ->orWhere('firstname', 'like', "%{$search}%")
-                         ->orWhere('lastname', 'like', "%{$search}%")
-                         ->orWhere('user_type', 'like', "%{$search}%")
-                         ->orWhereHas('prefix', function($q) use ($search) {
-                             $q->where('name', 'like', "%{$search}%");
-                         });
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('firstname', 'like', "%{$search}%")
+                ->orWhere('lastname', 'like', "%{$search}%")
+                ->orWhere('user_type', 'like', "%{$search}%")
+                ->orWhereHas('prefix', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
         })
-        ->when($userType, function ($query, $userType) {
-            return $query->where('user_type', $userType); // กรองตามระดับผู้ใช้
-        })
-        ->paginate(10); // ใช้การแบ่งหน้าหากข้อมูลมีจำนวนมาก
+            ->when($userType, function ($query, $userType) {
+                return $query->where('user_type', $userType); // กรองตามระดับผู้ใช้
+            })
+            ->paginate(10); // ใช้การแบ่งหน้าหากข้อมูลมีจำนวนมาก
 
         return view('page.users.show', compact('users'));
     }
@@ -130,7 +130,7 @@ class UserController extends Controller
         User::whereIn('id', $selectedUsers)->delete();
 
         return redirect()->route('user.index')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
-}
+    }
 
 
     public function profile()
@@ -164,8 +164,8 @@ class UserController extends Controller
 
     public function trashed()
     {
-        $trashedUsers = User::onlyTrashed()->paginate(10);
-        return view('page.users.trash', compact('trashedUsers'));
+        $users = User::onlyTrashed()->paginate(10);
+        return view('page.users.trash', compact('users'));
     }
 
     public function restore($id)
@@ -174,7 +174,7 @@ class UserController extends Controller
         $user->restore();
 
         return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้เรียบร้อยแล้ว');
-}
+    }
     public function forceDelete($id)
     {
         $user = User::onlyTrashed()->findOrFail($id);
@@ -182,21 +182,6 @@ class UserController extends Controller
 
         return redirect()->route('user.trashed')->with('success', 'ลบบัญชีผู้ใช้ถาวรเรียบร้อยแล้ว');
     }
-    // public function searchTrash(Request $request)
-    // {
-    //     $search = $request->get('search');
-
-    //     $users = User::onlyTrashed()
-    //         ->where(function ($query) use ($search) {
-    //             $query->where('username', 'like', "%{$search}%")
-    //                 ->orWhere('email', 'like', "%{$search}%")
-    //                 ->orWhere('firstname', 'like', "%{$search}%")
-    //                 ->orWhere('lastname', 'like', "%{$search}%");
-    //         })
-    //         ->paginate(10);
-
-    //     return view('page.users.trash', compact('users'));
-    // }
     public function deleteSelected(Request $request)
     {
         $selectedUsers = $request->input('selected_users', []);
@@ -251,32 +236,25 @@ class UserController extends Controller
     }
 
     public function searchTrash(Request $request)
-{
-    // ใช้ User::onlyTrashed() เพื่อค้นหาผู้ใช้ที่ถูกลบ
-    $query = User::onlyTrashed();
+    {
+        $query = User::onlyTrashed();
 
-    // ค้นหาผู้ใช้โดยใช้คำค้นในฟิลด์ชื่อผู้ใช้หรืออีเมล
-    if ($request->filled('search')) {
-        $search = $request->input('search');
-        $query->where(function ($q) use ($search) {
-            $q->where('username', 'like', "%$search%")
-              ->orWhere('email', 'like', "%$search%")
-            //   ->orWhere('prefix', 'like', "%$search%")
-              ->orWhere('firstname', 'like', "%$search%")
-              ->orWhere('lastname', 'like', "%$search%");
-        });
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('username', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('firstname', 'like', "%{$search}%")
+                    ->orWhere('lastname', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('user_type')) {
+            $query->where('user_type', $request->input('user_type'));
+        }
+
+        $users = $query->orderByDesc('deleted_at')->paginate(10);
+
+        return view('page.users.trash', compact('users'));
     }
-
-    // กรองตามประเภทผู้ใช้ (user_type) ถ้ามีการส่งข้อมูลมา
-    if ($request->filled('user_type')) {
-        $query->where('user_type', $request->input('user_type'));
-    }
-
-    // สั่งเรียงตามวันที่ถูกลบ (deleted_at) และแบ่งหน้า
-    $users = $query->orderBy('deleted_at', 'desc')->paginate(10);
-
-    // ส่งข้อมูลผู้ใช้ที่ถูกลบไปยังวิว
-    return view('page.users.trash', compact('users'));
-}
-
 }
