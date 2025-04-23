@@ -59,7 +59,12 @@
                 </ul>
 
                 {{-- ปุ่มด้านขวา --}}
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    {{-- แสดงสถานะผู้ใช้ --}}
+                    <div class="text-white">
+                        <strong>{{ Auth::user()->user_type }}</strong>
+                    </div>
+                    {{-- กู้คืนข้อมูล --}}
                     <div class="dropdown">
                         <button class="btn btn-warning dropdown-toggle" type="button" id="recoveryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             กู้คืนข้อมูล
@@ -71,7 +76,7 @@
                         </ul>
                     </div>
 
-                    {{-- Logout --}}
+                    {{-- ลงชื่อออก --}}
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="btn btn-danger">
