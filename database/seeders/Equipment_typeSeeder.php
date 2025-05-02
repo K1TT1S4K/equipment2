@@ -20,6 +20,7 @@ class Equipment_typeSeeder extends Seeder
                 'price' => 2620000.00,
                 'total_price' => 2620000.00,
                 'equipment_unit_id' => 2,
+                'title_id'=>1,
                 'description' => null,
                 'created_at' => now(),
                 'updated_at' => now()
@@ -30,16 +31,7 @@ class Equipment_typeSeeder extends Seeder
                 'price' => null,
                 'total_price' => 1865000.00,
                 'equipment_unit_id' => null,
-                'description' => null,
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'name' => 'ครุภัณฑ์ห้องปฏิบัติการเรียนการสอนสาขาวิชาเทคโนโลยีคอมพิวเตอร์',
-                'amount' => 5,
-                'price' => 470800.00,
-                'total_price' => 2354000.00,
-                'equipment_unit_id' => null,
+                'title_id'=>2,
                 'description' => null,
                 'created_at' => now(),
                 'updated_at' => now()

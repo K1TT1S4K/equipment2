@@ -29,27 +29,27 @@
                     <li class="nav-item">
                         <a class="nav-link active {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                             href="{{ route('dashboard') }}">
-                            <i class="bi bi-house-door"></i> แดชบอร์ด
+                           แดชบอร์ด
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active {{ request()->routeIs('equipments') ? 'active' : '' }}" href="{{ route('equipment.index') }}">
-                            <i class="bi bi-house-door"></i> ครุภัณฑ์
+                           ครุภัณฑ์
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ route('document.index') }}">
-                            <i class="bi bi-house-door"></i> เอกสาร
+                           เอกสาร
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active {{ request()->routeIs('users') ? 'active' : '' }}" href="{{ route('user') }}">
-                            <i class="bi bi-house-door"></i> บุคลากร
+                           บุคลากร
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ route('profile') }}">
-                            <i class="bi bi-house-door"></i> โปรไฟล์
+                           โปรไฟล์
                         </a>
                     </li>
                     @can('manage-equipments')

@@ -3,6 +3,11 @@
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\EquipmentTypeController;
+use App\Http\Controllers\EquipmentUnitController;
+use App\Http\Controllers\TitleController;
+use App\Models\Equipment;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -14,19 +19,24 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('documents', [DocumentController::class, 'index'])->name('document.index');
-});
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('documents', [DocumentController::class, 'index'])->name('document.index');
+//     Route::get('equipments', [EquipmentController::class, 'index'])->name('equipment.index');
+// });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('equipment', [EquipmentController::class, 'index'])->name('equipment.index');
-    Route::get('equipment/add', [EquipmentController::class, 'create'])->name('equipment.add');
+    Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
+    Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.index');
+    Route::get('equipment/create', [EquipmentController::class, 'create'])->name('equipment.create');
     Route::post('equipment', [EquipmentController::class, 'store'])->name('equipment.store');
     Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
     Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
     Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
+    Route::get('/get-equipment-types/{title_id}', [EquipmentController::class, 'getEquipmentTypes']);
+    Route::post('/equipment/move-to-trash', [EquipmentController::class, 'moveToTrash'])->name('equipment.moveToTrash');
+    Route::post('/equipment/restore-from-trash', [EquipmentController::class, 'restoreFromTrash'])->name('equipment.restoreFromTrash');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -56,24 +66,32 @@ Route::middleware(['auth'])->group(function () {
     Route::put('profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::resource('types', EquipmentTypeController::class)->except(['create', 'edit', 'show']);
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::redirect('users', 'users/show');
+    // เพิ่ม name ให้ route นี้
+    Route::get('types/{type}/check-usage', [EquipmentTypeController::class, 'checkUsage'])->name('types.checkUsage');
+});
 
-//     Volt::route('users/show', 'users.show')->name('users.show');
-//     Volt::route('users/add', 'users.add')->name('users.add');
-// });
+Route::middleware(['auth'])->group(function () {
+    Route::resource('equipment_units', EquipmentUnitController::class)->except(['create', 'edit', 'show']);
 
-// Route::get('/export', [EquipmentExportController::class, 'export'])
-//     ->middleware(['auth'])
-//     ->name('export.excel');
+    // เพิ่ม name ให้ route นี้
+    Route::get('equipment_units/{equipment_units}/check-usage', [EquipmentUnitController::class, 'checkUsage'])->name('equipment_units.checkUsage');
+});
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::redirect('settings', 'settings/profile');
+Route::middleware(['auth'])->group(function () {
+    Route::resource('locations', LocationController::class)->except(['create', 'edit', 'show']);
 
-//     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
-//     Volt::route('settings/password', 'settings.password')->name('settings.password');
-//     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
-// });
+    // เพิ่ม name ให้ route นี้
+    Route::get('locations/{location}/check-usage', [LocationController::class, 'checkUsage'])->name('locations.checkUsage');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('titles', TitleController::class)->except(['create', 'edit', 'show']);
+
+    // เพิ่ม name ให้ route นี้
+    Route::get('titles/{title}/check-usage', [TitleController::class, 'checkUsage'])->name('titles.checkUsage');
+});
 
 require __DIR__.'/auth.php';

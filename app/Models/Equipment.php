@@ -6,22 +6,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Equipment extends Model
 {
     //
+    use SoftDeletes;
+
     protected $fillable = [
         'number',
         'name',
         'amount',
         'price',
         'total_price',
-        'status',
+        'status_found',
+        'status_not_found',
+        'status_broken',
+        'status_disposal',
+        'status_transfer',
         'group',
         'equipment_type_id',
         'equipment_unit_id',
-        'location',
-        'title',
+        'location_id',
+        'title_id',
         'description',
         'user_id',
     ];

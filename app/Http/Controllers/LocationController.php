@@ -7,59 +7,38 @@ use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        // try {
+        //     return response()->json(Location::all());
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => $e->getMessage()], 500);
+        // }
+        // dd(Location::all());
+        return response()->json(Location::all());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        Location::create($request->validate(['name' => 'required']));
+        return response()->noContent();
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Location $location)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Location $location)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Location $location)
     {
-        //
+        $location->update($request->validate(['name' => 'required']));
+        return response()->noContent();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Location $location)
     {
-        //
+        $location->delete();
+        return response()->noContent();
+    }
+
+    public function checkUsage(Location $location)
+    {
+        $inUse = $location->equipments()->exists(); // ตรวจว่ามีการใช้จริงหรือไม่
+        return response()->json(['in_use' => $inUse]);
     }
 }

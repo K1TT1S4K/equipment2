@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('price',10,2)->nullable();
             $table->decimal('total_price',10,2)->nullable();
             $table->foreignId('equipment_unit_id')->nullable()->constrained('equipment_units')->onDelete('set null');
+            $table->foreignId('title_id')->nullable()->constrained('titles')->onDelete('set null');
             $table->string('description')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้สร้าง
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้แก้ไขล่าสุด

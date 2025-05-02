@@ -11,12 +11,14 @@ class Equipment_unit extends Model
     protected $fillable = [
         'name',
     ];
-    // public function equipments(): HasMany
-    // {
-    //     return $this->hasMany(Equipment::class);
-    // }
 
-    // public function Equipment_unit() : HasMany {
-    //     return $this->hasMany(Equipment_unit::class);
-    // }
+    public function equipments(): HasMany
+    {
+        return $this->hasMany(Equipment::class);
+    }
+
+    public function equipment_types(): HasMany
+    {
+        return $this->hasMany(Equipment_type::class);
+    }
 }
