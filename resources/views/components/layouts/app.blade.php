@@ -22,14 +22,16 @@
 </head>
 
 <body style="background-color: var(--bs-light-green);">
-    <x-layouts.app.sidebar>
-    </x-layouts.app.sidebar>
+    <x-layouts.app.navbar>
+    </x-layouts.app.navbar>
     <main>
         <div class="container-fluid mt-5 pt-5">
             {{ $slot }}
         </div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
+<<<<<<< HEAD
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
@@ -439,4 +441,6 @@
     });
 </script>
 
+=======
+>>>>>>> 7f26ebecd6daa066914ad1a1cc37f067cca1af98
 </html>

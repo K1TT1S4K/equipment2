@@ -1,7 +1,7 @@
 <x-layouts.app>
     <h3 class="text-dark">โปรไฟล์ของฉัน</h3>
 
-    <div class="card border border-dark shadow-lg p-4 mb-3 rounded">
+    <div class="card border border-dark shadow-lg p-5 mb-3 rounded">
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif

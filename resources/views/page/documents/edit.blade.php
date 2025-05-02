@@ -23,9 +23,9 @@
 
                 <div class="mb-3">
                     <label for="newFile" class="form-label">อัปโหลดไฟล์เอกสาร (PDF, DOC, DOCX)</label>
-                    <input type="file" name="newFile" class="form-control">
+                    <input type="file" name="newFile" class="form-control" accept=".pdf,.doc,.docx">
                     @if ($document && $document->path)
-                        <small class="form-text text-muted">ไฟล์เดิม: <a href="{{ asset('storage/' . $document->path) }}" download>{{ basename($document->path) }}</a></small>
+                        <small class="form-text text-muted">ไฟล์เดิม: <a href="{{ url('storage/' . $document->path) }}" download>{{ basename($document->path) }}</a></small>
                     @endif
                 </div>
 
