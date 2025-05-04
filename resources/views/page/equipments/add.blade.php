@@ -113,16 +113,15 @@
         </div>
     </div>
 
-    <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content border-dark">
                 <div class="modal-header">
                     <h5 class="modal-title text-dark" id="unitModalLabel">จัดการข้อมูลหน่วยนับ</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <button id="addUnitRow" class="btn btn-success mb-3">เพิ่มหน่วยนับ</button>
+                    <button id="addunitRow" class="btn btn-success mb-3">เพิ่มหน่วยนับ</button>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -139,8 +138,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="titleModal" tabindex="-1" aria-labelledby="titleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="titleModal" tabindex="-1" aria-labelledby="titleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-dark">
                 <div class="modal-header">
@@ -148,7 +146,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <button id="addTitleRow" class="btn btn-success mb-3">เพิ่มหัวข้อ</button>
+                    <button id="addtitleRow" class="btn btn-success mb-3">เพิ่มหัวข้อ</button>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -166,9 +164,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="typeModal" tabindex="-1" aria-labelledby="typeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="typeModal" tabindex="-1" aria-labelledby="typeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content border-dark">
                 <div class="modal-header">
                     <h5 class="modal-title text-dark" id="typeModalLabel">จัดการข้อมูลประเภท</h5>
@@ -180,6 +177,7 @@
                         <thead>
                             <tr>
                                 <th>ชื่อประเภท</th>
+                                <th>หัวข้อ</th>
                                 <th>หน่วยนับ</th>
                                 <th>จำนวน</th>
                                 <th>ราคาต่อหน่วย</th>
@@ -197,7 +195,7 @@
 
     <div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content border-dark">
                 <div class="modal-header">
                     <h5 class="modal-title text-dark" id="locationModalLabel">จัดการข้อมูลที่อยู่</h5>
@@ -220,7 +218,5 @@
             </div>
         </div>
     </div>
-
-
-
+    
 </x-layouts.app>

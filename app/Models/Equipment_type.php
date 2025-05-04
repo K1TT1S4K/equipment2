@@ -13,7 +13,8 @@ class Equipment_type extends Model
         'name',
         'equipment_unit_id',
         'amount',
-        'price'
+        'price',
+        'title_id'
     ];
     // public function equipments(): HasMany
     // {
@@ -24,6 +25,11 @@ class Equipment_type extends Model
     {
         return $this->hasMany(Equipment::class);
     }
+
+    public function title()
+    {
+        return $this->belongsTo(Title::class, 'title_id');
+    }    
 
     public function equipment_unit()
     {

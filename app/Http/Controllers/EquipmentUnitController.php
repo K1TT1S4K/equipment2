@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Equipment_unit;
+use Illuminate\Support\Facades\View;
 
 class EquipmentUnitController extends Controller
 {
+
+
     public function index()
     {
         return response()->json(Equipment_unit::all());

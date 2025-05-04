@@ -30,10 +30,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('equipment.index') }}">
+                        <a class="nav-link active" href="{{ route('equipment.index') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">
                             ครุภัณฑ์
                         </a>
                     </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ route('document.index') }}">
                             เอกสาร
@@ -70,7 +71,7 @@
                             กู้คืนข้อมูล
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
-                            <li><a class="dropdown-item" href="#">กู้คืนครุภัณฑ์</a></li>
+                            {{-- <li><a class="dropdown-item" href="#">กู้คืนครุภัณฑ์</a></li> --}}
                             <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
                             <li><a class="dropdown-item" href="{{ route('user.trashed')}}">กู้คืนบุคลากร</a></li>
                         </ul>

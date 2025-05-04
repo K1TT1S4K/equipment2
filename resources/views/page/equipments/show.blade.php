@@ -1,74 +1,7 @@
 <x-layouts.app>
     @php $count = 0; @endphp
 
-    <!-- ปุ่ม Export Excel -->
-    <div class="d-flex justify-content-end mb-3">
-        {{-- <a href="#" class="btn btn-success px-3">
-            Export Excel
-        </a> --}}
-        {{-- <a href="{{ route('equipment.trash')}}" class="btn btn-danger">ถังขยะ</a> --}}
-        <a href="{{ route('equipment.add')}}" class="btn btn-success px-3">เพิ่มครุภัณฑ์</a>
-    </div>
-    <table class="table table-striped table-hover shadow-lg p-3 mb-5 bg-body rounded">
-        <thead class="table-dark">
-            <tr class="text-center">
-                <th class="border align-middle">#</th>
-                <th class="border align-middle">รหัสครุภัณฑ์</th>
-                <th class="border" style="width: 20%">รายการ <br>( ยี่ห้อ, ชนิด, แบบ, ขนาดและลักษณะ )</th>
-                <th class="border align-middle">หน่วยนับ</th>
-                <th class="border align-middle">จำนวน<br>คงเหลือ</th>
-                <th class="border">ราคาต่อหน่วย <br>(บาท)</th>
-                <th class="border align-middle">ราคารวม</th>
-                <th class="border align-middle">ประเภท</th>
-                <th class="border align-middle">สถานะ</th>
-                <th class="border align-middle">หัวข้อ</th>
-                <th class="border align-middle">หมายเหตุ</th>
-                <th class="border align-middle">สถานที่</th>
-                <th class="border align-middle">ผู้ดูแลครุภัณฑ์</th>
-                <th class="border align-middle">จัดการ</th>
-            </tr>
-
-        </thead>
-        <tbody>
-            @forelse ($equipments as $key => $equipment)
-                <tr class="text-center border border-dark">
-                    <td class="border border-dark align-middle">{{ $equipment->id}} <br> ({{ $equipment->amount }})</td>
-                    <td class="border border-dark align-middle">{{ $equipment->number}}</td>
-                    <td class="border border-dark align-middle">{{ $equipment->name }}</td>
-                    <td class="border border-dark align-middle">{{ $equipment->equipmentUnit->name }}</td>
-                    <td class="border border-dark align-middle">{{ $equipment->amount }}</td>
-                    <td class="border border-dark align-middle">{{ $equipment->price }}</td>
-                    <td class="border border-dark align-middle">{{ $equipment->total_price }}</td>
-                    <td class="border border-dark align-middle">{{ optional($equipment->equipmentType)->name }}</td>
-                    <td class="border border-dark align-middle">{{ $equipment->status }}</td>
-                    <td class="border border-dark align-middle">{{ $equipment->title->name }}</td>
-                    <td class="border border-dark align-middle">{{ $equipment->description }}</td>
-                    <td class="border border-dark align-middle">{{ optional($equipment->location)->name }}</td>
-                    <td class="border border-dark align-middle">{{ optional($equipment->user)->name }}</td>
-                    <td class="border border-dark align-middle">
-                        <!-- ปุ่มเปิดฟอร์มแก้ไข -->
-                        {{-- <a href="{{route('equipment.edit')}}" class="btn btn-warning"></a> --}}
-                        <button class="btn btn-warning">แก้ไข</button>
-
-                        <!-- ปุ่มลบ (จะใช้ฟอร์ม POST เพื่อป้องกันการใช้ GET method) -->
-                        <form action="#" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE') <!-- ใช้ HTTP DELETE สำหรับการลบ -->
-                            <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('คุณต้องการย้ายข้อมูลนี้ไปยังถังขยะหรือไม่?')">ลบ</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="3" class="text-center">ไม่มีข้อมูล</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-    {{$equipments->links()}}
-    {{-- Pagination --}}
-    {{-- <div>
+    <div>
         <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded">
             <div class="card-body">
                 <form action="#" method="GET">
@@ -118,6 +51,8 @@
                                         {{ $location->location->name}}
                                     @endif
                                 </option>
+                                {{-- @empty
+                                <option value="">ไม่พบข้อมูล</option> --}}
                             @endforeach
                             </select>
                         </div>

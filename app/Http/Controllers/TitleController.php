@@ -14,15 +14,27 @@ class TitleController extends Controller
 
     public function store(Request $request)
     {
-        Title::create($request->validate(['name' => 'required']));
+        // Title::create($request->validate(['name' => 'required']));
+        // return response()->noContent();
+        $validated = $request->validate([
+            
+            'name' => 'required',
+            'group' => 'required'
+        ]);
+    
+        Title::create($validated);
         return response()->noContent();
     }
 
     public function update(Request $request, Title $title)
     {
-        $title->update($request->validate(['group' => 'required']));
-        $title->update($request->validate(['name' => 'required']));
-        return response()->noContent();
+        $validated = $request->validate([
+'name' => 'required',
+            'group' => 'required'
+    ]);
+
+    $title->update($validated);
+    return response()->noContent();
     }
 
     public function destroy(Title $title)
@@ -33,7 +45,7 @@ class TitleController extends Controller
 
     public function checkUsage(Title $title)
     {
-        $inUse = $title->equipments()->exists(); // ตรวจว่ามีการใช้จริงหรือไม่
+        $inUse = $title->equipments()->exists() || $title->equipment_types()->exists();
         return response()->json(['in_use' => $inUse]);
     }
 }

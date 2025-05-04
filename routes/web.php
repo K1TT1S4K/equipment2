@@ -33,14 +33,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
     Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
     Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
-<<<<<<< HEAD
     Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
     Route::get('/get-equipment-types/{title_id}', [EquipmentController::class, 'getEquipmentTypes']);
     Route::post('/equipment/move-to-trash', [EquipmentController::class, 'moveToTrash'])->name('equipment.moveToTrash');
     Route::post('/equipment/restore-from-trash', [EquipmentController::class, 'restoreFromTrash'])->name('equipment.restoreFromTrash');
-=======
-    Route::get('/equipment/trash', [EquipmentController::class, 'trash'])->name('equipment.trash');;
->>>>>>> 7f26ebecd6daa066914ad1a1cc37f067cca1af98
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -93,7 +89,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('types', EquipmentTypeController::class)->except(['create', 'edit', 'show']);
-
+    
     // เพิ่ม name ให้ route นี้
     Route::get('types/{type}/check-usage', [EquipmentTypeController::class, 'checkUsage'])->name('types.checkUsage');
 });
@@ -102,7 +98,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('equipment_units', EquipmentUnitController::class)->except(['create', 'edit', 'show']);
 
     // เพิ่ม name ให้ route นี้
-    Route::get('equipment_units/{equipment_units}/check-usage', [EquipmentUnitController::class, 'checkUsage'])->name('equipment_units.checkUsage');
+    Route::get('equipment_units/{equipment_unit}/check-usage', [EquipmentUnitController::class, 'checkUsage'])->name('equipment_units.checkUsage');
 });
 
 Route::middleware(['auth'])->group(function () {
