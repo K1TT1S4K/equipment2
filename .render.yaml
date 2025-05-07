@@ -23,7 +23,7 @@ services:
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: equipment3.postgres.render.com
+        value: equipment2-bpti.onrender.com
       - key: DB_PORT
         value: 5432
       - key: DB_DATABASE
