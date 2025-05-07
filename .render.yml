@@ -10,7 +10,7 @@ services:
       - key: DB_CONNECTION
         value: "pgsql"
       - key: DB_HOST
-        value: "equipment3.postgres.render.com"  # Host ของ PostgreSQL ที่ให้บริการ
+        value: "equipment2.postgres.render.com"  # Host ของ PostgreSQL ที่ให้บริการ
       - key: DB_PORT
         value: "5432"
       - key: DB_DATABASE
@@ -18,7 +18,7 @@ services:
       - key: DB_USERNAME
         value: "Acer"  # ชื่อผู้ใช้ที่คุณตั้งใน Render
       - key: DB_PASSWORD
-        value: "123456"  # รหัสผ่านที่ถูกต้อง
+        value: 123456  # รหัสผ่านที่ถูกต้อง
       - key: APP_KEY
         value: "base64:pGLIQsNIeMiXWHvBlpziRXZn+p03KmJHxMv4q6G//LA="  # ถ้าจำเป็น
       - key: APP_ENV
