@@ -104,7 +104,7 @@
             </table>
         </form>
 
-        {{ $documents->links() }}
+        {{-- {{ $documents->links() }} --}}
     </div>
 
     <script>
