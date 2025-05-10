@@ -15,6 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/run-seed', function () {
+    Artisan::call('db:seed');
+    return 'Seeder has been run.';
+});
+
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -89,7 +95,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('types', EquipmentTypeController::class)->except(['create', 'edit', 'show']);
-    
+
     // เพิ่ม name ให้ route นี้
     Route::get('types/{type}/check-usage', [EquipmentTypeController::class, 'checkUsage'])->name('types.checkUsage');
 });
