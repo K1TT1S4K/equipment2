@@ -217,7 +217,7 @@ class UserController extends Controller
         // กลับไปที่หน้าผู้ใช้ที่ถูกลบพร้อมข้อความ success
         return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
-    public function restoreAll()
+    public function restoreAllUser()
     {
         User::onlyTrashed()->restore(); // กู้คืนผู้ใช้ทั้งหมด
         return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ทั้งหมดเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร

@@ -100,7 +100,7 @@
     {{ $users->links() }}
 
     <!-- Hidden Forms -->
-    <form id="bulk-restore-form" action="{{ route('user.restoreAll') }}" method="POST">@csrf
+    <form id="bulk-restore-form" action="{{ route('user.restoreAllUser') }}" method="POST">@csrf
         <input type="hidden" name="selected_users" id="selected_users_json_restore">
     </form>
     <form id="bulk-restore-selected-form" action="{{ route('user.restoreSelected') }}" method="POST">@csrf
