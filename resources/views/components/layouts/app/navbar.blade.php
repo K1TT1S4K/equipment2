@@ -34,7 +34,7 @@
                             ครุภัณฑ์
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ route('document.index') }}">
                             เอกสาร
@@ -56,6 +56,7 @@
                             ทดสอบ
                         </a>
                     </li>
+                    <li><a class="nav-item" href="{{ route('user.trashed')}}">กู้คืนบุคลากร</a></li>
                     @endcan
                 </ul>
 

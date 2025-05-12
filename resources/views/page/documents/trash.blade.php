@@ -88,7 +88,7 @@
                 <thead class="text-center table-dark align-middle">
                     <tr>
                         <th><input type="checkbox" id="select-all"></th>
-                        <th>#</th>
+                        <th>ลำดับ</th>
                         <th>ประเภทเอกสาร</th>
                         <th>วันที่ดำเนินการ</th>
                         <th>เอกสารอ้างอิง</th>
