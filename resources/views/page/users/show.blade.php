@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">จัดการบัญชีผู้ใช้</h3>
+    <h3 class="text-dark mb-4">บุคลากร</h3>
 
     <form method="GET" action="{{ route('user.search') }}" class="mb-3">
         <div class="d-flex">
@@ -16,7 +16,7 @@
     </form>
 
     <div class="card shadow-lg p-3 mb-4 bg-body">
-        <h3>รายการเอกสาร</h3>
+        <h4>รายการบุคลากร</h4>
 
         <!-- ย้าย form มาอยู่ตรงนี้ ครอบทั้งปุ่มลบและตาราง -->
         <form action="{{ route('user.deleteSelected') }}" method="POST" id="delete-form">
@@ -27,9 +27,9 @@
                 <div class="col-4">
                     <div>
                         <!-- ปุ่มลบทั้งหมด -->
-                        <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn" style="display:none;">ลบรายการทั้งหมด</button>
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn" style="display:none;">ย้ายรายการทั้งหมดไปที่ถังขยะ</button>
                         <!-- ปุ่มลบที่เลือก -->
-                        <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn" style="display:none;">ลบรายการที่เลือก</button>
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn" style="display:none;">ย้ายไปที่ถังขยะ</button>
                     </div>
                 </div>
                 <div class="col-4"></div>

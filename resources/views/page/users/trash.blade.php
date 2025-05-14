@@ -67,7 +67,7 @@
                 <thead class="text-center table-dark align-middle">
                     <tr>
                         <th><input type="checkbox" id="select-all"></th>
-                        <th>#</th>
+                        <th>ลำดับ</th>
                         <th>ชื่อผู้ใช้</th>
                         <th>ชื่อ-นามสกุล</th>
                         <th>อีเมล</th>
@@ -85,7 +85,7 @@
                             <td>{{ $user->prefix->name }} {{ $user->firstname }} {{ $user->lastname }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->user_type }}</td>
-                            <td>{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y') }}</td>
                         </tr>
                     @empty
                         <tr>

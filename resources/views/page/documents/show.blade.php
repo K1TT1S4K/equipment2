@@ -44,9 +44,9 @@
                 <div class="col-4">
                     <div>
                         <!-- ปุ่มลบทั้งหมด -->
-                        <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn" style="display:none;">ลบรายการทั้งหมด</button>
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn" style="display:none;">ย้ายรายการทั้งหมดไปที่ถังขยะ</button>
                         <!-- ปุ่มลบที่เลือก -->
-                        <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn" style="display:none;">ลบรายการที่เลือก</button>
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn" style="display:none;">ย้ายไปที่ถังขยะ</button>
                     </div>
                 </div>
                 <div class="col-4"></div>
@@ -82,9 +82,9 @@
                             <td>{{ $document->document_type }}</td>
                             @php
                                 $date = \Carbon\Carbon::parse($document->date)->locale('th');
-                                $buddhistYear = $date->year + 543;
+                                // $buddhistYear = $date->year + 543;
                             @endphp
-                            <td class="text-center">{{ $date->isoFormat('D MMM') }} {{ $buddhistYear }}</td>
+                            <td class="text-center">{{ $date->isoFormat('D MMM YYYY') }}</td>
                             <td class="text-center" onclick="event.stopPropagation();">
                                 @if ($document->path)
                                     <a href="{{ asset('storage/' . $document->path) }}" download="{{ $document->path }}">{{ $document->path }}</a>

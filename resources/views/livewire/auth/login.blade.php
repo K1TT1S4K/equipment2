@@ -29,7 +29,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -48,7 +48,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
      */
     protected function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -69,84 +69,72 @@ new #[Layout('components.layouts.auth')] class extends Component {
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
 }; ?>
 
 <div class="flex flex-col gap-6">
-    {{-- <x-auth-header title="Log in to your account" description="Enter your email and password below to log in" /> --}}
-
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
-    <div class="row justify-content-center">
-        <div class="col-md-4">
+    <div class="row justify-content-center px-3">
+        <div class="col-md-6 col-lg-4">
             <div class="card shadow-lg p-3 mb-5 bg-body rounded">
                 <div class="card-body">
-                    <img src="{{ asset('image/RMUTI.png') }}" style="width: 64px; height: auto; display: block; margin: auto;">
-                    <h5 class="card-title text-center">ระบบแทงจำหน่ายครุภัณฑ์<br>สาขาเทคโนโลยีคอมพิวเตอร์</h5>
-                    <form wire:submit="login">
+                    <img src="{{ asset('image/RMUTI.png') }}"
+                        style="width: 64px; height: auto; display: block; margin: auto;">
+
+                    <h5 class="card-title text-center mt-3">
+                        ระบบแทงจำหน่ายครุภัณฑ์<br>
+                        สาขาเทคโนโลยีคอมพิวเตอร์
+                    </h5>
+
+                    <form wire:submit.prevent="login">
                         <!-- Email Address -->
-                        <div class="form-group">
+                        <div class="form-group mt-3">
                             <label for="email">Email address</label>
-                            <input
-                                wire:model="email"
-                                type="email"
-                                name="email"
-                                class="form-control"
-                                required
-                                autofocus
-                                autocomplete="email"
-                                placeholder="email@example.com"
-                            />
+                            <input wire:model.defer="email" type="email" name="email"
+                                class="form-control @error('email') is-invalid @enderror" required autofocus
+                                autocomplete="email" placeholder="email@example.com" />
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <!-- Password -->
-                        <div class="form-group">
+                        <div class="form-group mt-3">
                             <label for="password">Password</label>
-                            <input
-                                wire:model="password"
-                                type="password"
-                                name="password"
-                                class="form-control"
-                                required
-                                autocomplete="current-password"
-                                placeholder="Password"
-                            />
+                            <input wire:model.defer="password" type="password" name="password"
+                                class="form-control @error('password') is-invalid @enderror" required
+                                autocomplete="current-password" placeholder="Password" />
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <!-- Remember Me -->
-                        <div class="form-check">
-                            <input
-                                wire:model="remember"
-                                type="checkbox"
-                                class="form-check-input"
-                                id="remember"
-                            />
+                        <div class="form-check mt-3">
+                            <input wire:model="remember" type="checkbox" class="form-check-input" id="remember" />
                             <label class="form-check-label" for="remember">Remember me</label>
                         </div>
 
+                        <!-- Submit Button -->
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary w-100">Log in</button>
+                            <button type="submit" class="btn btn-primary w-100" wire:loading.attr="disabled">
+                                <span wire:loading.remove>Log in</span>
+                                <span wire:loading>Loading...</span>
+                            </button>
                         </div>
 
-                        @if (Route::has('password.request'))
+                        <!-- Forgot Password -->
+                        {{-- @if (Route::has('password.request'))
                             <div class="text-center mt-2">
                                 <a href="{{ route('password.request') }}" class="text-muted">Forgot your password?</a>
                             </div>
-                        @endif
+                        @endif --}}
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-
-    {{-- @if (Route::has('register'))
-      <div class="space-x-1 text-center text-sm text-zinc-600 dark:text-zinc-400">
-          Don't have an account?
-          <flux:link :href="route('register')" wire:navigate>Sign up</flux:link>
-      </div>
-    @endif --}}
 </div>

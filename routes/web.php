@@ -15,6 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// Route::get('/run-seed', function () {
+//     Artisan::call('db:seed');
+//     return 'Seeder has been run.';
+// });
+
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -52,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('user/trash/search', [UserController::class, 'searchTrash'])->name('user.trashsearch');
     Route::post('user/restore/{id}', [UserController::class, 'restore'])->name('user.restore'); // กู้คืนผู้ใช้
     Route::post('user/restore-selected', [UserController::class, 'restoreSelected'])->name('user.restoreSelected');
-    Route::post('user/restore-all', [UserController::class, 'restoreAll'])->name('user.restoreAll'); // กู้คืนทั้งหมด
+    Route::post('user/restore-all', [UserController::class, 'restoreAllUser'])->name('user.restoreAll'); // กู้คืนทั้งหมด
     Route::delete('user/force-delete/{id}', [UserController::class, 'forceDelete'])->name('user.forceDelete');
     Route::post('user/delete-selected', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
     Route::delete('user/delete-all', [UserController::class, 'deleteAll'])->name('user.deleteAll');
@@ -89,7 +95,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('types', EquipmentTypeController::class)->except(['create', 'edit', 'show']);
-    
+
     // เพิ่ม name ให้ route นี้
     Route::get('types/{type}/check-usage', [EquipmentTypeController::class, 'checkUsage'])->name('types.checkUsage');
 });

@@ -1,0 +1,38 @@
+version: 1
+services:
+  - type: web
+    name: equipment2
+    env: php
+    plan: free
+    buildCommand: |
+      composer install --no-interaction --prefer-dist --optimize-autoloader
+      php artisan config:clear
+      php artisan key:generate
+    startCommand: php artisan serve --host=0.0.0.0 --port=10000
+    envVars:
+      - key: APP_NAME
+        value: Laravel
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://equipment2-bpti.onrender.com/
+
+      # Database Settings
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        value: equipment2-bpti.onrender.com
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        value: equipment2
+      - key: DB_USERNAME
+        value: Acer
+      - key: DB_PASSWORD
+        value: 123456
+
+      # Laravel Additional Settings
+      - key: LOG_CHANNEL
+        value: stderr
