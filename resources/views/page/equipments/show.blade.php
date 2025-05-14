@@ -19,58 +19,59 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-4 mb-3 mb-sm-0">
-                            <select class="form-select" id="unit_filter" name="unit_filter" onchange="this.form.submit()">
+                            <select class="form-select" id="unit_filter" name="unit_filter"
+                                onchange="this.form.submit()">
                                 <option value="all"
-                                    {{ request('unit_filter') == 'all' || !request('unit_filter') ? 'selected' : '' }}>---หน่วยนับ---
+                                    {{ request('unit_filter') == 'all' || !request('unit_filter') ? 'selected' : '' }}>
+                                    ---หน่วยนับ---
                                 </option>
-                                {{-- @foreach ($equipment_units where() as $unit)
-                                    <option value="{{ $unit->id }}"
-                                        {{ request('unit_filter') == $unit->id ? 'selected' : '' }}>
-                                        {{ $unit->name }}
-                                    </option>
-                                @endforeach --}}
                                 @foreach ($equipments->where('title_id', request('title_filter'))->unique('equipment_unit_id') as $unit)
-                                <option value="{{ $unit->equipment_unit_id }}"
-                                    {{ request('unit_filter') == $unit->equipment_unit_id ? 'selected' : '' }}>
-                                    {{ $unit->equipmentUnit->name}}
-                                </option>
-                            @endforeach
+                                    <option value="{{ $unit->equipment_unit_id }}"
+                                        {{ request('unit_filter') == $unit->equipment_unit_id ? 'selected' : '' }}>
+                                        {{ $unit->equipmentUnit->name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-4 mb-3 mb-sm-0">
-                            <select class="form-select" id="location_filter" name="location_filter" onchange="this.form.submit()">
+                            <select class="form-select" id="location_filter" name="location_filter"
+                                onchange="this.form.submit()">
                                 <option value="all"
-                                    {{ request('location_filter') == 'all' || !request('location_filter') ? 'selected' : '' }}>---สถานที่ทั้งหมด---
+                                    {{ request('location_filter') == 'all' || !request('location_filter') ? 'selected' : '' }}>
+                                    ---สถานที่ทั้งหมด---
                                 </option>
                                 @foreach ($equipments->where('title_id', request('title_filter'))->unique('location_id') as $location)
-                                <option value="{{ $location->location_id }}"
-                                    {{ request('location_filter') == $location->location_id ? 'selected' : '' }}>
-                                    @if($location->location_id == null)
-                                        ---ไม่ได้กำหนดสถานที่---
-                                    @else
-                                        {{ $location->location->name}}
-                                    @endif
-                                </option>
-                                {{-- @empty
+                                    <option value="{{ $location->location_id }}"
+                                        {{ request('location_filter') == $location->location_id ? 'selected' : '' }}>
+                                        @if ($location->location_id == null)
+                                            ---ไม่ได้กำหนดสถานที่---
+                                        @else
+                                            {{ $location->location->name }}
+                                        @endif
+                                    </option>
+                                    {{-- @empty
                                 <option value="">ไม่พบข้อมูล</option> --}}
-                            @endforeach
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-4 mb-3 mb-sm-0">
-                            <select class="form-select" id="user_filter" name="user_filter" onchange="this.form.submit()">
+                            <select class="form-select" id="user_filter" name="user_filter"
+                                onchange="this.form.submit()">
                                 <option value="all"
-                                    {{ request('user_filter') == 'all' || !request('user_filter') ? 'selected' : '' }}>---ผู้ดูแลทั้งหมด---
+                                    {{ request('user_filter') == 'all' || !request('user_filter') ? 'selected' : '' }}>
+                                    ---ผู้ดูแลทั้งหมด---
                                 </option>
                                 @foreach ($equipments->where('title_id', request('title_filter'))->unique('user_id') as $user)
-                                <option value="{{ $user->user_id }}"
-                                    {{ request('user_filter') == $user->user_id ? 'selected' : '' }}>
-                                    @if($user->user_id == null)
-                                        ---ไม่ได้กำหนดผู้ดูแล---
-                                    @else
-                                        {{$user->user->prefix->name}}{{ $user->user->firstname }}  {{$user->user->lastname}}
-                                    @endif
-                                </option>
-                            @endforeach
+                                    <option value="{{ $user->user_id }}"
+                                        {{ request('user_filter') == $user->user_id ? 'selected' : '' }}>
+                                        @if ($user->user_id == null)
+                                            ---ไม่ได้กำหนดผู้ดูแล---
+                                        @else
+                                            {{ $user->user->prefix->name }}{{ $user->user->firstname }}
+                                            {{ $user->user->lastname }}
+                                        @endif
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                 </form>
@@ -91,20 +92,22 @@
                 </form>
             </div>
             <div class="row mt-3">
-                <div class="d-flex justify-content-between mb-3">  
-                    {{-- @if(request()->query('bin_mode') == 1) --}}
-                    <button id="restoreFromTrashBtn" class="btn btn-primary btn-sm mb-3 {{request()->query('bin_mode') == 1 ? '' : 'd-none'}}">
+                <div class="d-flex justify-content-between mb-3">
+                    {{-- @if (request()->query('bin_mode') == 1) --}}
+                    <button id="restoreFromTrashBtn"
+                        class="btn btn-primary btn-sm mb-3 {{ request()->query('bin_mode') == 1 ? '' : 'd-none' }}">
                         <i class="fas fa-trash"></i> ย้ายออกจากถังขยะ
                     </button>
                     {{-- @else --}}
-                    <button id="moveToTrashBtn" class="btn btn-danger btn-sm mb-3  {{request()->query('bin_mode') == 1 ? 'd-none' : ''}}">
+                    <button id="moveToTrashBtn"
+                        class="btn btn-danger btn-sm mb-3  {{ request()->query('bin_mode') == 1 ? 'd-none' : '' }}">
                         <i class="fas fa-trash"></i> ย้ายไปที่ถังขยะ
-                    </button>  
+                    </button>
                     {{-- @endif           --}}
                     <button class="btn btn-danger mb-3" it="goToBinBtn" onclick="goToBinMode()">
                         โหมดถังขยะ
                     </button>
-                    <a href="{{route('equipment.create')}}" class="btn btn-success mb-3">เพิ่มข้อมูล</a>
+                    <a href="{{ route('equipment.create') }}" class="btn btn-success mb-3">เพิ่มข้อมูล</a>
                     <a href="/export" class="btn btn-success mb-3">
                         Export Excel
                     </a>
@@ -150,7 +153,6 @@
                         $unitId = request()->query('unit_filter');
                         $locationId = request()->query('location_filter');
                         $userId = request()->query('user_filter');
-                        
 
                         function filterBySelected($equipments, $titleId, $unitId, $locationId, $userId)
                         {
@@ -175,10 +177,10 @@
 
                         $eqs = $equipments;
 
-                        $binMode  = request()->query('bin_mode');
-                        if($binMode == 1){
-                            $eqs = $equipment_trash;           
-                         }
+                        $binMode = request()->query('bin_mode');
+                        if ($binMode == 1) {
+                            $eqs = $equipment_trash;
+                        }
                         $filterEquipments = filterBySelected($eqs, $titleId, $unitId, $locationId, $userId);
 
                         $displayedTypes = [];
@@ -187,8 +189,8 @@
                         @php
                             $type = $equipment->equipment_type_id;
                         @endphp
-                        @if($type !== null)
-                            @if(in_array($type, $displayedTypes))
+                        @if ($type !== null)
+                            @if (in_array($type, $displayedTypes))
                                 @php
                                     continue;
                                 @endphp
@@ -201,13 +203,16 @@
                                 </td>
                                 <td class="bg-success text-white border border-dark align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">{{ $equipment->equipmentType->name }}
+                                <td class="bg-success text-white border border-dark align-middle">
+                                    {{ $equipment->equipmentType->name }}
                                 </td>
                                 <td class="bg-success text-white border border-dark align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">{{ $equipment->equipmentType->amount }}
+                                <td class="bg-success text-white border border-dark align-middle">
+                                    {{ $equipment->equipmentType->amount }}
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">{{ $equipment->equipmentType->price }}
+                                <td class="bg-success text-white border border-dark align-middle">
+                                    {{ $equipment->equipmentType->price }}
                                 </td>
                                 <td class="bg-success text-white border border-dark align-middle">
                                     {{ $equipment->equipmentType->total_price }}
@@ -224,61 +229,97 @@
                                 </td>
                                 <td class="bg-success text-white border border-dark align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">{{ $equipment->equipmentType->updated_at }}
+                                <td class="bg-success text-white border border-dark align-middle">
+                                    {{ $equipment->equipmentType->updated_at }}
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">{{ $equipment->equipmentType->created_at }}
+                                <td class="bg-success text-white border border-dark align-middle">
+                                    {{ $equipment->equipmentType->created_at }}
                                 </td>
-                            </tr>   
+                            </tr>
 
                             @forelse ($filterEquipments as $key => $equipment)
-                                @if($equipment->equipment_type_id === $type)
-                                <tr class="text-center border border-dark">
-                                    <td class="bg-warning border border-dark align-middle">
-                                        <div class="form-check d-flex justify-content-center align-items-center"
-                                            style="height: 100%;">
-                                            <input class="form-check-input checkbox-item" value="{{$equipment->id}}" type="checkbox"
-                                                style="transform: scale(1.5);">
-                                        </div>
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ ++$count }}<br>
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->number }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->name }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->equipmentUnit->name }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->amount }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->price }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->total_price }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_found }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_not_found }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_broken }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_disposal }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_transfer }}
-                                    </td>
-                                    <td class="bg-warning border border-dark text-start" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        <p><span class="text-muted">ผู้ดูแล:</span> {{$equipment->user?->prefix?->name}}{{ $equipment->user?->firstname }}</p><hr>
-                                        <p><span class="text-muted">ที่อยู่: </span>{{$equipment->location?->name}}</p><hr>
-                                        <p><span class="text-muted">คำอธิบาย: </span>{{$equipment->description}}</p>
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->updated_at }}
-                                    </td>
-                                    <td class="bg-warning border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->created_at }}
-                                    </td>
-                                </tr>   
+                                @if ($equipment->equipment_type_id === $type)
+                                    <tr class="text-center border border-dark">
+                                        <td class="bg-warning border border-dark align-middle">
+                                            <div class="form-check d-flex justify-content-center align-items-center"
+                                                style="height: 100%;">
+                                                <input class="form-check-input checkbox-item"
+                                                    value="{{ $equipment->id }}" type="checkbox"
+                                                    style="transform: scale(1.5);">
+                                            </div>
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ ++$count }}<br>
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->number }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->name }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->equipmentUnit->name }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->amount }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->price }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->total_price }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->status_found }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->status_not_found }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->status_broken }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->status_disposal }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->status_transfer }}
+                                        </td>
+                                        <td class="bg-warning border border-dark text-start"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            <p><span class="text-muted">ผู้ดูแล:</span>
+                                                {{ $equipment->user?->prefix?->name }}{{ $equipment->user?->firstname }}
+                                            </p>
+                                            <hr>
+                                            <p><span class="text-muted">ที่อยู่:
+                                                </span>{{ $equipment->location?->name }}</p>
+                                            <hr>
+                                            <p><span class="text-muted">คำอธิบาย: </span>{{ $equipment->description }}
+                                            </p>
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->updated_at }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->created_at }}
+                                        </td>
+                                    </tr>
                                 @endif
 
-                                @empty
+                            @empty
                                 <tr>
                                     <td colspan="3" class="text-center">ไม่มีข้อมูล</td>
                                 </tr>
@@ -288,50 +329,80 @@
                                 $displayedTypes[] = $type;
                             @endphp
                         @else
-                        <tr class="text-center border border-dark">
-                            <td class="border border-dark align-middle">
-                                <div class="form-check d-flex justify-content-center align-items-center"
-                                    style="height: 100%;">
-                                    <input class="form-check-input checkbox-item" value="{{$equipment->id}}" type="checkbox"
-                                        style="transform: scale(1.5);">
-                                </div>
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ ++$count }}<br>
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->number }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->name }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                {{ $equipment->equipmentUnit->name }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->amount }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->price }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                {{ $equipment->total_price }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_found }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_not_found }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_broken }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_disposal }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->status_transfer }}
-                            </td>
-                            <td class="border border-dark text-start"  onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                <p><span class="text-muted">ผู้ดูแล:</span> {{$equipment->user?->prefix?->name}}{{ $equipment->user?->firstname }}</p><hr>
-                                <p><span class="text-muted">ที่อยู่: </span>{{$equipment->location?->name}}</p><hr>
-                                <p><span class="text-muted">คำอธิบาย: </span>{{$equipment->description}}</p>
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->updated_at }}
-                            </td>
-                            <td class="border border-dark align-middle" onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">{{ $equipment->created_at }}
-                            </td>
-                    </tr>   
+                            <tr class="text-center border border-dark">
+                                <td class="border border-dark align-middle">
+                                    <div class="form-check d-flex justify-content-center align-items-center"
+                                        style="height: 100%;">
+                                        <input class="form-check-input checkbox-item" value="{{ $equipment->id }}"
+                                            type="checkbox" style="transform: scale(1.5);">
+                                    </div>
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ ++$count }}<br>
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->number }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->name }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->equipmentUnit->name }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->amount }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->price }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->total_price }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->status_found }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->status_not_found }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->status_broken }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->status_disposal }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->status_transfer }}
+                                </td>
+                                <td class="border border-dark text-start"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <p><span class="text-muted">ผู้ดูแล:</span>
+                                        {{ $equipment->user?->prefix?->name }}{{ $equipment->user?->firstname }}</p>
+                                    <hr>
+                                    <p><span class="text-muted">ที่อยู่: </span>{{ $equipment->location?->name }}</p>
+                                    <hr>
+                                    <p><span class="text-muted">คำอธิบาย: </span>{{ $equipment->description }}</p>
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->updated_at }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->created_at }}
+                                </td>
+                            </tr>
                         @endif
                     @empty
                         <tr>
@@ -339,6 +410,73 @@
                         </tr>
                     @endforelse
                 </tbody>
+
+                {{-- <tbody>
+                    @php
+                        $displayedTypes = [];
+                    @endphp
+
+                    @forelse ($key => $equipment)
+
+                        @php
+                            $type = $equipment->equipment_type_id;
+                        @endphp
+
+                        @if ($type !== null)
+                            @if (in_array($type, $displayedTypes))
+                                @php
+                                    continue;
+                                @endphp
+                            @endif
+
+                            <tr class="text-center border border-dark">
+                                <td class="bg-success text-white border border-dark align-middle">
+                                    {{ $equipment->equipmentType->name }}
+                                </td>
+                            </tr>
+
+                            @forelse ($filterEquipments as $key => $equipment)
+                                @if ($equipment->equipment_type_id === $type)
+                                    <tr class="text-center border border-dark">
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->number }}
+                                        </td>
+                                        <td class="bg-warning border border-dark align-middle"
+                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                            {{ $equipment->name }}
+                                        </td>
+                                    </tr>
+                                @endif
+
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center">ไม่มีข้อมูล</td>
+                                </tr>
+                            @endforelse
+
+                            @php
+                                $displayedTypes[] = $type;
+                            @endphp
+                        @else
+                            <tr class="text-center border border-dark">
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->number }}
+                                </td>
+                                <td class="border border-dark align-middle"
+                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    {{ $equipment->name }}
+                                </td>
+                            </tr>
+                        @endif
+                    @empty
+                        <tr>
+                            <td colspan="3" class="text-center">ไม่มีข้อมูล</td>
+                        </tr>
+                    @endforelse
+                </tbody> --}}
+
             </table>
         </div>
     </div>

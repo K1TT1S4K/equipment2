@@ -70,7 +70,7 @@
             </table>
         </form>
 
-        {{-- {{ $documents->links() }} --}}
+        {{ $users->links() }}
     </div>
 
     <script>

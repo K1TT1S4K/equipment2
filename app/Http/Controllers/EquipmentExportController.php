@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipment; // ใช้โมเดล Equipment
+use App\Models\Equipment_unit;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EquipmentsExport;
 
