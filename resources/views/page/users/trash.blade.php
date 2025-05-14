@@ -85,7 +85,7 @@
                             <td>{{ $user->prefix->name }} {{ $user->firstname }} {{ $user->lastname }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->user_type }}</td>
-                            <td>{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y H:i') }}</td>
                         </tr>
                     @empty
                         <tr>

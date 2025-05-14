@@ -89,13 +89,6 @@ class UserController extends Controller
         return view('page.users.edit', compact('user', 'prefixes'));
     }
 
-    // public function editProfile($id)
-    // {
-    //     $user = User::findOrFail($id);
-    //     $prefixes = Prefix::all();
-    //     return view('profile', compact('user', 'prefixes'));
-    // }
-
     // อัปเดตข้อมูลบุคลากร
     public function update(Request $request, $id)
     {
@@ -143,8 +136,7 @@ class UserController extends Controller
     public function profile()
     {
         $user = auth()->user(); // ดึงข้อมูลผู้ใช้ที่ล็อกอิน
-        $prefixes = Prefix::all(); // ดึงข้อมูลคำนำหน้าทั้งหมด
-        return view('profile', compact('user', 'prefixes')); // ส่งข้อมูลไปยัง view
+        return view('profile', compact('user'));
     }
 
     public function updateProfile(Request $request)
@@ -153,7 +145,6 @@ class UserController extends Controller
 
         $request->validate([
             'username' => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
-            'prefix' => 'required|exists:prefixes,id',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
@@ -162,7 +153,6 @@ class UserController extends Controller
 
         $user->update([
             'username' => $request->username,
-            'prefix_id' => $request->prefix,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'email' => $request->email,
@@ -227,7 +217,7 @@ class UserController extends Controller
         // กลับไปที่หน้าผู้ใช้ที่ถูกลบพร้อมข้อความ success
         return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
-    public function restoreAllUser()
+    public function restoreAll()
     {
         User::onlyTrashed()->restore(); // กู้คืนผู้ใช้ทั้งหมด
         return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ทั้งหมดเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
