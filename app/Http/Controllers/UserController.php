@@ -100,7 +100,7 @@ class UserController extends Controller
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่สาขา,ผู้ปฏิบัติงานบริหาร,อาจารย์',
-            'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
+            // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8', // ถ้าไม่กรอก จะไม่เปลี่ยนรหัสผ่าน
         ]);
 
@@ -110,7 +110,7 @@ class UserController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'user_type' => $request->user_type,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'password' => $request->password ? Hash::make($request->password) : $user->password, // เปลี่ยนรหัสผ่านถ้ามีการกรอก
         ]);
 
@@ -149,7 +149,7 @@ public function profile()
             'username' => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
-            'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
+            // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8', // ไม่บังคับเปลี่ยนรหัสผ่าน
         ]);
 
@@ -157,7 +157,7 @@ public function profile()
             'username' => $request->username,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'password' => $request->password ? Hash::make($request->password) : $user->password, // เปลี่ยนรหัสผ่านถ้ามีการกรอก
         ]);
 

@@ -114,10 +114,10 @@
         {{-- <div class="pagination">
             {{-- {{ $documents->links() }} --}}
         {{-- </div> --}}
-
+{{-- 
 <div class="d-flex justify-content-center">
     {{$documents->links('vendor.livewire.task-paginate')}}
-</div>
+</div> --}}
 
         <script>
             document.getElementById('select-all').addEventListener('click', function(event) {

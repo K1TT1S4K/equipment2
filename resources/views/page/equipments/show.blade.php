@@ -460,7 +460,6 @@
                         </tr>
                     @endforelse
                 </tbody>
-
                 {{-- <tbody>
                     @php
                         $displayedTypes = [];
