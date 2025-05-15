@@ -112,7 +112,7 @@
         </form>
 
         <div class="pagination">
-            {{ $documents->links() }}
+            {{-- {{ $documents->links() }} --}}
 
         </div>
 
