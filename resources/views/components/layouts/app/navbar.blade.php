@@ -12,7 +12,8 @@
         <div class="container-fluid">
             <!-- Logo -->
             <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <img src="{{ asset('image/RMUTI.png') }}" style="width: 30px; height: auto; display: block; margin: auto;" class="d-inline-block align-text-top">
+                <img src="{{ asset('image/RMUTI.png') }}" style="width: 30px; height: auto; display: block; margin: auto;"
+                    class="d-inline-block align-text-top">
             </a>
 
             <!-- Navbar Toggle (Mobile) -->
@@ -30,7 +31,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('equipment.index') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">
+                        <a class="nav-link active"
+                            href="{{ route('equipment.index') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">
                             ครุภัณฑ์
                         </a>
                     </li>
@@ -40,24 +42,18 @@
                             เอกสาร
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('user') }}">
-                            บุคลากร
-                        </a>
-                    </li>
+                    @can('admin')
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ route('user') }}">
+                                บุคลากร
+                            </a>
+                        </li>
+                    @endcan
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ route('profile') }}">
                             โปรไฟล์
                         </a>
                     </li>
-                    @can('can-view-retore')
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('document.trash') }}">
-                            ทดสอบ
-                        </a>
-                    </li>
-                    <li><a class="nav-item" href="{{ route('user.trashed')}}">กู้คืนบุคลากร</a></li>
-                    @endcan
                 </ul>
 
                 {{-- ปุ่มด้านขวา --}}
@@ -67,16 +63,32 @@
                         <strong>{{ Auth::user()->user_type }}</strong>
                     </div>
                     {{-- กู้คืนข้อมูล --}}
-                    <div class="dropdown">
-                        <button class="btn btn-warning dropdown-toggle" type="button" id="recoveryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            กู้คืนข้อมูล
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
-                            {{-- <li><a class="dropdown-item" href="#">กู้คืนครุภัณฑ์</a></li> --}}
-                            <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
-                            <li><a class="dropdown-item" href="{{ route('user.trashed')}}">กู้คืนบุคลากร</a></li>
-                        </ul>
-                    </div>
+                    @can('admin')
+                        <div class="dropdown">
+                            <button class="btn btn-warning dropdown-toggle" type="button" id="recoveryDropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                กู้คืนข้อมูล
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
+                                {{-- <li><a class="dropdown-item" href="#">กู้คืนครุภัณฑ์</a></li> --}}
+                                <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
+                                <li><a class="dropdown-item" href="{{ route('user.trashed') }}">กู้คืนบุคลากร</a></li>
+                            </ul>
+                        </div>
+                    @endcan
+
+                    @can('branch')
+                        <div class="dropdown">
+                            <button class="btn btn-warning dropdown-toggle" type="button" id="recoveryDropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                กู้คืนข้อมูล
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
+                                {{-- <li><a class="dropdown-item" href="#">กู้คืนครุภัณฑ์</a></li> --}}
+                                <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
+                            </ul>
+                        </div>
+                    @endcan
 
                     {{-- ลงชื่อออก --}}
                     <form method="POST" action="{{ route('logout') }}">
@@ -90,4 +102,5 @@
         </div>
     </nav>
 </body>
+
 </html>

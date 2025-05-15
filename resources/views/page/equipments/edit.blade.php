@@ -136,8 +136,10 @@
                             class="form-control"value="{{ $equipment->description }}">
                     </div>
                 </div>
-                <button id="log" type="submit" class="btn btn-primary">บันทึก</button>
-                <a href="{{ route('equipment.index') }}" class="btn btn-secondary">ยกเลิก</a>
+                @can('admin-or-branch')
+                    <button id="log" type="submit" class="btn btn-primary">บันทึก</button>
+                    <a href="{{ route('equipment.index') }}" class="btn btn-secondary">ยกเลิก</a>
+                @endcan
             </form>
         </div>
     </div>

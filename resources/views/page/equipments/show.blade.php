@@ -7,7 +7,8 @@
                 <form action="#" method="GET">
                     <div class="row">
                         <div class="col-12 md-6 mb-3 mb-sm-0">
-                            <select class="form-select " id="title_filter" name="title_filter" onchange="this.form.submit()">
+                            <select class="form-select " id="title_filter" name="title_filter"
+                                onchange="this.form.submit()">
                                 @foreach ($titles as $t)
                                     <option value="{{ $t->id }}"
                                         {{ request('title_filter') == $t->id ? 'selected' : '' }}>
@@ -93,21 +94,23 @@
             </div>
             <div class="row mt-3">
                 <div class="d-flex justify-content-between">
-                    {{-- @if (request()->query('bin_mode') == 1) --}}
-                    <button id="restoreFromTrashBtn"
-                        class="btn btn-primary btn-sm mb-3 {{ request()->query('bin_mode') == 1 ? '' : 'd-none' }}">
-                        <i class="fas fa-trash"></i> ย้ายออกจากถังขยะ
-                    </button>
-                    {{-- @else --}}
-                    <button id="moveToTrashBtn"
-                        class="btn btn-danger btn-sm mb-3  {{ request()->query('bin_mode') == 1 ? 'd-none' : '' }}">
-                        <i class="fas fa-trash"></i> ย้ายไปที่ถังขยะ
-                    </button>
-                    {{-- @endif           --}}
-                    <button class="btn btn-danger mb-3" id="goToBinBtn" onclick="goToBinMode()">
-                        โหมดถังขยะ
-                    </button>
-                    <a href="{{ route('equipment.create') }}" class="btn btn-success mb-3">เพิ่มข้อมูล</a>
+                    @can('admin-or-branch')
+                        {{-- @if (request()->query('bin_mode') == 1) --}}
+                        <button id="restoreFromTrashBtn"
+                            class="btn btn-primary btn-sm mb-3 {{ request()->query('bin_mode') == 1 ? '' : 'd-none' }}">
+                            <i class="fas fa-trash"></i> ย้ายออกจากถังขยะ
+                        </button>
+                        {{-- @else --}}
+                        <button id="moveToTrashBtn"
+                            class="btn btn-danger btn-sm mb-3  {{ request()->query('bin_mode') == 1 ? 'd-none' : '' }}">
+                            <i class="fas fa-trash"></i> ย้ายไปที่ถังขยะ
+                        </button>
+                        {{-- @endif           --}}
+                        <button class="btn btn-danger mb-3" id="goToBinBtn" onclick="goToBinMode()">
+                            โหมดถังขยะ
+                        </button>
+                        <a href="{{ route('equipment.create') }}" class="btn btn-success mb-3">เพิ่มข้อมูล</a>
+                    @endcan
                     <a href="/export" class="btn btn-success mb-3">
                         Export Excel
                     </a>
@@ -154,13 +157,23 @@
                         $locationId = request()->query('location_filter');
                         $userId = request()->query('user_filter');
                         $sFound = request()->query('status_found');
-                        $sNotFound  = request()->query('status_not_found');
-                        $sBroken  = request()->query('status_broken');
-                        $sDisposal  = request()->query('status_disposal');
-                        $sTransfer  = request()->query('status_transfer');
+                        $sNotFound = request()->query('status_not_found');
+                        $sBroken = request()->query('status_broken');
+                        $sDisposal = request()->query('status_disposal');
+                        $sTransfer = request()->query('status_transfer');
 
-                        function filterBySelected($equipments, $titleId, $unitId, $locationId, $userId, $sFound, $sNotFound, $sBroken, $sDisposal, $sTransfer)
-                        {
+                        function filterBySelected(
+                            $equipments,
+                            $titleId,
+                            $unitId,
+                            $locationId,
+                            $userId,
+                            $sFound,
+                            $sNotFound,
+                            $sBroken,
+                            $sDisposal,
+                            $sTransfer,
+                        ) {
                             $filtered = $equipments->where('title_id', $titleId);
 
                             if ($unitId !== 'all') {
@@ -175,24 +188,24 @@
                                 $filtered = $filtered->where('user_id', $userId);
                             }
 
-                            if($sFound !== 'all' && $sFound !== null){
-                                $filtered = $filtered->where('status_found', '>=',$sFound);
+                            if ($sFound !== 'all' && $sFound !== null) {
+                                $filtered = $filtered->where('status_found', '>=', $sFound);
                             }
 
-                            if($sNotFound !== 'all' && $sNotFound !== null){
-                                $filtered = $filtered->where('status_not_found', '>=',$sNotFound);
+                            if ($sNotFound !== 'all' && $sNotFound !== null) {
+                                $filtered = $filtered->where('status_not_found', '>=', $sNotFound);
                             }
 
-                            if($sBroken !== 'all' && $sBroken !== null){
-                                $filtered = $filtered->where('status_broken', '>=',$sBroken);
+                            if ($sBroken !== 'all' && $sBroken !== null) {
+                                $filtered = $filtered->where('status_broken', '>=', $sBroken);
                             }
 
-                            if($sDisposal !== 'all' && $sDisposal !== null){
-                                $filtered = $filtered->where('status_disposal', '>=',$sDisposal);
+                            if ($sDisposal !== 'all' && $sDisposal !== null) {
+                                $filtered = $filtered->where('status_disposal', '>=', $sDisposal);
                             }
 
-                            if($sTransfer !== 'all' && $sTransfer !== null){
-                                $filtered = $filtered->where('status_transfer', '>=',$sTransfer);
+                            if ($sTransfer !== 'all' && $sTransfer !== null) {
+                                $filtered = $filtered->where('status_transfer', '>=', $sTransfer);
                             }
 
                             return $filtered;
@@ -207,7 +220,18 @@
                         if ($binMode == 1) {
                             $eqs = $equipment_trash;
                         }
-                        $filterEquipments = filterBySelected($eqs, $titleId, $unitId, $locationId, $userId,  $sFound, $sNotFound, $sBroken, $sDisposal, $sTransfer);
+                        $filterEquipments = filterBySelected(
+                            $eqs,
+                            $titleId,
+                            $unitId,
+                            $locationId,
+                            $userId,
+                            $sFound,
+                            $sNotFound,
+                            $sBroken,
+                            $sDisposal,
+                            $sTransfer,
+                        );
 
                         $displayedTypes = [];
                     @endphp

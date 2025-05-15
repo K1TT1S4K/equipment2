@@ -28,8 +28,8 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 // Route::middleware(['auth'])->group(function (){
-    // Route::get('dashboard/', [EquipmentController::class, 'dashboard'])->name('equipemnt.dashboard');
-    // Route::get('dashboard/', [DashboardController::class, 'index'])->name('dashboard.index');
+// Route::get('dashboard/', [EquipmentController::class, 'dashboard'])->name('equipemnt.dashboard');
+// Route::get('dashboard/', [DashboardController::class, 'index'])->name('dashboard.index');
 // });
 
 // Route::middleware(['auth'])->group(function () {
@@ -37,12 +37,15 @@ Route::view('dashboard', 'dashboard')
 //     Route::get('equipments', [EquipmentController::class, 'index'])->name('equipment.index');
 // });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function() {
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
     Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.index');
+    Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
+});
+
+Route::middleware(['auth','can:admin-or-branch'])->group(function () {
     Route::get('equipment/create', [EquipmentController::class, 'create'])->name('equipment.create');
     Route::post('equipment', [EquipmentController::class, 'store'])->name('equipment.store');
-    Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
     Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
     Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
@@ -52,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/equipment/restore-from-trash', [EquipmentController::class, 'restoreFromTrash'])->name('equipment.restoreFromTrash');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','can:admin'])->group(function () {
     Route::get('user', [UserController::class, 'index'])->name('user');
     Route::get('user/add', [UserController::class, 'create'])->name('user.create');
     Route::get('user/search', [UserController::class, 'search'])->name('user.search');
@@ -74,12 +77,15 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('user/delete-selected-all', [UserController::class, 'deleteSelectedAll'])->name('user.deleteSelectedAll'); // ลบที่เลือกทั้งหมด
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/documents', [DocumentController::class, 'index'])->name('document.index');
+Route::middleware(['auth'])->group(function(){
+ Route::get('/documents', [DocumentController::class, 'index'])->name('document.index');
+ Route::get('documents/search', [DocumentController::class, 'search'])->name('document.search');
+ Route::get('/documents/{id}/edit', [DocumentController::class, 'edit'])->name('document.edit');
+});
+
+Route::middleware(['auth','can:admin-or-branch-or-officer'])->group(function () {
     Route::get('/documents/create', [DocumentController::class, 'create'])->name('document.create');
-    Route::get('documents/search', [DocumentController::class, 'search'])->name('document.search');
     Route::post('/documents', [DocumentController::class, 'store'])->name('document.store');
-    Route::get('/documents/{id}/edit', [DocumentController::class, 'edit'])->name('document.edit');
     Route::put('/documents/{id}', [DocumentController::class, 'update'])->name('document.update');
     Route::get('/documents/{id}', [DocumentController::class, 'show'])->name('document.show');
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('document.delete');
@@ -100,32 +106,32 @@ Route::middleware(['auth'])->group(function () {
     Route::put('profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','can:admin-or-branch'])->group(function () {
     Route::resource('types', EquipmentTypeController::class)->except(['create', 'edit', 'show']);
 
     // เพิ่ม name ให้ route นี้
     Route::get('types/{type}/check-usage', [EquipmentTypeController::class, 'checkUsage'])->name('types.checkUsage');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','admin-or-branch'])->group(function () {
     Route::resource('equipment_units', EquipmentUnitController::class)->except(['create', 'edit', 'show']);
 
     // เพิ่ม name ให้ route นี้
     Route::get('equipment_units/{equipment_unit}/check-usage', [EquipmentUnitController::class, 'checkUsage'])->name('equipment_units.checkUsage');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','can:admin-or-branch'])->group(function () {
     Route::resource('locations', LocationController::class)->except(['create', 'edit', 'show']);
 
     // เพิ่ม name ให้ route นี้
     Route::get('locations/{location}/check-usage', [LocationController::class, 'checkUsage'])->name('locations.checkUsage');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','can:admin-or-branch'])->group(function () {
     Route::resource('titles', TitleController::class)->except(['create', 'edit', 'show']);
 
     // เพิ่ม name ให้ route นี้
     Route::get('titles/{title}/check-usage', [TitleController::class, 'checkUsage'])->name('titles.checkUsage');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

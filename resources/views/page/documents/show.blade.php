@@ -52,14 +52,16 @@
                     </div>
                 </div>
                 <div class="col-4"></div>
-                <div class="col-4">
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <div>
-                            <!-- ปุ่มเพิ่มข้อมูล -->
-                            <a href="{{ route('document.create') }}" class="btn btn-success mb-3">เพิ่มข้อมูล</a>
+                @can('admin-or-branch')
+                    <div class="col-4">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <div>
+                                <!-- ปุ่มเพิ่มข้อมูล -->
+                                <a href="{{ route('document.create') }}" class="btn btn-success mb-3">เพิ่มข้อมูล</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endcan
             </div>
 
             <table class="table table-striped table-hover w-full">

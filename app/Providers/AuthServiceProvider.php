@@ -22,26 +22,28 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-
-        // Gate::define('update-post', function (User $user, Equipment $equipment) {
-        //     return $user->id === $equipment->user_id;
-        // });
-
-        // Gate::define('manage-equipments', function(User $user) {
-        //     return $user->user_type === 'admin';
-        // });
-
-        Gate::define('manage-users', function ($user) {
+        Gate::define('admin', function ($user) {
             return $user->user_type === 'ผู้ดูแลระบบ';
         });
 
-        Gate::define('view-branch-data', function ($user) {
-            return $user->role === 'branch';
+        Gate::define('branch', function ($user) {
+            return $user->user_type === 'เจ้าหน้าที่สาขา';
         });
 
-        Gate::define('approve-budget', function ($user) {
-            return $user->role === 'manager';
+        Gate::define('officer', function ($user) {
+            return $user->user_type === 'ผู้ปฏิบัติงานบริหาร';
+        });
+
+        Gate::define('teacher', function ($user) {
+            return $user->user_type === 'อาจารย์';
+        });
+
+        Gate::define('admin-or-branch', function ($user) {
+            return $user->user_type === 'เจ้าหน้าที่สาขา' || $user->user_type === 'ผู้ดูแลระบบ';
+        });
+
+        Gate::define('admin-or-branch-or-officer', function ($user) {
+            return $user->user_type === 'เจ้าหน้าที่สาขา' || $user->user_type === 'ผู้ดูแลระบบ' || $user->user_type === 'ผู้ปฏิบัติงานบริหาร';
         });
     }
 }

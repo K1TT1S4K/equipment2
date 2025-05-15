@@ -10,9 +10,14 @@
                 <div class="mb-3">
                     <label for="document_type" class="form-label">ประเภทเอกสาร</label>
                     <select name="document_type" class="form-select" required>
-                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์" {{ $document->document_type == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                        <option value="แทงจำหน่ายครุภัณฑ์" {{ $document->document_type == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์</option>
-                        <option value="โอนครุภัณฑ์" {{ $document->document_type == 'โอนครุภัณฑ์' ? 'selected' : '' }}>โอนครุภัณฑ์</option>
+                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
+                            {{ $document->document_type == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
+                            ยื่นแทงจำหน่ายครุภัณฑ์</option>
+                        <option value="แทงจำหน่ายครุภัณฑ์"
+                            {{ $document->document_type == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
+                        </option>
+                        <option value="โอนครุภัณฑ์" {{ $document->document_type == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
+                            โอนครุภัณฑ์</option>
                     </select>
                 </div>
 
@@ -25,14 +30,25 @@
                     <label for="newFile" class="form-label">อัปโหลดไฟล์เอกสาร (PDF, DOC, DOCX)</label>
                     <input type="file" name="newFile" class="form-control" accept=".pdf,.doc,.docx">
                     @if ($document && $document->path)
-                        <small class="form-text text-muted">ไฟล์เดิม: <a href="{{ url('storage/' . $document->path) }}" download>{{ basename($document->path) }}</a></small>
+                        <small class="form-text text-muted">ไฟล์เดิม: <a href="{{ url('storage/' . $document->path) }}"
+                                download>{{ basename($document->path) }}</a></small>
                     @endif
                 </div>
+                @can('admin-or-branch')
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">บันทึก</button>
+                        <a href="{{ route('document.index') }}" class="btn btn-secondary">ยกเลิก</a>
+                    </div>
+                @endcan
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">บันทึก</button>
-                    <a href="{{ route('document.index') }}" class="btn btn-secondary">ยกเลิก</a>
-                </div>
+                @if($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                @can('officer')
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">บันทึก</button>
+                        <a href="{{ route('document.index') }}" class="btn btn-secondary">ยกเลิก</a>
+                    </div>
+                @endcan
+                @endif
             </form>
         </div>
     </div>
