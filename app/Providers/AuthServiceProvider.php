@@ -28,8 +28,20 @@ class AuthServiceProvider extends ServiceProvider
         //     return $user->id === $equipment->user_id;
         // });
 
-        Gate::define('manage-equipments', function(User $user) {
-            return $user->user_type === 'admin';
+        // Gate::define('manage-equipments', function(User $user) {
+        //     return $user->user_type === 'admin';
+        // });
+
+        Gate::define('manage-users', function ($user) {
+            return $user->user_type === 'ผู้ดูแลระบบ';
+        });
+
+        Gate::define('view-branch-data', function ($user) {
+            return $user->role === 'branch';
+        });
+
+        Gate::define('approve-budget', function ($user) {
+            return $user->role === 'manager';
         });
     }
 }

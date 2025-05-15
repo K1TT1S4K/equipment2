@@ -7,9 +7,11 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\EquipmentUnitController;
 use App\Http\Controllers\TitleController;
+use App\Http\Controllers\DashboardController;
 use App\Models\Equipment;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,6 +26,11 @@ Route::get('/run-seed', function () {
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+// Route::middleware(['auth'])->group(function (){
+    // Route::get('dashboard/', [EquipmentController::class, 'dashboard'])->name('equipemnt.dashboard');
+    // Route::get('dashboard/', [DashboardController::class, 'index'])->name('dashboard.index');
+// });
 
 // Route::middleware(['auth'])->group(function () {
 //     Route::get('documents', [DocumentController::class, 'index'])->name('document.index');

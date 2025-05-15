@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Equipment;
 use App\Models\Equipment_unit;
 use App\Models\Equipment_type;
+use App\Models\Equipment_log;
 use App\Models\Location;
+use App\Models\Prefix;
 use App\Models\Title;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EquipmentsExport;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 use App\Imports\UsersImport;
 use App\Exports\UsersExport;
@@ -26,10 +29,11 @@ class EquipmentController extends Controller
         $equipments = Equipment::all();
         $locations = Location::all();
         $titles = Title::all();
+        $logs = Equipment_log::all();
 
         $equipment_trash = Equipment::onlyTrashed()->get();
 
-        return view('page.equipments.show', compact('equipment_trash','equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
+        return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
     }
 
     public function create()
@@ -40,6 +44,7 @@ class EquipmentController extends Controller
         $equipments = Equipment::all();
         $locations = Location::all();
         $titles = Title::all();
+
         return view('page.equipments.add', compact('equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
 
         // return view('page.equipments.add');
@@ -104,11 +109,46 @@ class EquipmentController extends Controller
         $equipments = Equipment::all();
         $locations = Location::all();
         $titles = Title::all();
-        return view('page.equipments.edit', compact('equipment', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
+        $logs = Equipment_log::all();
+
+        return view('page.equipments.edit', compact('equipment', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
     }
 
     public function update(Request $request, $id)
     {
+        $equipment = Equipment::findOrFail($id);
+        $locationNameMap = Location::pluck('name', 'id')->toArray();
+        $unitNameMap = Equipment_unit::pluck('name', 'id')->toArray();
+        $typeNameMap = Equipment_type::pluck('name', 'id')->toArray();
+        $userPrefixMap = User::pluck('prefix_id', 'id')->toArray();
+        $prefixNameMap = Prefix::pluck('name', 'id');
+        $userPrefixMap = User::pluck('prefix_id', 'id')->toArray();
+        $userFirstnameMap = User::pluck('firstname', 'id')->toArray();
+        $userLastnameMap = User::pluck('lastname', 'id')->toArray();
+        $titleGroupMap = Title::pluck('group', 'id')->toArray();
+        $titleNameMap = Title::pluck('name', 'id')->toArray();
+
+        $changes = [];
+
+        // กำหนดฟิลด์ที่ต้องการตรวจสอบการเปลี่ยนแปลง
+        $fieldsToCheck = [
+            'number' => 'หมายเลขครุภัณฑ์',
+            'name' => 'ชื่อครุภัณฑ์',
+            'equipment_unit_id' => 'หน่วยนับ',
+            'amount' => 'จำนวน',
+            'price' => 'ราคา',
+            'status_found' => 'พบ',
+            'status_not_found' => 'ไม่พบ',
+            'status_broken' => 'ชำรุด',
+            'status_disposal' => 'จำหน่าย',
+            'status_transfer' => 'โอน',
+            'title_id' => 'หัวข้อ',
+            'equipment_type_id' => 'ประเภท',
+            'user_id' => 'ผู้ดูแล',
+            'location_id' => 'ที่อยู่',
+            'description' => 'คำอธิบาย',
+        ];
+
 
         // dd($request->all());
         $request->validate([
@@ -135,10 +175,43 @@ class EquipmentController extends Controller
             'description'  => 'nullable|string|max:255'
         ]);
 
-        $equipment = Equipment::findOrFail($id);
-
-
         $total_price = $request->price * $request->amount;
+
+        foreach ($fieldsToCheck as $field => $label) {
+            $oldValue = $equipment->$field;
+            $newValue = $request->$field;
+
+            if ((string)$oldValue !== (string)$newValue) {
+                // กรณีเป็น relational (เช่น ID ต้องแสดงชื่อแทน)
+                if (in_array($field, ['equipment_unit_id', 'title_id', 'equipment_type_id', 'user_id', 'location_id'])) {
+                    switch ($field) {
+                        case "equipment_unit_id":
+                            $oldName = $unitNameMap[$equipment->$field] ?? '-';
+                            $newName = $unitNameMap[$request->$field] ?? '-';
+                            break;
+                        case "title_id":
+                            $oldName = ($titleGroupMap[$equipment->$field] ?? '-') . " - " . ($titleNameMap[$equipment->$field] ?? '-');
+                            $newName = ($titleGroupMap[$request->$field] ?? '-') . " - " . ($titleNameMap[$request->$field] ?? '-');
+                            break;
+                        case "equipment_type_id":
+                            $oldName = $typeNameMap[$equipment->$field] ?? '-';
+                            $newName = $typeNameMap[$request->$field] ?? '-';
+                            break;
+                        case "user_id":
+                            $oldName = ($prefixNameMap[$userPrefixMap[$equipment->$field] ?? 0] ?? '-') . ($userFirstnameMap[$equipment->$field] ?? '-') . " " . ($userLastnameMap[$equipment->$field] ?? '-');
+                            $newName = ($prefixNameMap[$userPrefixMap[$request->$field] ?? 0] ?? '-') . ($userFirstnameMap[$request->$field] ?? '-') . " " . ($userLastnameMap[$request->$field] ?? '-');
+                            break;
+                        case "location_id":
+                            $oldName = $locationNameMap[$equipment->$field] ?? '-';
+                            $newName = $locationNameMap[$request->$field] ?? '-';
+                            break;
+                    }
+                    $changes[] = "{$label}: {$oldName} |->| {$newName}";
+                } else {
+                    $changes[] = "{$label}: {$oldValue} |->| {$newValue}";
+                }
+            }
+        }
 
         $equipment->update(
             [
@@ -161,7 +234,19 @@ class EquipmentController extends Controller
             ]
         );
 
-        return redirect()->route('equipment.index')->with('success', 'แก้ไขข้อมูลเรียบร้อยแล้ว');
+        // ตัวอย่าง: log หรือแสดงใน view ก็ได้
+        if (count($changes) > 0) {
+            $message = implode("\n", $changes);
+
+            // ✳️ บันทึกลง table equipment_logs
+            Equipment_Log::create([
+                'equipment_id' => $equipment->id,
+                'user_id' => auth()->id(), // ผู้ที่ทำการเปลี่ยนแปลง
+                'action' => $message,
+            ]);
+        }
+
+        return redirect()->route('equipment.edit', $equipment->id)->with('success',  'ดำเนินการสำเร็จ');
     }
 
 

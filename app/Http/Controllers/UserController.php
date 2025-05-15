@@ -133,11 +133,13 @@ class UserController extends Controller
     }
 
 
-    public function profile()
-    {
-        $user = auth()->user(); // ดึงข้อมูลผู้ใช้ที่ล็อกอิน
-        return view('profile', compact('user'));
-    }
+public function profile()
+{
+    $user = auth()->user(); // ดึงข้อมูลผู้ใช้ที่ล็อกอิน
+    $prefixes = Prefix::all(); // สมมุติว่ามี field prefix ในตาราง users
+    return view('profile', compact('user', 'prefixes'));
+}
+
 
     public function updateProfile(Request $request)
     {

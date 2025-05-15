@@ -12,8 +12,8 @@ use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
 new #[Layout('components.layouts.auth')] class extends Component {
-    #[Validate('required|string|email')]
-    public string $email = '';
+    #[Validate('required|string')]
+    public string $username = '';
 
     #[Validate('required|string')]
     public string $password = '';
@@ -29,11 +29,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
         $this->ensureIsNotRateLimited();
 
-        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        if (!Auth::attempt(['username' => $this->username, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                'username' => __('auth.failed'),
             ]);
         }
 
@@ -67,10 +67,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
     /**
      * Get the authentication rate limiting throttle key.
      */
-    protected function throttleKey(): string
-    {
-        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
-    }
+protected function throttleKey(): string
+{
+    return Str::transliterate(Str::lower($this->username) . '|' . request()->ip());
+}
+
 }; ?>
 
 <div class="flex flex-col gap-6">
@@ -92,14 +93,15 @@ new #[Layout('components.layouts.auth')] class extends Component {
                     <form wire:submit.prevent="login">
                         <!-- Email Address -->
                         <div class="form-group mt-3">
-                            <label for="email">Email address</label>
-                            <input wire:model.defer="email" type="email" name="email"
-                                class="form-control @error('email') is-invalid @enderror" required autofocus
-                                autocomplete="email" placeholder="email@example.com" />
-                            @error('email')
+                            <label for="username">Username</label>
+                            <input wire:model.defer="username" type="text" name="username"
+                                class="form-control @error('username') is-invalid @enderror" required autofocus
+                                autocomplete="username" placeholder="Your username" />
+                            @error('username')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
 
                         <!-- Password -->
                         <div class="form-group mt-3">

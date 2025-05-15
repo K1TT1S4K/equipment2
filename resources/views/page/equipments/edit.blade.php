@@ -1,6 +1,6 @@
 <x-layouts.app>
-    <h3 class="text-dark">แก้ไขข้อมูลครุภัณฑ์</h3>
-    <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
+    <h3 class="text-dark">แก้ไขข้อมูลครุภัณฑ์ | <a href="#log">ประวัติการแก้ไข</a></h3>
+    <div class="card w-auto mx-auto shadow-lg p-3 mb-3 bg-body rounded border border-dark">
         <div class="card-body">
             <form action="{{ route('equipment.update', $equipment->id) }}" method="POST">
                 @csrf
@@ -83,7 +83,8 @@
                             </button></label>
                         <select name="equipment_type_id" id="equipmentTypeSelect" class="form-control">
                             {{-- <option value="">-- เลือกประเภท --</option> --}}
-                                <option value="" {{$equipment->equipment_type_id == null ? 'selected' : ''}}>-- เลือกประเภท --</option>
+                            <option value="" {{ $equipment->equipment_type_id == null ? 'selected' : '' }}>--
+                                เลือกประเภท --</option>
                             @foreach ($equipment_types as $et)
                                 {{-- <option
                                     value="{{ $et->id }} {{ $equipment->equipment_type_id == $et->id ? 'selected' : 'disabled' }}">
@@ -102,7 +103,8 @@
                         <label for="user_id" class="form-label">ผู้ดูแล</label>
                         <select name="user_id" class="form-control">
                             {{-- <option value="">-- เลือกผู้ดูแล --</option> --}}
-                                <option value="" {{$equipment->user_id == null ? 'selected' : ''}}>-- เลือกผู้ดูแล --</option>
+                            <option value="" {{ $equipment->user_id == null ? 'selected' : '' }}>-- เลือกผู้ดูแล
+                                --</option>
                             @foreach ($users as $u)
                                 <option value="{{ $u->id }}"
                                     {{ $equipment->user_id == $u->id ? 'selected' : '' }}>
@@ -118,7 +120,8 @@
                                 <i class="bi bi-gear"></i>
                             </button></label>
                         <select name="location_id" class="form-control">
-                            <option value="" {{$equipment->location_id == null ? 'selected' : ''}}>-- เลือกที่อยู่ --</option>
+                            <option value="" {{ $equipment->location_id == null ? 'selected' : '' }}>--
+                                เลือกที่อยู่ --</option>
                             @foreach ($locations as $l)
                                 <option value="{{ $l->id }}"
                                     {{ $equipment->location_id == $l->id ? 'selected' : '' }}>{{ $l->name }}
@@ -133,9 +136,34 @@
                             class="form-control"value="{{ $equipment->description }}">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">บันทึก</button>
+                <button id="log" type="submit" class="btn btn-primary">บันทึก</button>
                 <a href="{{ route('equipment.index') }}" class="btn btn-secondary">ยกเลิก</a>
             </form>
+        </div>
+    </div>
+
+    <h3 class="text-dark">ประวัติการแก้ไข | <a href="#">แก้ไขข้อมูลครุภัณฑ์</a></h3>
+    <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="col-4">ชื่อ</th>
+                        <th class="col-2">เวลา</th>
+                        <th class="col-6">การกระทำ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($logs->where('equipment_id', $equipment->id)->sortByDesc('created_at') as $log)
+                        <tr>
+                            <td>{{ $log->user?->prefix?->name }}{{ $log->user?->firstname }}
+                                {{ $log->user?->lastname }}</td>
+                            <td>{{ $log->created_at }}</td>
+                            <td class="white-space-pre">{{ $log->action }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 

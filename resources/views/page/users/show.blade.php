@@ -50,7 +50,7 @@
                         <th>ชื่อผู้ใช้</th>
                         <th>ชื่อ-นามสกุล</th>
                         <th>ระดับผู้ใช้</th>
-                        <th>อีเมล</th>
+                        {{-- <th>อีเมล</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -63,7 +63,7 @@
                         <td style="width: 10%">{{ $user->username }}</td>
                         <td class="p-3" style="width: 20%">{{ $user->prefix->name }} {{ $user->firstname }} {{ $user->lastname }}</td>
                         <td class="text-center" style="width: 10%">{{ $user->user_type }}</td>
-                        <td>{{ $user->email }}</td>
+                        {{-- <td>{{ $user->email }}</td> --}}
                     </tr>
                     @endforeach
                 </tbody>

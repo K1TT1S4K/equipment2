@@ -5,9 +5,9 @@
         <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded">
             <div class="card-body">
                 <form action="#" method="GET">
-                    <div class="row pb-3">
-                        <div class="col-md-6 mb-3 mb-sm-0">
-                            <select class="form-select" id="title_filter" name="title_filter" onchange="this.form.submit()">
+                    <div class="row">
+                        <div class="col-12 md-6 mb-3 mb-sm-0">
+                            <select class="form-select " id="title_filter" name="title_filter" onchange="this.form.submit()">
                                 @foreach ($titles as $t)
                                     <option value="{{ $t->id }}"
                                         {{ request('title_filter') == $t->id ? 'selected' : '' }}>
@@ -76,7 +76,7 @@
                         </div>
                 </form>
             </div>
-            <div class="row">
+            <div class="row mt-3">
                 <form onsubmit="searchTable(); return false;">
                     <div class="row align-items-center">
                         <div class="col-auto">
@@ -92,7 +92,7 @@
                 </form>
             </div>
             <div class="row mt-3">
-                <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex justify-content-between">
                     {{-- @if (request()->query('bin_mode') == 1) --}}
                     <button id="restoreFromTrashBtn"
                         class="btn btn-primary btn-sm mb-3 {{ request()->query('bin_mode') == 1 ? '' : 'd-none' }}">
@@ -104,7 +104,7 @@
                         <i class="fas fa-trash"></i> ย้ายไปที่ถังขยะ
                     </button>
                     {{-- @endif           --}}
-                    <button class="btn btn-danger mb-3" it="goToBinBtn" onclick="goToBinMode()">
+                    <button class="btn btn-danger mb-3" id="goToBinBtn" onclick="goToBinMode()">
                         โหมดถังขยะ
                     </button>
                     <a href="{{ route('equipment.create') }}" class="btn btn-success mb-3">เพิ่มข้อมูล</a>
@@ -153,8 +153,13 @@
                         $unitId = request()->query('unit_filter');
                         $locationId = request()->query('location_filter');
                         $userId = request()->query('user_filter');
+                        $sFound = request()->query('status_found');
+                        $sNotFound  = request()->query('status_not_found');
+                        $sBroken  = request()->query('status_broken');
+                        $sDisposal  = request()->query('status_disposal');
+                        $sTransfer  = request()->query('status_transfer');
 
-                        function filterBySelected($equipments, $titleId, $unitId, $locationId, $userId)
+                        function filterBySelected($equipments, $titleId, $unitId, $locationId, $userId, $sFound, $sNotFound, $sBroken, $sDisposal, $sTransfer)
                         {
                             $filtered = $equipments->where('title_id', $titleId);
 
@@ -169,6 +174,27 @@
                             if ($userId !== 'all') {
                                 $filtered = $filtered->where('user_id', $userId);
                             }
+
+                            if($sFound !== 'all' && $sFound !== null){
+                                $filtered = $filtered->where('status_found', '>=',$sFound);
+                            }
+
+                            if($sNotFound !== 'all' && $sNotFound !== null){
+                                $filtered = $filtered->where('status_not_found', '>=',$sNotFound);
+                            }
+
+                            if($sBroken !== 'all' && $sBroken !== null){
+                                $filtered = $filtered->where('status_broken', '>=',$sBroken);
+                            }
+
+                            if($sDisposal !== 'all' && $sDisposal !== null){
+                                $filtered = $filtered->where('status_disposal', '>=',$sDisposal);
+                            }
+
+                            if($sTransfer !== 'all' && $sTransfer !== null){
+                                $filtered = $filtered->where('status_transfer', '>=',$sTransfer);
+                            }
+
                             return $filtered;
                         }
 
@@ -181,7 +207,7 @@
                         if ($binMode == 1) {
                             $eqs = $equipment_trash;
                         }
-                        $filterEquipments = filterBySelected($eqs, $titleId, $unitId, $locationId, $userId);
+                        $filterEquipments = filterBySelected($eqs, $titleId, $unitId, $locationId, $userId,  $sFound, $sNotFound, $sBroken, $sDisposal, $sTransfer);
 
                         $displayedTypes = [];
                     @endphp
@@ -197,42 +223,42 @@
                             @endif
 
                             <tr class="text-center border border-dark">
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle"><br>
+                                <td class="bg-secondary text-white border border-red align-middle"><br>
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                     {{ $equipment->equipmentType->name }}
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                     {{ $equipment->equipmentType->amount }}
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                     {{ $equipment->equipmentType->price }}
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                     {{ $equipment->equipmentType->total_price }}
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                     {{ $equipment->equipmentType->updated_at }}
                                 </td>
-                                <td class="bg-success text-white border border-dark align-middle">
+                                <td class="bg-secondary text-white border border-red align-middle">
                                     {{ $equipment->equipmentType->created_at }}
                                 </td>
                             </tr>
@@ -240,7 +266,7 @@
                             @forelse ($filterEquipments as $key => $equipment)
                                 @if ($equipment->equipment_type_id === $type)
                                     <tr class="text-center border border-dark">
-                                        <td class="bg-warning border border-dark align-middle">
+                                        <td class="bg-light border border-danger align-middle">
                                             <div class="form-check d-flex justify-content-center align-items-center"
                                                 style="height: 100%;">
                                                 <input class="form-check-input checkbox-item"
@@ -248,55 +274,55 @@
                                                     style="transform: scale(1.5);">
                                             </div>
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ ++$count }}<br>
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->number }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->name }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->equipmentUnit->name }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->amount }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->price }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->total_price }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->status_found }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->status_not_found }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->status_broken }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->status_disposal }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->status_transfer }}
                                         </td>
-                                        <td class="bg-warning border border-dark text-start"
+                                        <td class="bg-light border border-danger text-start"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             <p><span class="text-muted">ผู้ดูแล:</span>
                                                 {{ $equipment->user?->prefix?->name }}{{ $equipment->user?->firstname }}
@@ -308,11 +334,11 @@
                                             <p><span class="text-muted">คำอธิบาย: </span>{{ $equipment->description }}
                                             </p>
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->updated_at }}
                                         </td>
-                                        <td class="bg-warning border border-dark align-middle"
+                                        <td class="bg-light border border-danger align-middle"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                             {{ $equipment->created_at }}
                                         </td>

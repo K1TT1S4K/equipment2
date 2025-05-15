@@ -39,10 +39,10 @@
                         <option value="อาจารย์">อาจารย์</option>
                     </select>
                 </div>
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label class="form-label">อีเมล</label>
                     <input type="email" name="email" class="form-control" required>
-                </div>
+                </div> --}}
                 <div class="mb-3">
                     <label class="form-label">รหัสผ่าน</label>
                     <input type="password" name="password" class="form-control" required>

@@ -19,6 +19,17 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+
+      <style>
+    .hover-box {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .hover-box:hover {
+      transform: scale(1.01);
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body style="background-color: var(--bs-light-green);">
@@ -162,6 +173,8 @@
         const rows = document.querySelectorAll("table tbody tr");
 
         rows.forEach(row => {
+            // dd(row.textContent.toLowerCase());
+             console.log(row.textContent.toLowerCase());
             const text = row.textContent.toLowerCase();
             row.style.display = text.includes(input) ? "" : "none";
         });
@@ -715,8 +728,8 @@
             });
         });
 
-                // ลบ หัวข้อ
-                $(document).on('click', '.deleteBtntitle', function() {
+        // ลบ หัวข้อ
+        $(document).on('click', '.deleteBtntitle', function() {
             const row = $(this).closest('tr');
             const id = row.data('id');
 

@@ -60,13 +60,13 @@
                     @enderror
                 </div>
 
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label class="form-label">อีเมล</label>
                     <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
                     @error('email')
                         <small class="text-danger">{{ $message }}</small>
                     @enderror
-                </div>
+                </div> --}}
 
                 <div class="mb-3">
                     <label class="form-label">รหัสผ่าน (หากไม่ต้องการเปลี่ยน ปล่อยว่างไว้)</label>

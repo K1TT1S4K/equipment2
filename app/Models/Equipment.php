@@ -61,4 +61,9 @@ class Equipment extends Model
     {
         return $this->belongsTo(Title::class, 'title_id');
     }
+
+        public function logs(): HasMany
+    {
+        return $this->hasMany(Equipment_log::class);
+    }
 }
