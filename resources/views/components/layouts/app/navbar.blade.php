@@ -63,7 +63,7 @@
                         <strong>{{ Auth::user()->user_type }}</strong>
                     </div>
                     {{-- กู้คืนข้อมูล --}}
-                    @can('ผู้ดูแลระบบ')
+                    @can('admin')
                         <div class="dropdown">
                             <button class="btn btn-warning dropdown-toggle" type="button" id="recoveryDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -77,7 +77,7 @@
                         </div>
                     @endcan
 
-                    @can('ผู้ดูแลระบบ')
+                    @can('branch')
                         <div class="dropdown">
                             <button class="btn btn-warning dropdown-toggle" type="button" id="recoveryDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
