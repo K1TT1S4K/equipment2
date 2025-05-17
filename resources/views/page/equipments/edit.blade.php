@@ -17,11 +17,11 @@
                             value="{{ $equipment->name }}">
                     </div>
                     <div class="mb-3 col">
-                        <label for="equipment_unit_id" class="form-label">หน่วยนับ<button type="button"
+                        <label for="equipment_unit_id" class="form-label">หน่วยนับ@can('admin-or-branch')<button type="button"
                                 class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
                                 data-bs-target="#unitModal">
                                 <i class="bi bi-gear"></i>
-                            </button></label>
+                            </button>@endcan</label>
                         <select name="equipment_unit_id" class="form-control" required>
                             @foreach ($equipment_units as $unit)
                                 <option value="{{ $unit->id }}"
@@ -62,11 +62,11 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col"> <label for="title_id" class="form-label">หัวข้อ<button type="button"
+                    <div class="col"> <label for="title_id" class="form-label">หัวข้อ@can('admin-or-branch')<button type="button"
                                 class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
                                 data-bs-target="#titleModal">
                                 <i class="bi bi-gear"></i>
-                            </button></label>
+                            </button>@endcan</label>
                         <select name="title_id" id="titleSelect" class="form-control" required>
                             {{-- <option value="">-- เลือกหัวข้อ --</option> --}}
                             @foreach ($titles as $t)
@@ -76,11 +76,11 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท<button type="button"
+                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท@can('admin-or-branch')<button type="button"
                                 class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
                                 data-bs-target="#typeModal">
                                 <i class="bi bi-gear"></i>
-                            </button></label>
+                            </button>@endcan</label>
                         <select name="equipment_type_id" id="equipmentTypeSelect" class="form-control">
                             {{-- <option value="">-- เลือกประเภท --</option> --}}
                             <option value="" {{ $equipment->equipment_type_id == null ? 'selected' : '' }}>--
@@ -114,11 +114,11 @@
                         </select>
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">ที่อยู่<button type="button"
+                        <label class="form-label">ที่อยู่@can('admin-or-branch')<button type="button"
                                 class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
                                 data-bs-target="#locationModal">
                                 <i class="bi bi-gear"></i>
-                            </button></label>
+                            </button>@endcan</label>
                         <select name="location_id" class="form-control">
                             <option value="" {{ $equipment->location_id == null ? 'selected' : '' }}>--
                                 เลือกที่อยู่ --</option>
@@ -169,6 +169,7 @@
         </div>
     </div>
 
+    @can('admin-or-branch')
     <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content border-dark">
@@ -274,7 +275,7 @@
             </div>
         </div>
     </div>
-
+@endcan
 
 
 </x-layouts.app>
