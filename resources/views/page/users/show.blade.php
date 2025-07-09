@@ -1,7 +1,7 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">จัดการบัญชีผู้ใช้</h3>
+    <h1 class="text-dark mb-4">จัดการบัญชีผู้ใช้</h1>
 
-    <form method="GET" action="{{ route('user.search') }}" class="mb-3">
+    <form method="GET" action="{{ route('user.search') }}" class="mb-3 w-90 justify-content-center mx-auto">
         <div class="d-flex">
             <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded" placeholder="ค้นหาบัญชีผู้ใช้..." value="{{ request()->get('search') }}">
             <select name="user_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
@@ -15,8 +15,8 @@
         </div>
     </form>
 
-    <div class="card shadow-lg p-3 mb-4 bg-body">
-        <h3>รายการเอกสาร</h3>
+    <div class="card shadow-lg p-3 mb-4 bg-body w-90 justify-content-center mx-auto">
+        {{-- <h3>รายการเอกสาร</h3> --}}
 
         <!-- ย้าย form มาอยู่ตรงนี้ ครอบทั้งปุ่มลบและตาราง -->
         <form action="{{ route('user.deleteSelected') }}" method="POST" id="delete-form">
@@ -24,16 +24,18 @@
             @method('DELETE')
 
             <div class="row">
-                <div class="col-4">
-                    <div>
+                <div class="col-8">
+                    <h2>รายการเอกสาร</h2>
+                </div>
+                <div class="col-2">
+                    <div class="d-flex justify-content-center align-items-center gap-2">
                         <!-- ปุ่มลบทั้งหมด -->
                         <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn" style="display:none;">ลบรายการทั้งหมด</button>
                         <!-- ปุ่มลบที่เลือก -->
                         <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn" style="display:none;">ลบรายการที่เลือก</button>
                     </div>
                 </div>
-                <div class="col-4"></div>
-                <div class="col-4">
+                <div class="col-2">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <div>
                             <a href="{{ route('user.create') }}" class="btn btn-success mb-3">เพิ่มผู้ใช้</a>
@@ -42,8 +44,8 @@
                 </div>
             </div>
 
-            <table class="table table-striped table-bordered mt-3 table-hover w-full">
-                <thead class="table-dark text-white text-center border border-dark">
+            <table class="documents-table w-100">
+                <thead class="text-white text-center ">
                     <tr>
                         <th><input type="checkbox" id="select-all"></th>
                         <th>#</th>

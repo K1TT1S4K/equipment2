@@ -1,12 +1,222 @@
-mint{
+.mint {
     color: #00FA9A;
 }
-WhiteSmoke{
+
+.whitesmoke {
     color: #F5F5F5;
 }
-GhostWhite{
+
+.ghostwhite {
     color: #F8F8FF;
 }
-border50{
+.border50{
     border-radius: 50px;
 }
+
+.bg-mint {
+    background-color: #00FA9A; /* Mint Green */
+    color: #fff;
+}
+
+.bg-lightskyblue {
+    background-color: #87CEFA; /* Light Sky Blue */
+}
+
+/* สีพื้นหลังโทนเย็นสบายตา */
+.bg-mint-cream {
+    background-color: #F5FFFA; /* Mint Cream */
+}
+
+.bg-honeydew {
+    background-color: #F0FFF0; /* Honeydew */
+}
+
+.bg-light-cyan {
+    background-color: #E0FFFF; /* Light Cyan */
+}
+
+.bg-powder-blue {
+    background-color: #B0E0E6; /* Powder Blue */
+}
+
+.bg-pale-turquoise {
+    background-color: #AFEEEE; /* Pale Turquoise */
+}
+
+.bg-light-steel-blue {
+    background-color: #B0C4DE; /* Light Steel Blue */
+}
+
+.circle-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #00FA9A;
+    color: white;
+    border: none;
+}
+.circle-button:hover {
+    background-color: #00C896;
+}
+.circle-button:active {
+    background-color: #009A73;
+}
+.circle-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 250, 154, 0.5);
+}
+.circle-button:disabled {
+    background-color: #A9A9A9;
+    cursor: not-allowed;
+}
+.circle-button i {
+    font-size: 24px;
+    line-height: 60px; /* Center the icon vertically */
+    text-align: center;
+}
+.circle-button span {
+    display: none; /* Hide text by default */
+}
+.circle-button:hover span {
+    display: inline; /* Show text on hover */
+    margin-left: 8px; /* Add space between icon and text */
+}
+.circle-button:focus span {
+    display: inline; /* Show text on focus */
+    margin-left: 8px; /* Add space between icon and text */
+}
+.circle-button:disabled span {
+    display: none; /* Hide text when disabled */
+}
+.circle-button:disabled i {
+    color: #D3D3D3; /* Light gray for disabled state */
+}
+.circle-button:disabled {
+    cursor: not-allowed; /* Change cursor to indicate disabled state */
+}
+.circle-button:disabled:hover {
+    background-color: #A9A9A9; /* Keep the same background color when disabled */
+}
+.circle-button:disabled:focus {
+    box-shadow: none; /* Remove focus outline when disabled */
+}
+.circle-button:focus i {
+    color: #00FA9A; /* Change icon color on focus */
+}
+.circle-button:hover i {
+    color: #00C896; /* Change icon color on hover */
+}
+
+.login-button {
+    background-color: #007BFF;  /* สีน้ำเงิน (Bootstrap Primary Blue) */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 50px; /* หรือใช้ .border50 */
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.login-button:hover {
+    background-color: #0056b3;  /* สีน้ำเงินเข้มเมื่อ hover */
+    transform: scale(1.02);
+}
+
+.login-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+.login-button:disabled:hover {
+    background-color: #cccccc; /* สีเทาเมื่อ disabled */
+}
+.login-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* สีน้ำเงินอ่อนเมื่อ focus */
+}
+.login-button i {
+    margin-right: 8px; /* เว้นระยะห่างระหว่างไอคอนและข้อความ */
+}
+.login-button span {
+    display: inline; /* แสดงข้อความ */
+}
+.login-button:disabled i {
+    color: #666666; /* สีไอคอนเมื่อ disabled */
+}
+.login-button:disabled span {
+    color: #666666; /* สีข้อความเมื่อ disabled */
+}
+.login-button:focus i {
+    color: #007BFF; /* เปลี่ยนสีไอคอนเมื่อ focus */
+}
+.login-button:hover i {
+    color: #0056b3; /* เปลี่ยนสีไอคอนเมื่อ hover */
+}
+.login-button:disabled i {
+    color: #666666; /* สีไอคอนเมื่อ disabled */
+}
+.login-button:disabled span {
+    color: #666666; /* สีข้อความเมื่อ disabled */
+}
+
+.login-card {
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    background: white;
+}
+
+.documents-table {
+    width: 1300px;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* ระยะห่างระหว่างแถว */
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  /* ส่วนหัวตาราง (thead) */
+  .documents-table thead {
+    background-color: #00C896;
+    color: white;
+  }
+
+  .documents-table th {
+    padding: 12px 15px;
+    background-color: #00C896;
+    color: white;
+    text-align: center;
+  }
+
+  /* ส่วนข้อมูล (tbody) */
+  .documents-table td {
+    padding: 12px 15px;
+    background-color: white;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  /* มุมโค้งเฉพาะแถว */
+  .documents-table tbody tr td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  .documents-table tbody tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  /* Hover Effect */
+  .documents-table tbody tr:hover td {
+    background-color: #00FA9A;
+  }
+
+ .w-80 {
+    width: 80%;
+  }
+  .w-90 {
+    width: 90%;
+  }

@@ -93,7 +93,7 @@ protected function throttleKey(): string
                     <form wire:submit.prevent="login">
                         <!-- Email Address -->
                         <div class="form-group mt-3">
-                            <label for="username">Username</label>
+                            <label for="username">ชื่อผู้ใช้</label>
                             <input wire:model.defer="username" type="text" name="username"
                                 class="form-control @error('username') is-invalid @enderror" required autofocus
                                 autocomplete="username" placeholder="Your username" />
@@ -105,7 +105,7 @@ protected function throttleKey(): string
 
                         <!-- Password -->
                         <div class="form-group mt-3">
-                            <label for="password">Password</label>
+                            <label for="password">รหัสผ่าน</label>
                             <input wire:model.defer="password" type="password" name="password"
                                 class="form-control @error('password') is-invalid @enderror" required
                                 autocomplete="current-password" placeholder="Password" />
@@ -122,11 +122,16 @@ protected function throttleKey(): string
 
                         <!-- Submit Button -->
                         <div class="text-center mt-4">
-                            <button type="submit" style="border50" wire:loading.attr="disabled">
+                            <button type="submit" class="login-button border50" wire:loading.attr="disabled">
                                 <span wire:loading.remove>Log in</span>
-                                <span wire:loading>Loading...</span>
+                                <span wire:loading>
+                                    <div class="spinner-border spinner-border-sm text-light" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </span>
                             </button>
                         </div>
+
 
                         <!-- Forgot Password -->
                         {{-- @if (Route::has('password.request'))

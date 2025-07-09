@@ -1,6 +1,6 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">เอกสาร</h3>
-    <div class="card shadow-lg p-3 mb-4 bg-body">
+    <h1 class="text-dark mb-4">เอกสาร</h1>
+    <div class="p-3 mb-4 w-90 justify-content-center mx-auto">
         <form action="{{ route('trash.search') }}" method="GET">
             <div class="row">
                 <div class="col-md mb-3 mb-sm-0">
@@ -30,7 +30,7 @@
         </form>
     </div>
 
-    <div class="card shadow-lg p-3 mb-4 bg-body">
+    <div class="card shadow-lg p-3 mb-4 bg-body w-90 justify-content-center mx-auto">
         <div class="row">
             <div class="col-4">
                 <h3>รายการเอกสาร</h3>

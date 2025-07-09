@@ -1,17 +1,18 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">เอกสาร</h3>
-    <div class="card shadow-lg p-3 mb-4 bg-body">
+    <h1 class="text-dark mb-4">เอกสาร</h1>
+    <div class="p-3 mb-4 w-75 justify-content-center mx-auto">
+        {{-- <h3>ค้นหาเอกสาร</h3> --}}
         <form action="{{ route('document.search') }}" method="GET">
             <div class="row">
                 <div class="col-md mb-3 mb-sm-0">
-                    <label for="query" class="form-label">ค้นหา</label>
-                    <input type="text" id="query" name="query" class="form-control"
-                        placeholder="เอกสารอ้างอิง, ประเภทเอกสาร ฯลฯ" value="{{ request('query') }}">
+                    {{-- <label for="query" class="form-label">ค้นหา</label> --}}
+                    <input type="text" id="query" name="query" class="form-control border border-dark shadow-lg"
+                        placeholder="ค้นหาเอกสารอ้างอิง, ประเภทเอกสาร ฯลฯ" value="{{ request('query') }}">
                 </div>
 
                 <div class="col-md mb-3 mb-sm-0">
-                    <label for="document_type" class="form-label">ประเภทเอกสาร</label>
-                    <select id="document_type" name="document_type" class="form-select">
+                    {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
+                    <select id="document_type" name="document_type" class="form-select border border-dark shadow-lg">
                         <option value="">-- เลือกประเภทเอกสาร --</option>
                         <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
                             {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
@@ -32,17 +33,20 @@
         </form>
     </div>
 
-    <div class="card shadow-lg p-3 mb-4 bg-body">
-        <h3>รายการเอกสาร</h3>
+    <div class="card bg-body p-3 mb-4 w-90 justify-content-center mx-auto">
+        {{-- <h3>รายการเอกสาร</h3> --}}
 
         <!-- ย้าย form มาอยู่ตรงนี้ ครอบทั้งปุ่มลบและตาราง -->
         <form action="{{ route('document.deleteSelected') }}" method="POST" id="delete-form">
             @csrf
             @method('DELETE')
 
-            <div class="row mb-3">
-                <div class="col-4">
-                    <div>
+            <div class="row mb-1">
+                <div class="col-8 align-self-center">
+                    <h2>รายการเอกสาร</h2>
+                </div>
+                <div class="col-2">
+                    <div class="d-flex justify-content-center align-items-center gap-2">
                         <!-- ปุ่มลบทั้งหมด -->
                         <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn"
                             style="display:none;">ย้ายรายการทั้งหมดไปที่ถังขยะ</button>
@@ -51,29 +55,29 @@
                             style="display:none;">ย้ายไปที่ถังขยะ</button>
                     </div>
                 </div>
-                <div class="col-4"></div>
+                {{-- <div class="col-4"></div> --}}
                 @can('admin-or-branch')
-                    <div class="col-4">
+                    <div class="col-2">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <div>
                                 <!-- ปุ่มเพิ่มข้อมูล -->
-                                <a href="{{ route('document.create') }}" class="btn btn-success mb-3">เพิ่มข้อมูล</a>
+                                <a href="{{ route('document.create') }}" class="btn btn-success mb-3">เพิ่มเอกสาร</a>
                             </div>
                         </div>
                     </div>
                 @endcan
             </div>
 
-            <table class="table table-striped table-hover w-full">
-                <thead class="text-center table-dark align-middle">
-                    <tr class="text-center">
+            <table class="documents-table w-100">
+                <thead class="text-center align-middle">
+                    <tr>
                         <th><input type="checkbox" id="select-all"></th>
-                        <th class="align-middle">ลำดับ</th>
-                        <th class="align-middle">ประเภทเอกสาร</th>
-                        <th class="align-middle">วันที่ดำเนินการ</th>
-                        <th class="align-middle">เอกสารอ้างอิง</th>
-                        <th class="align-middle">วันที่แก้ไข</th>
-                        <th class="align-middle">วันที่สร้าง</th>
+                        <th>ลำดับ</th>
+                        <th>ประเภทเอกสาร</th>
+                        <th>วันที่ดำเนินการ</th>
+                        <th>เอกสารอ้างอิง</th>
+                        <th>วันที่แก้ไข</th>
+                        <th>วันที่สร้าง</th>
                     </tr>
                 </thead>
                 <tbody class="align-middle p-3">
@@ -87,10 +91,14 @@
                             <td>{{ $loop->iteration + ($documents->currentPage() - 1) * $documents->perPage() }}</td>
                             <td>{{ $document->document_type }}</td>
                             @php
-                                $date = \Carbon\Carbon::parse($document->date)->locale('th');
-                                // $buddhistYear = $date->year + 543;
+                                $date = \Carbon\Carbon::parse($document->date);
+                                $updated = \Carbon\Carbon::parse($document->updated_at);
+                                $created = \Carbon\Carbon::parse($document->created_at);
                             @endphp
-                            <td class="text-center">{{ $date->isoFormat('D MMM YYYY') }}</td>
+                            <td class="text-center">
+                                {{ $date->format('j') }} {{ $date->locale('th')->translatedFormat('M') }}
+                                {{ $date->year + 543 }}
+                            </td>
                             <td class="text-center" onclick="event.stopPropagation();">
                                 @if ($document->path)
                                     <a href="{{ asset('storage/' . $document->path) }}"
@@ -99,15 +107,18 @@
                                     -
                                 @endif
                             </td>
-                            @php
-                                $updated = \Carbon\Carbon::parse($document->updated_at)->locale('th');
-                                $created = \Carbon\Carbon::parse($document->created_at)->locale('th');
-                            @endphp
-                            <td class="text-center">{{ $updated->isoFormat('D MMM') }} {{ $updated->year + 543 }}</td>
-                            <td class="text-center">{{ $created->isoFormat('D MMM') }} {{ $created->year + 543 }}</td>
+                            <td class="text-center">
+                                {{ $updated->format('j') }} {{ $updated->locale('th')->translatedFormat('M') }}
+                                {{ $updated->year + 543 }}
+                            </td>
+                            <td class="text-center">
+                                {{ $created->format('j') }} {{ $created->locale('th')->translatedFormat('M') }}
+                                {{ $created->year + 543 }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
+
             </table>
         </form>
 
@@ -115,7 +126,7 @@
             {{ $documents->links() }}
         </div>
 
-{{-- <div class="d-flex justify-content-center">
+        {{-- <div class="d-flex justify-content-center">
     {{$documents->links('vendor.livewire.task-paginate')}}
 </div> --}}
 

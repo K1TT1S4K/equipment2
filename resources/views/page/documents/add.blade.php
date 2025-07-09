@@ -1,6 +1,6 @@
 <x-layouts.app>
-    <h3 class="text-dark">เอกสาร</h3>
-    <div class="card w-auto mx-auto shadow-lg p-3 mb-4 bg-body rounded border border-dark mt-4">
+    <h1 class="text-dark">เพิ่มเอกสาร</h1>
+    <div class="card w-75 mx-auto shadow-lg p-3 mb-4 rounded border border-dark mt-4">
         <div class="card-body">
             <!-- ฟอร์มเพิ่มข้อมูล -->
             <form action="{{ route('document.store') }}" method="POST" enctype="multipart/form-data">

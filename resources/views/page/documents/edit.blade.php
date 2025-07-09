@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <h3 class="text-dark">เอกสาร</h3>
+    <h3 class="text-dark">ข้อมูลเอกสาร</h3>
     <div class="card w-auto mx-auto shadow-lg p-3 mb-4 bg-body rounded border border-dark mt-4">
         <div class="card-body">
             <!-- ฟอร์มแก้ไขข้อมูล -->
