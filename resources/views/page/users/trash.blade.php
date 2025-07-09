@@ -1,7 +1,7 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">ผู้ใช้ที่ถูกลบ</h3>
+    <h1 class="text-dark mb-4">ผู้ใช้ที่ถูกลบ</h1>
 
-    <form method="GET" action="{{ route('user.trashsearch') }}" class="mb-3">
+    <form method="GET" action="{{ route('user.trashsearch') }}" class="mb-3 w-90 justify-content-center mx-auto">
         <div class="d-flex">
             <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded"
                 placeholder="ค้นหาบัญชีผู้ใช้..." value="{{ request()->get('search') }}">
@@ -21,15 +21,15 @@
         </div>
     </form>
 
-    <div class="card shadow-lg p-3 bg-body">
-        <div class="row mb-2">
+    <div class="card bg-body p-3 mb-4 w-90 justify-content-center mx-auto shadow-lg">
+        <div class="row mb-1">
             <div class="col-4">
                 <h4>รายการผู้ใช้</h4>
             </div>
-            <div class="col-4 text-center">
+            <div class="col-2 text-center">
                 <p class="text-muted" id="selected-count-info" style="font-size: 0.9rem;"></p>
             </div>
-            <div class="col-4">
+            <div class="col-6">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="min-height: 50px;">
                     <div id="bulk-restore-all" style="display: none;">
                         <button type="submit" form="bulk-restore-form" class="btn btn-warning"
@@ -62,42 +62,42 @@
             </div>
         </div>
 
-        <div class="row px-3">
-            <table class="table table-striped table-hover w-full">
-                <thead class="text-center table-dark align-middle">
+        <table class="documents-table w-100">
+            <thead class="text-center align-middle">
+                <tr>
+                    <th><input type="checkbox" id="select-all"></th>
+                    <th>ลำดับ</th>
+                    <th>ชื่อผู้ใช้</th>
+                    <th>ชื่อ-นามสกุล</th>
+                    <th>อีเมล</th>
+                    <th>สถานะ</th>
+                    <th>วันที่ลบ</th>
+                </tr>
+            </thead>
+            <tbody class="align-middle text-center">
+                @forelse ($users as $user)
                     <tr>
-                        <th><input type="checkbox" id="select-all"></th>
-                        <th>ลำดับ</th>
-                        <th>ชื่อผู้ใช้</th>
-                        <th>ชื่อ-นามสกุล</th>
-                        <th>อีเมล</th>
-                        <th>สถานะ</th>
-                        <th>วันที่ลบ</th>
+                        <td><input type="checkbox" class="user-checkbox" value="{{ $user->id }}"></td>
+                        <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
+                        </td>
+                        <td>{{ $user->username }}</td>
+                        <td>{{ $user->prefix->name }} {{ $user->firstname }} {{ $user->lastname }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->user_type }}</td>
+                        <td>{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y H:i') }}</td>
                     </tr>
-                </thead>
-                <tbody class="align-middle text-center">
-                    @forelse ($users as $user)
-                        <tr>
-                            <td><input type="checkbox" class="user-checkbox" value="{{ $user->id }}"></td>
-                            <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
-                            </td>
-                            <td>{{ $user->username }}</td>
-                            <td>{{ $user->prefix->name }} {{ $user->firstname }} {{ $user->lastname }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->user_type }}</td>
-                            <td>{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y H:i') }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="text-center text-muted">ไม่พบข้อมูลที่คุณค้นหา</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">ไม่พบข้อมูลที่คุณค้นหา</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 
-    {{ $users->links() }}
+    <div class="d-flex justify-content-center">
+        {{ $users->links() }}
+    </div>
 
     <!-- Hidden Forms -->
     <form id="bulk-restore-form" action="{{ route('user.restoreAll') }}" method="POST">@csrf
