@@ -1,6 +1,6 @@
 <x-layouts.app>
-    <h3 class="text-dark">แก้ไขข้อมูลครุภัณฑ์ | <a href="#log">ประวัติการแก้ไข</a></h3>
-    <div class="card w-auto mx-auto shadow-lg p-3 mb-3 bg-body rounded border border-dark">
+    <h1 class="text-dark mb-3 w-90 mx-auto">แก้ไขข้อมูลครุภัณฑ์ | <a href="#log">ประวัติการแก้ไข</a></h1>
+    <div class="card w-90 mx-auto shadow-lg p-3 mb-3 bg-body rounded border border-dark">
         <div class="card-body">
             <form action="{{ route('equipment.update', $equipment->id) }}" method="POST">
                 @csrf
@@ -144,8 +144,8 @@
         </div>
     </div>
 
-    <h3 class="text-dark">ประวัติการแก้ไข | <a href="#">แก้ไขข้อมูลครุภัณฑ์</a></h3>
-    <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
+    <h3 class="text-dark mb-3 w-90 mx-auto">ประวัติการแก้ไข | <a href="#">แก้ไขข้อมูลครุภัณฑ์</a></h3>
+    <div class="card w-90 mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
         <div class="card-body">
             <table class="table">
                 <thead>

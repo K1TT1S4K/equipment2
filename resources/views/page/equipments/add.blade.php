@@ -1,6 +1,6 @@
 <x-layouts.app>
-    <h3 class="text-dark">เพิ่มบุคลากร</h3>
-    <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
+    <h1 class="text-dark mb-3 w-90 mx-auto">เพิ่มครุภัณฑ์</h1>
+    <div class="card w-90 mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
         <div class="card-body">
             <form action="{{ route('equipment.store') }}" method="POST">
                 @csrf
@@ -218,5 +218,5 @@
             </div>
         </div>
     </div>
-    
+
 </x-layouts.app>
