@@ -62,35 +62,32 @@
                     <div class="text-white">
                         <strong>{{ Auth::user()->user_type }}</strong>
                     </div>
-                    {{-- กู้คืนข้อมูล --}}
-                    @can('admin')
+
+                    {{-- ปุ่มกู้คืนข้อมูล --}}
+                    @if (Auth::check() && in_array(Auth::user()->user_type, ['ผู้ดูแลระบบ', 'เจ้าหน้าที่สาขา']))
                         <div class="dropdown">
                             <button class="btn btn-warning dropdown-toggle" type="button" id="recoveryDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 กู้คืนข้อมูล
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
-                                {{-- <li><a class="dropdown-item" href="#">กู้คืนครุภัณฑ์</a></li> --}}
+                                {{-- กู้คืนเอกสาร ทุกสิทธิ์ที่ได้เข้ามา --}}
                                 <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
-                                <li><a class="dropdown-item" href="{{ route('user.trashed') }}">กู้คืนบุคลากร</a></li>
+
+                                {{-- กู้คืนบุคลากร เฉพาะผู้ดูแลระบบ --}}
+                                @can('admin')
+                                    <li><a class="dropdown-item" href="{{ route('user.trashed') }}">กู้คืนบุคลากร</a></li>
+                                @endcan
+
+                                {{-- ตัวอย่างสำหรับอนาคต --}}
+                                {{-- @can('admin-or-branch')
+                                    <li><a class="dropdown-item" href="{{ route('equipment.trash') }}">กู้คืนครุภัณฑ์</a></li>
+                                @endcan --}}
                             </ul>
                         </div>
-                    @endcan
+                    @endif
 
-                    @can('branch')
-                        <div class="dropdown">
-                            <button class="btn btn-warning dropdown-toggle" type="button" id="recoveryDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                กู้คืนข้อมูล
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
-                                {{-- <li><a class="dropdown-item" href="#">กู้คืนครุภัณฑ์</a></li> --}}
-                                <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
-                            </ul>
-                        </div>
-                    @endcan
-
-                    {{-- ลงชื่อออก --}}
+                    {{-- ปุ่มออกจากระบบ --}}
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="btn btn-danger">
@@ -98,9 +95,12 @@
                         </button>
                     </form>
                 </div>
+
             </div>
         </div>
     </nav>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>
