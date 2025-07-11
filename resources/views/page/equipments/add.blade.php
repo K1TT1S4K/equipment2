@@ -1,6 +1,6 @@
 <x-layouts.app>
-    <h1 class="text-dark mb-3 w-90 mx-auto">เพิ่มครุภัณฑ์</h1>
-    <div class="card w-90 mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
+    <h3 class="text-dark">เพิ่มบุคลากร</h3>
+    <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
         <div class="card-body">
             <form action="{{ route('equipment.store') }}" method="POST">
                 @csrf
@@ -220,9 +220,13 @@
         </div>
     </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
     @endcan
    @vite(['resources/js/pages/equipment_add.js'])
 >>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
+=======
+    
+>>>>>>> parent of 3fe3f1b (ออกแบบหน้าเพิ่ม แก้ไขครุภัณฑ์ใหม่)
 </x-layouts.app>
