@@ -1,16 +1,18 @@
 <x-layouts.app>
-    <h1 class="text-dark mb-4">เอกสาร</h1>
+    <div class="py-3 w-90 mx-auto">
+        <h1 class="text-dark w-100 mb-2">กู้คืนเอกสาร</h1>
+    </div>
     <div class="p-3 mb-4 w-90 justify-content-center mx-auto">
         <form action="{{ route('trash.search') }}" method="GET">
             <div class="row">
                 <div class="col-md mb-3 mb-sm-0">
-                    <label for="query" class="form-label">ค้นหา</label>
+                    {{-- <label for="query" class="form-label">ค้นหา</label> --}}
                     <input type="text" id="query" name="query" class="form-control"
-                        placeholder="เอกสารอ้างอิง, ประเภทเอกสาร ฯลฯ" value="{{ request('query') }}">
+                        placeholder="ค้นหาเอกสาร" value="{{ request('query') }}">
                 </div>
 
                 <div class="col-md mb-3 mb-sm-0">
-                    <label for="document_type" class="form-label">ประเภทเอกสาร</label>
+                    {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
                     <select id="document_type" name="document_type" class="form-select">
                         <option value="">-- เลือกประเภทเอกสาร --</option>
                         <option value="ยื่นแทงจำหน่ายครุภัณฑ์" {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
@@ -22,18 +24,13 @@
                     </select>
                 </div>
             </div>
-
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary">ค้นหา</button>
-                <a href="{{ route('document.trash') }}" class="btn btn-danger ms-2">ล้างการค้นหา</a>
-            </div>
         </form>
     </div>
 
     <div class="card shadow-lg p-3 mb-4 bg-body w-90 justify-content-center mx-auto">
         <div class="row">
             <div class="col-4">
-                <h3>รายการเอกสาร</h3>
+                <h2>รายการเอกสาร</h2>
             </div>
             <div class="col-8 d-flex justify-content-end gap-2">
                 <!-- ปุ่ม Bulk Actions (กู้คืน, ลบถาวร) ซ่อนไว้ก่อน -->

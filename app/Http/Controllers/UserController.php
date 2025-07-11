@@ -236,25 +236,33 @@ class UserController extends Controller
 
     // ค้นหาในถังขยะ
     public function searchTrash(Request $request)
-    {
-        $query = User::onlyTrashed();
+{
+    $query = User::onlyTrashed();
 
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('username', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('firstname', 'like', "%{$search}%")
-                  ->orWhere('lastname', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('user_type')) {
-            $query->where('user_type', $request->input('user_type'));
-        }
-
-        $users = $query->orderByDesc('deleted_at')->paginate(10);
-
-        return view('page.users.trash', compact('users'));
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('username', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%")
+              ->orWhere('firstname', 'like', "%{$search}%")
+              ->orWhere('lastname', 'like', "%{$search}%");
+        });
     }
+
+    if ($request->filled('user_type')) {
+        $query->where('user_type', $request->input('user_type'));
+    }
+
+    $users = $query->orderByDesc('deleted_at')->paginate(10);
+
+    // ตรวจสอบว่าถ้าเป็น AJAX request ให้ return เฉพาะ partial view (ตาราง หรือ tbody)
+    if ($request->ajax()) {
+        // สมมติคุณสร้าง partial view ชื่อ 'page.users.partials.trash_rows'
+        return view('page.users.partials.trash_rows', compact('users'))->render();
+    }
+
+    // ปกติ return view หน้าเต็ม
+    return view('page.users.trash', compact('users'));
+}
+
 }

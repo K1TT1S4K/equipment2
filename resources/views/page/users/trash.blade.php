@@ -1,5 +1,8 @@
 <x-layouts.app>
-    <h1 class="text-dark mb-4">ผู้ใช้ที่ถูกลบ</h1>
+    <div class="py-3 w-90 mx-auto">
+        <h1 class="text-dark w-100 mb-2">ผู้ใช้ที่ถูกลบ</h1>
+    </div>
+    {{-- <h1 class="text-dark mb-4">ผู้ใช้ที่ถูกลบ</h1> --}}
 
     <form method="GET" action="{{ route('user.trashsearch') }}" class="mb-3 w-90 justify-content-center mx-auto">
         <div class="d-flex">
@@ -17,14 +20,14 @@
                 <option value="อาจารย์" {{ request()->get('user_type') == 'อาจารย์' ? 'selected' : '' }}>อาจารย์
                 </option>
             </select>
-            <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
+            {{-- <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button> --}}
         </div>
     </form>
 
     <div class="card bg-body p-3 mb-4 w-90 justify-content-center mx-auto shadow-lg">
         <div class="row mb-1">
             <div class="col-4">
-                <h4>รายการผู้ใช้</h4>
+                <h2>รายการผู้ใช้</h2>
             </div>
             <div class="col-2 text-center">
                 <p class="text-muted" id="selected-count-info" style="font-size: 0.9rem;"></p>
@@ -74,23 +77,8 @@
                     <th>วันที่ลบ</th>
                 </tr>
             </thead>
-            <tbody class="align-middle text-center">
-                @forelse ($users as $user)
-                    <tr>
-                        <td><input type="checkbox" class="user-checkbox" value="{{ $user->id }}"></td>
-                        <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
-                        </td>
-                        <td>{{ $user->username }}</td>
-                        <td>{{ $user->prefix->name }} {{ $user->firstname }} {{ $user->lastname }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->user_type }}</td>
-                        <td>{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y H:i') }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">ไม่พบข้อมูลที่คุณค้นหา</td>
-                    </tr>
-                @endforelse
+            <tbody id="user-list" class="align-middle text-center">
+                @include('page.users.partials.trash_rows', ['users' => $users])
             </tbody>
         </table>
     </div>
@@ -115,6 +103,40 @@
 </x-layouts.app>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search');
+    const userTypeSelect = document.getElementById('user_type');
+    const userList = document.getElementById('user-list');
+
+    async function fetchUsers() {
+        const search = encodeURIComponent(searchInput.value);
+        const userType = encodeURIComponent(userTypeSelect.value);
+        const url = `{{ route('user.trashsearch') }}?search=${search}&user_type=${userType}`;
+
+        try {
+            const response = await fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            if (!response.ok) throw new Error('Network error');
+            const html = await response.text();
+            userList.innerHTML = html;
+            // ถ้ามี pagination ต้อง bind event ใหม่ หรือพัฒนาเพิ่มต่อ
+        } catch (error) {
+            console.error(error);
+            userList.innerHTML = `<tr><td colspan="7" class="text-center text-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+        }
+    }
+
+    let debounceTimer;
+    function debounceFetch() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(fetchUsers, 300);
+    }
+
+    searchInput.addEventListener('input', debounceFetch);
+    userTypeSelect.addEventListener('change', fetchUsers);
+});
+
     document.getElementById('select-all').addEventListener('click', function(event) {
         let checkboxes = document.querySelectorAll('.user-checkbox');
         checkboxes.forEach(checkbox => {
