@@ -15,25 +15,43 @@ class DocumentController extends Controller
         return view('page.documents.show', compact('documents'));
     }
 
+    // public function search(Request $request)
+    // {
+    //     $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
+    //     $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
+
+    //     $documents = Document::when($search, function ($query, $search) {
+    //         return $query->where('document_type', 'like', "%{$search}%")
+    //             ->orWhere('date', 'like', "%{$search}%")
+    //             ->orWhere('path', 'like', "%{$search}%")
+    //             ->orWhere('created_at', 'like', "%{$search}%")
+    //             ->orWhere('updated_at', 'like', "%{$search}%");
+    //     })
+    //         ->when($documentType, function ($query, $documentType) {
+    //             return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
+    //         })
+    //         ->paginate();
+
+    //     return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
+    // }
     public function search(Request $request)
-    {
-        $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
-        $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
+{
+    $search = $request->input('query');
+    $documentType = $request->input('document_type');
 
-        $documents = Document::when($search, function ($query, $search) {
-            return $query->where('document_type', 'like', "%{$search}%")
-                ->orWhere('date', 'like', "%{$search}%")
-                ->orWhere('path', 'like', "%{$search}%")
-                ->orWhere('created_at', 'like', "%{$search}%")
-                ->orWhere('updated_at', 'like', "%{$search}%");
-        })
-            ->when($documentType, function ($query, $documentType) {
-                return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
-            })
-            ->paginate();
+    $documents = Document::when($search, function ($query, $search) {
+                        return $query->where('document_type', 'like', "%{$search}%")
+                                     ->orWhere('path', 'like', "%{$search}%");
+                    })
+                    ->when($documentType, function ($query, $documentType) {
+                        return $query->where('document_type', $documentType);
+                    })
+                    ->latest()
+                    ->paginate(10);
 
-        return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
-    }
+    return view('page.documents.partials.rows', compact('documents'))->render(); // ต้องใช้ render()
+}
+
 
     public function create() // แสดงฟอร์มสำหรับเพิ่มเอกสาร
     {
