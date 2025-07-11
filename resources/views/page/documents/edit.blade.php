@@ -8,7 +8,7 @@
                 @method('PUT')
 
                 <div class="mb-3">
-                    <label for="document_type" class="form-label">ประเภทเอกสาร</label>
+                    <label for="document_type" class="form-label">ประเภทเอกสาร <span class="text-danger">*</span></label>
                     <select name="document_type" class="form-select" required>
                         <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
                             {{ $document->document_type == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
@@ -22,16 +22,17 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="date" class="form-label">วันที่ดำเนินการ</label>
+                    <label for="date" class="form-label">วันที่ดำเนินการ <span class="text-danger">*</span></label>
                     <input type="date" name="date" class="form-control" value="{{ $document->date }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="newFile" class="form-label">อัปโหลดไฟล์เอกสาร (PDF, DOC, DOCX)</label>
+                    <label for="newFile" class="form-label">อัปโหลดไฟล์เอกสาร <span class="text-danger">*</span> (PDF, DOC, DOCX)</label>
                     <input type="file" name="newFile" class="form-control" accept=".pdf,.doc,.docx">
-                    @if ($document && $document->path)
-                        <small class="form-text text-muted">ไฟล์เดิม: <a href="{{ url('storage/' . $document->path) }}"
-                                download>{{ basename($document->path) }}</a></small>
+                    @if ($document && $document->original_name)
+                        <small class="form-text text-muted">ไฟล์เดิม: <a
+                                href="{{ asset('storage/documents/' . $document->stored_name) }}"
+                                download="{{ $document->original_name }}">{{ $document->original_name }}</a></small>
                     @endif
                 </div>
                 @can('admin-or-branch')
@@ -41,13 +42,13 @@
                     </div>
                 @endcan
 
-                @if($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
-                @can('officer')
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary">บันทึก</button>
-                        <a href="{{ route('document.index') }}" class="btn btn-secondary">ยกเลิก</a>
-                    </div>
-                @endcan
+                @if ($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                    @can('officer')
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">บันทึก</button>
+                            <a href="{{ route('document.index') }}" class="btn btn-secondary">ยกเลิก</a>
+                        </div>
+                    @endcan
                 @endif
             </form>
         </div>

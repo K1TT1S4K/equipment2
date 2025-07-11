@@ -64,7 +64,7 @@ class UserController extends Controller
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่สาขา,ผู้ปฏิบัติงานบริหาร,อาจารย์',
-            'email' => 'required|email|max:100|unique:users,email',
+            // 'email' => 'required|email|max:100|unique:users,email',
             'password' => 'required|string|min:8',
         ]);
 

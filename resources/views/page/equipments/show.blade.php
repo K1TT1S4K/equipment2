@@ -530,5 +530,5 @@
         </div>
     </div>
     </div>
-
+@vite(['resources/js/pages/equipment_show.js'])
 </x-layouts.app>

@@ -60,7 +60,7 @@ class EquipmentController extends Controller
             'number' => 'required|string|max:255|unique:equipment,number',
             'name' => 'required|string|max:2000',
             'amount' => 'required|integer|max:9999999999',
-            'price' => 'nullable|numeric|min:0|max:99999999.99',
+            'price' => 'required|nullable|numeric|min:0|max:99999999.99',
             // 'total_price' => 'required|numeric|min:0|max:99999999.99',
             'status_found' => 'required|integer|max:9999999999',
             'status_not_found' => 'required|integer|max:9999999999',

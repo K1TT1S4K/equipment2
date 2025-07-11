@@ -103,8 +103,8 @@
                             <td>{{ $doc->document_type }}</td>
                             <td>{{ \Carbon\Carbon::parse($doc->date)->locale('th')->isoFormat('D MMM YYYY') }}</td>
                             <td>
-                                @if ($doc->path)
-                                    <a href="{{ asset('storage/' . $doc->path) }}" download>{{ $doc->path }}</a>
+                                @if ($doc->original_name)
+                                    <a href="{{ asset('storage/' . $doc->original_name) }}" download>{{ $doc->original_name }}</a>
                                 @else
                                     ไม่มีไฟล์แนบ
                                 @endif

@@ -56,9 +56,9 @@
                     <td class="align-middle border border-dark">{{ $document->date }}</td>
                     {{-- <td class="align-middle border border-dark">-</td> --}}
                     <td class="align-middle border border-dark">
-                        @if ($document->path)
-                            <a href="{{ asset('storage/' . $document->path) }}" download="{{ $document->path }}">
-                                {{ $document->path }}
+                        @if ($document->original_name)
+                            <a href="{{ asset('storage/' . $document->original_name) }}" download="{{ $document->original_name }}">
+                                {{ $document->original_name }}
                             </a>
                         @else
                             -

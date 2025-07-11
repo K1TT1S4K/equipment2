@@ -92,9 +92,11 @@
                             @endphp
                             <td class="text-center">{{ $date->isoFormat('D MMM YYYY') }}</td>
                             <td class="text-center" onclick="event.stopPropagation();">
-                                @if ($document->path)
-                                    <a href="{{ asset('storage/' . $document->path) }}"
-                                        download="{{ $document->path }}">{{ $document->path }}</a>
+                                @if ($document->original_name)
+                                {{-- @php dd($document->stored_name); @endphp --}}
+                                {{-- {{dd($document->stored_name)}} --}}
+                                    <a href="{{ asset('storage/documents/' . $document->stored_name) }}"
+                                        download="{{ $document->original_name }}">{{ $document->original_name }}</a>
                                 @else
                                     -
                                 @endif
@@ -113,7 +115,7 @@
 
         <div class="d-flex justify-content-center">
             {{ $documents->links() }}
-        </div>
+    </div>
 
 {{-- <div class="d-flex justify-content-center">
     {{$documents->links('vendor.livewire.task-paginate')}}
