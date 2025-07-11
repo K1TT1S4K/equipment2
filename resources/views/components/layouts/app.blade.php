@@ -9,6 +9,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
@@ -16,6 +17,10 @@
 =======
     <!-- Bootstrap CSS -->
 >>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
+=======
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+>>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
 =======
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
