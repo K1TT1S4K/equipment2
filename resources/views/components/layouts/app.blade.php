@@ -7,24 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Disposal Equipment</title>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
-    <!-- Vite Assets (Tailwind or app.css) -->
-=======
-    <!-- Bootstrap CSS -->
->>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
-=======
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
-=======
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">

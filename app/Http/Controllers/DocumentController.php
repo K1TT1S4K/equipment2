@@ -24,6 +24,7 @@ class DocumentController extends Controller
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     $documents = Document::when($search, function ($query, $search) {
                         return $query->where('document_type', 'like', "%{$search}%")
                                      ->orWhere('path', 'like', "%{$search}%");
@@ -44,11 +45,16 @@ class DocumentController extends Controller
 =======
 =======
 >>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
+=======
+>>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
         $documents = Document::when($search, function ($query, $search) {
             return $query->where('document_type', 'like', "%{$search}%")
                 ->orWhere('date', 'like', "%{$search}%")
                 ->orWhere('path', 'like', "%{$search}%")
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
+=======
 >>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
 =======
 >>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
@@ -61,7 +67,10 @@ class DocumentController extends Controller
             ->paginate();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
+=======
+>>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
 =======
 >>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
 =======
