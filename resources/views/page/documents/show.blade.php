@@ -113,11 +113,19 @@
             </table>
         </form>
 
+<<<<<<< HEAD
         <div class="d-flex justify-content-center">
             {{ $documents->links() }}
     </div>
 
 {{-- <div class="d-flex justify-content-center">
+=======
+        {{-- <div class="pagination">
+            {{-- {{ $documents->links() }} --}}
+        {{-- </div> --}}
+{{-- 
+<div class="d-flex justify-content-center">
+>>>>>>> parent of 814f366 (fix pagination)
     {{$documents->links('vendor.livewire.task-paginate')}}
 </div> --}}
 

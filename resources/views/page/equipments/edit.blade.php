@@ -25,6 +25,7 @@
                             value="{{ $equipment->name }}">
                     </div>
                     <div class="mb-3 col">
+<<<<<<< HEAD
                         <label for="equipment_unit_id" class="form-label">หน่วยนับ <span class="text-danger">*</span>
                             @can('admin-or-branch')
                                 <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
@@ -33,6 +34,13 @@
                                 </button>
                             @endcan
                         </label>
+=======
+                        <label for="equipment_unit_id" class="form-label">หน่วยนับ<button type="button"
+                                class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
+                                data-bs-target="#unitModal">
+                                <i class="bi bi-gear"></i>
+                            </button></label>
+>>>>>>> parent of 814f366 (fix pagination)
                         <select name="equipment_unit_id" class="form-control" required>
                             @foreach ($equipment_units as $unit)
                                 <option value="{{ $unit->id }}"
@@ -73,6 +81,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
+<<<<<<< HEAD
                     <div class="col"> <label for="title_id" class="form-label">หัวข้อ <span
                                 class="text-danger">*</span>
                             @can('admin-or-branch')
@@ -82,6 +91,13 @@
                                 </button>
                             @endcan
                         </label>
+=======
+                    <div class="col"> <label for="title_id" class="form-label">หัวข้อ<button type="button"
+                                class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
+                                data-bs-target="#titleModal">
+                                <i class="bi bi-gear"></i>
+                            </button></label>
+>>>>>>> parent of 814f366 (fix pagination)
                         <select name="title_id" id="titleSelect" class="form-control" required>
                             {{-- <option value="">-- เลือกหัวข้อ --</option> --}}
                             @foreach ($titles as $t)
@@ -91,6 +107,7 @@
                             @endforeach
                         </select>
                     </div>
+<<<<<<< HEAD
                     <div class="col"> <label for="equipment_type_id"
                             class="form-label">ประเภท@can('admin-or-branch')
                                 <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
@@ -99,6 +116,13 @@
                                 </button>
                             @endcan
                         </label>
+=======
+                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท<button type="button"
+                                class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
+                                data-bs-target="#typeModal">
+                                <i class="bi bi-gear"></i>
+                            </button></label>
+>>>>>>> parent of 814f366 (fix pagination)
                         <select name="equipment_type_id" id="equipmentTypeSelect" class="form-control">
                             {{-- <option value="">-- เลือกประเภท --</option> --}}
                             <option value="" {{ $equipment->equipment_type_id == null ? 'selected' : '' }}>--
@@ -132,6 +156,7 @@
                         </select>
                     </div>
                     <div class="mb-3 col-6">
+<<<<<<< HEAD
                         <label class="form-label">ที่อยู่@can('admin-or-branch')
                                 <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
                                     data-bs-toggle="modal" data-bs-target="#locationModal">
@@ -139,6 +164,13 @@
                                 </button>
                             @endcan
                         </label>
+=======
+                        <label class="form-label">ที่อยู่<button type="button"
+                                class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
+                                data-bs-target="#locationModal">
+                                <i class="bi bi-gear"></i>
+                            </button></label>
+>>>>>>> parent of 814f366 (fix pagination)
                         <select name="location_id" class="form-control">
                             <option value="" {{ $equipment->location_id == null ? 'selected' : '' }}>--
                                 เลือกที่อยู่ --</option>
@@ -190,6 +222,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <h3 class="text-dark" id="document">การดำเนินการ | <a href="#">แก้ไขข้อมูลครุภัณฑ์</a> | <a
             href="#log">ประวัติการแก้ไข</a></h3>
     <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
@@ -242,6 +275,28 @@
                             </tbody>
                         </table>
                     </div>
+=======
+    <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark" id="unitModalLabel">จัดการข้อมูลหน่วยนับ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <button id="addunitRow" class="btn btn-success mb-3">เพิ่มหน่วยนับ</button>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ชื่อหน่วยนับ</th>
+                                <th>การกระทำ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="unitTableBody">
+                            {{-- โหลดข้อมูลด้วย JS --}}
+                        </tbody>
+                    </table>
+>>>>>>> parent of 814f366 (fix pagination)
                 </div>
             </div>
         </div>
@@ -326,7 +381,13 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
     @endcan
+=======
+    </div>
+
+
+>>>>>>> parent of 814f366 (fix pagination)
 
     @vite(['resources/js/pages/equipment_add.js'])
 </x-layouts.app>
