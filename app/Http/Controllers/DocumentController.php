@@ -16,30 +16,12 @@ class DocumentController extends Controller
         return view('page.documents.show', compact('documents'));
     }
 
-    // public function search(Request $request)
-    // {
-    //     $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
-    //     $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
-
-    //     $documents = Document::when($search, function ($query, $search) {
-    //         return $query->where('document_type', 'like', "%{$search}%")
-    //             ->orWhere('date', 'like', "%{$search}%")
-    //             ->orWhere('path', 'like', "%{$search}%")
-    //             ->orWhere('created_at', 'like', "%{$search}%")
-    //             ->orWhere('updated_at', 'like', "%{$search}%");
-    //     })
-    //         ->when($documentType, function ($query, $documentType) {
-    //             return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
-    //         })
-    //         ->paginate();
-
-    //     return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
-    // }
     public function search(Request $request)
-{
-    $search = $request->input('query');
-    $documentType = $request->input('document_type');
+    {
+        $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
+        $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     $documents = Document::when($search, function ($query, $search) {
                         return $query->where('document_type', 'like', "%{$search}%")
@@ -58,6 +40,12 @@ class DocumentController extends Controller
             return $query->where('document_type', 'like', "%{$search}%")
                 ->orWhere('date', 'like', "%{$search}%")
                 ->orWhere('original_name', 'like', "%{$search}%")
+=======
+        $documents = Document::when($search, function ($query, $search) {
+            return $query->where('document_type', 'like', "%{$search}%")
+                ->orWhere('date', 'like', "%{$search}%")
+                ->orWhere('path', 'like', "%{$search}%")
+>>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
                 ->orWhere('created_at', 'like', "%{$search}%")
                 ->orWhere('updated_at', 'like', "%{$search}%");
         })
@@ -65,8 +53,13 @@ class DocumentController extends Controller
                 return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
             })
             ->paginate();
+<<<<<<< HEAD
 >>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
+=======
+>>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
 
+        return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
+    }
 
     public function create() // แสดงฟอร์มสำหรับเพิ่มเอกสาร
     {

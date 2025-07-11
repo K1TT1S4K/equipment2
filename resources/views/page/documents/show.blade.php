@@ -1,20 +1,34 @@
 <x-layouts.app>
-    <h1 class="text-dark w-90 bold mb-4">เอกสาร</h1>
+    <h1 class="text-dark mb-4">เอกสาร</h1>
     <div class="p-3 mb-4 w-75 justify-content-center mx-auto">
-        <form id="search-form" onsubmit="return false;">
+        {{-- <h3>ค้นหาเอกสาร</h3> --}}
+        <form action="{{ route('document.search') }}" method="GET">
             <div class="row">
                 <div class="col-md mb-3 mb-sm-0">
+                    {{-- <label for="query" class="form-label">ค้นหา</label> --}}
                     <input type="text" id="query" name="query" class="form-control border border-dark shadow-lg"
-                        placeholder="ค้นหาเอกสารอ้างอิง, ประเภทเอกสาร ฯลฯ">
+                        placeholder="ค้นหาเอกสารอ้างอิง, ประเภทเอกสาร ฯลฯ" value="{{ request('query') }}">
                 </div>
+
                 <div class="col-md mb-3 mb-sm-0">
+                    {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
                     <select id="document_type" name="document_type" class="form-select border border-dark shadow-lg">
                         <option value="">-- เลือกประเภทเอกสาร --</option>
-                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์">ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                        <option value="แทงจำหน่ายครุภัณฑ์">แทงจำหน่ายครุภัณฑ์</option>
-                        <option value="โอนครุภัณฑ์">โอนครุภัณฑ์</option>
+                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
+                            {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
+                            ยื่นแทงจำหน่ายครุภัณฑ์</option>
+                        <option value="แทงจำหน่ายครุภัณฑ์"
+                            {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
+                        </option>
+                        <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
+                            โอนครุภัณฑ์</option>
                     </select>
                 </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">ค้นหา</button>
+                <a href="{{ route('document.search') }}" class="btn btn-danger ms-2">ล้างการค้นหา</a>
             </div>
         </form>
     </div>
@@ -66,10 +80,7 @@
                         <th>วันที่สร้าง</th>
                     </tr>
                 </thead>
-                <tbody id="document-table-body" class="align-middle p-3">
-                    @include('page.documents.partials.rows', ['documents' => $documents])
-                </tbody>
-                {{-- <tbody class="align-middle p-3">
+                <tbody class="align-middle p-3">
                     @foreach ($documents as $key => $document)
                         <tr class="text-center" style="cursor: pointer;"
                             onclick="window.location='{{ route('document.edit', $document->id) }}'">
@@ -108,7 +119,7 @@
                             </td>
                         </tr>
                     @endforeach
-                </tbody> --}}
+                </tbody>
 
             </table>
         </form>
@@ -133,47 +144,35 @@
     {{$documents->links('vendor.livewire.task-paginate')}}
 </div> --}}
 
-    @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            function fetchDocuments() {
-                let query = $('#query').val();
-                let documentType = $('#document_type').val();
-
-                $.ajax({
-                    url: "{{ route('document.search') }}",
-                    type: 'GET',
-                    data: {
-                        query: query,
-                        document_type: documentType
-                    },
-                    success: function (data) {
-                        $('#document-table-body').html(data);
-                    },
-                    error: function () {
-                        $('#document-table-body').html(`<tr><td colspan="7" class="text-center text-danger">เกิดข้อผิดพลาด</td></tr>`);
-                    }
+        <script>
+            document.getElementById('select-all').addEventListener('click', function(event) {
+                let checkboxes = document.querySelectorAll('.document-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = event.target.checked;
                 });
-            }
-
-            $('#query, #document_type').on('input change', fetchDocuments);
-
-            $('#select-all').on('click', function () {
-                $('.document-checkbox').prop('checked', this.checked);
                 toggleDeleteButtons();
             });
 
-            $(document).on('change', '.document-checkbox', toggleDeleteButtons);
+            let checkboxes = document.querySelectorAll('.document-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', toggleDeleteButtons);
+            });
 
             function toggleDeleteButtons() {
-                let selected = $('.document-checkbox:checked').length;
-                let total = $('.document-checkbox').length;
+                let selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
+                let deleteSelectedBtn = document.getElementById('delete-selected-btn');
+                let deleteAllBtn = document.getElementById('delete-all-btn');
 
-                $('#delete-selected-btn').toggle(selected > 0 && selected < total);
-                $('#delete-all-btn').toggle(selected === total);
+                if (selectedCheckboxes.length === 0) {
+                    deleteSelectedBtn.style.display = 'none';
+                    deleteAllBtn.style.display = 'none';
+                } else if (selectedCheckboxes.length === checkboxes.length) {
+                    deleteAllBtn.style.display = 'inline-block';
+                    deleteSelectedBtn.style.display = 'none';
+                } else {
+                    deleteAllBtn.style.display = 'none';
+                    deleteSelectedBtn.style.display = 'inline-block';
+                }
             }
-        });
-    </script>
-    @endpush
+        </script>
 </x-layouts.app>

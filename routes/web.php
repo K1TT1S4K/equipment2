@@ -17,10 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Route::get('/run-seed', function () {
-//     Artisan::call('db:seed');
-//     return 'Seeder has been run.';
-// });
+Route::get('/run-seed', function () {
+    Artisan::call('db:seed');
+    return 'Seeder has been run.';
+});
 
 
 Route::view('dashboard', 'dashboard')
