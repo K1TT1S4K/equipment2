@@ -41,71 +41,81 @@
         </div>
 
         <div class="row w-90 justify-content-center mx-auto m-1">
-            <div class="col-6">
-                <!-- ตารางที่ 1 -->
-                <div class="col-6">
-                    <div class="col-md-5">
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead class="table-dark text-white text-center border-secondary">
-                                <tr>
-                                    <th colspan="3" class="text-center text-white bg-danger">ไม่พบ</th>
-                                </tr>
-                                <tr>
-                                    <th style="width: 25%;">รหัส</th>
-                                    <th style="width: 59%;">ชื่อ</th>
-                                    <th style="width: 16%;">ไม่พบ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($equipments as $item)
-                                    @php
-                                        if ($item->status_not_found < 1) {
-                                            continue;
-                                        }
-                                    @endphp
-                                    <tr>
-                                        <td class="text-center" onclick="window.location='{{ route('equipment.edit', $item->id) }}'">{{ $item->number }}</td>
-                                        <td  onclick="window.location='{{ route('equipment.edit', $item->id) }}'">{{ $item->name }}</td>
-                                        <td class="text-center"  onclick="window.location='{{ route('equipment.edit', $item->id) }}'">{{ $item->status_not_found }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
 
+            <!-- ตารางที่ 1 -->
             <div class="col-6">
-                <!-- ตารางที่ 2 -->
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <table class="table table-bordered table-striped table-hover">
                         <thead class="table-dark text-white text-center border-secondary">
                             <tr>
-                                <th colspan="3" class="text-center text-white bg-warning">ชำรุด</th>
+                                <th colspan="3" class="text-center text-white bg-danger">ไม่พบ</th>
                             </tr>
                             <tr>
                                 <th style="width: 25%;">รหัส</th>
                                 <th style="width: 59%;">ชื่อ</th>
-                                <th style="width: 16%;">ชำรุด</th>
+                                <th style="width: 16%;">ไม่พบ</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($equipments as $item)
                                 @php
-                                    if ($item->status_broken < 1) {
+                                    if ($item->status_not_found < 1) {
                                         continue;
                                     }
                                 @endphp
                                 <tr>
-                                    <td class="text-center" onclick="window.location='{{ route('equipment.edit', $item->id) }}'">{{ $item->number }}</td>
-                                    <td  onclick="window.location='{{ route('equipment.edit', $item->id) }}'">{{ $item->name }}</td>
-                                    <td class="text-center"  onclick="window.location='{{ route('equipment.edit', $item->id) }}'">{{ $item->status_broken }}</td>
+                                    <td class="text-center"
+                                        onclick="window.location='{{ route('equipment.edit', $item->id) }}'">
+                                        {{ $item->number }}</td>
+                                    <td onclick="window.location='{{ route('equipment.edit', $item->id) }}'">
+                                        {{ $item->name }}</td>
+                                    <td class="text-center"
+                                        onclick="window.location='{{ route('equipment.edit', $item->id) }}'">
+                                        {{ $item->status_not_found }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
+
+
+
+            <!-- ตารางที่ 2 -->
+            <div class="col-md-6">
+                <table class="mint-table w-100">
+                    <thead class="table-dark text-white text-center border-secondary">
+                        <tr>
+                            <th colspan="3" class="text-center text-white bg-warning">ชำรุด</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 25%;">รหัส</th>
+                            <th style="width: 59%;">ชื่อ</th>
+                            <th style="width: 16%;">ชำรุด</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($equipments as $item)
+                            @php
+                                if ($item->status_broken < 1) {
+                                    continue;
+                                }
+                            @endphp
+                            <tr>
+                                <td class="text-center"
+                                    onclick="window.location='{{ route('equipment.edit', $item->id) }}'">
+                                    {{ $item->number }}</td>
+                                <td onclick="window.location='{{ route('equipment.edit', $item->id) }}'">
+                                    {{ $item->name }}</td>
+                                <td class="text-center"
+                                    onclick="window.location='{{ route('equipment.edit', $item->id) }}'">
+                                    {{ $item->status_broken }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 

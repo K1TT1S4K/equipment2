@@ -116,7 +116,7 @@
                     </a>
                 </div>
             </div>
-            <table class="documents-table w-100">
+            <table class="mint-table w-100">
                 <thead>
                     <tr class="text-center">
                         <th class="border align-middle" rowspan="2">

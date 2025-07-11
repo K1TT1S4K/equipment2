@@ -62,7 +62,7 @@
             </div>
         </div>
 
-        <table class="documents-table w-100">
+        <table class="mint-table w-100">
             <thead class="text-center align-middle">
                 <tr>
                     <th><input type="checkbox" id="select-all"></th>

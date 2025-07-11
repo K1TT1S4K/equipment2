@@ -1,5 +1,8 @@
 <x-layouts.app>
-    <h1 class="text-dark mb-4">จัดการบัญชีผู้ใช้</h1>
+    <div class="py-3 w-90 mx-auto">
+        <h1 class="text-dark w-100 mb-2">จัดการบัญชีผู้ใช้</h1>
+    </div>
+    {{-- <h1 class="text-dark mb-4">จัดการบัญชีผู้ใช้</h1> --}}
 
     <form method="GET" action="{{ route('user.search') }}" class="mb-3 w-90 justify-content-center mx-auto">
         <div class="d-flex">
@@ -11,7 +14,7 @@
                 <option value="ผู้ปฏิบัติงานบริหาร" {{ request()->get('user_type') == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร</option>
                 <option value="อาจารย์" {{ request()->get('user_type') == 'อาจารย์' ? 'selected' : '' }}>อาจารย์</option>
             </select>
-            <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
+            {{-- <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button> --}}
         </div>
     </form>
 
@@ -44,30 +47,32 @@
                 </div>
             </div>
 
-            <table class="documents-table w-100">
-                <thead class="text-white text-center ">
+            <table class="mint-table w-100">
+                <thead class="text-white text-center bg-primary">
                     <tr>
                         <th><input type="checkbox" id="select-all"></th>
                         <th>#</th>
                         <th>ชื่อผู้ใช้</th>
                         <th>ชื่อ-นามสกุล</th>
                         <th>ระดับผู้ใช้</th>
-                        {{-- <th>อีเมล</th> --}}
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $key => $user)
-                    <tr class="align-middle border border-secondary-subtle" style="cursor: pointer;" onclick="window.location='{{ route('user.edit', $user->id) }}'">
-                        <td class="text-center" style="width: 3%" onclick="event.stopPropagation();">
-                            <input type="checkbox" class="document-checkbox" name="selected_users[]" value="{{ $user->id }}">
+                    @forelse ($users as $key => $user)
+                    <tr style="cursor: pointer;" onclick="window.location='{{ route('user.edit', $user->id) }}'">
+                        <td class="text-center" onclick="event.stopPropagation();">
+                            <input type="checkbox" class="user-checkbox" name="selected_users[]" value="{{ $user->id }}">
                         </td>
-                        <td class="text-center" style="width: 3%">{{ $key + 1 }}</td>
-                        <td style="width: 10%">{{ $user->username }}</td>
-                        <td class="p-3" style="width: 20%">{{ $user->prefix->name }} {{ $user->firstname }} {{ $user->lastname }}</td>
-                        <td class="text-center" style="width: 10%">{{ $user->user_type }}</td>
-                        {{-- <td>{{ $user->email }}</td> --}}
+                        <td class="text-center">{{ $users->firstItem() + $key }}</td>
+                        <td>{{ $user->username }}</td>
+                        <td>{{ $user->prefix->name ?? '' }} {{ $user->firstname }} {{ $user->lastname }}</td>
+                        <td class="text-center">{{ $user->user_type }}</td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="5" class="text-center">ไม่พบข้อมูลผู้ใช้</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </form>
@@ -108,5 +113,30 @@
                 deleteSelectedBtn.style.display = 'inline-block';
             }
         }
+    </script>
+    <script>
+        const form = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-input');
+        const userTypeSelect = document.getElementById('user-type');
+
+        // ฟังก์ชันส่งฟอร์มเมื่อพิมพ์ หรือเปลี่ยนค่า
+        function submitForm() {
+            form.submit();
+        }
+
+        // รอเวลาพิมพ์ให้หยุดก่อน 500ms ค่อย submit (debounce)
+        let typingTimer;
+        const doneTypingInterval = 500; // milliseconds
+
+        searchInput.addEventListener('keyup', () => {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(submitForm, doneTypingInterval);
+        });
+
+        searchInput.addEventListener('keydown', () => {
+            clearTimeout(typingTimer);
+        });
+
+        userTypeSelect.addEventListener('change', submitForm);
     </script>
 </x-layouts.app>

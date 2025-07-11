@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class DocumentController extends Controller
 {
@@ -16,15 +15,30 @@ class DocumentController extends Controller
         return view('page.documents.show', compact('documents'));
     }
 
-    public function search(Request $request)
-    {
-        $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
-        $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
+    // public function search(Request $request)
+    // {
+    //     $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
+    //     $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+    //     $documents = Document::when($search, function ($query, $search) {
+    //         return $query->where('document_type', 'like', "%{$search}%")
+    //             ->orWhere('date', 'like', "%{$search}%")
+    //             ->orWhere('path', 'like', "%{$search}%")
+    //             ->orWhere('created_at', 'like', "%{$search}%")
+    //             ->orWhere('updated_at', 'like', "%{$search}%");
+    //     })
+    //         ->when($documentType, function ($query, $documentType) {
+    //             return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
+    //         })
+    //         ->paginate();
+
+    //     return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
+    // }
+    public function search(Request $request)
+{
+    $search = $request->input('query');
+    $documentType = $request->input('document_type');
+
     $documents = Document::when($search, function ($query, $search) {
                         return $query->where('document_type', 'like', "%{$search}%")
                                      ->orWhere('path', 'like', "%{$search}%");
@@ -35,49 +49,12 @@ class DocumentController extends Controller
                     ->latest()
                     ->paginate(10);
 
-    return view('page.documents.partials.rows', compact('documents'))->render(); // ต้องใช้ render()
+    return response()->json([
+        'rows' => view('page.documents.partials.rows', compact('documents'))->render(),
+        'pagination' => view('page.documents.partials.pagination', compact('documents'))->render(),
+    ]);
 }
-=======
-        $documents = Document::when($search, function ($query, $search) {
-            return $query->where('document_type', 'like', "%{$search}%")
-                ->orWhere('date', 'like', "%{$search}%")
-                ->orWhere('original_name', 'like', "%{$search}%")
-=======
-=======
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
-=======
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
-        $documents = Document::when($search, function ($query, $search) {
-            return $query->where('document_type', 'like', "%{$search}%")
-                ->orWhere('date', 'like', "%{$search}%")
-                ->orWhere('path', 'like', "%{$search}%")
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
-=======
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
-=======
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
-                ->orWhere('created_at', 'like', "%{$search}%")
-                ->orWhere('updated_at', 'like', "%{$search}%");
-        })
-            ->when($documentType, function ($query, $documentType) {
-                return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
-            })
-            ->paginate();
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
-=======
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
-=======
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
-=======
->>>>>>> parent of 2a888ab (เพิ่มค้นหาแบบเรียลไทม์หน้าเอกสาร)
 
-        return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
-    }
 
     public function create() // แสดงฟอร์มสำหรับเพิ่มเอกสาร
     {
@@ -89,24 +66,19 @@ class DocumentController extends Controller
         $request->validate([ // ตรวจสอบความถูกต้องของข้อมูล
             'document_type' => 'required|string', // ประเภทเอกสาร
             'date' => 'required|date', // วันที่
-            'document' => 'required|file|mimes:pdf,doc,docx' // ขนาดไฟล์ไม่เกิน 2MB
+            'document' => 'required|file|mimes:pdf,doc,docx|max:2048' // ขนาดไฟล์ไม่เกิน 2MB
         ]);
 
         $file = $request->file('document'); // รับไฟล์เอกสาร
+        // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
         $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
+        $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
 
-        $extension = $file->getClientOriginalExtension();
-        $filename = Str::uuid() . '.' . $extension;
-        // dd($file);
-
-        $file->storeAs('documents',$filename,'public');
-
-        // dd($path);
         Document::create([ // สร้างเอกสารใหม่ในฐานข้อมูล
             'document_type' => $request->document_type, // ประเภทเอกสาร
             'date' => $request->date, // วันที่
-            'original_name' => $originalName, // ที่อยู่ไฟล์ใน storage
-            'stored_name' => $filename
+            'path' => $filePath, // ที่อยู่ไฟล์ใน storage
+            // 'path' => 'documents/' . $originalName, // ที่อยู่ไฟล์ใน storage
         ]);
 
         return redirect()->route('document.index')->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
@@ -130,8 +102,8 @@ class DocumentController extends Controller
 
         if ($request->hasFile('newFile')) {
             // ลบไฟล์เก่าออก
-            if ($document->original_name) {
-                Storage::delete('public/' . $document->original_name);
+            if ($document->path) {
+                Storage::delete('public/' . $document->path);
             }
 
             // ดึงชื่อไฟล์เดิม + ต่อ timestamp เพื่อกันซ้ำ
@@ -144,14 +116,14 @@ class DocumentController extends Controller
             $filePath = $file->storeAs('documents', $uniqueName, 'public');
 
             // อัปเดต path ใหม่ลงใน model
-            $document->original_name = $filePath;
+            $document->path = $filePath;
         }
 
         // อัปเดตข้อมูลอื่น
         $document->update([
             'document_type' => $request->document_type,
             'date' => $request->date,
-            'original_name' => $document->original_name, // เผื่อไม่ได้อัปโหลดไฟล์ใหม่ จะใช้ path เดิม
+            'path' => $document->path, // เผื่อไม่ได้อัปโหลดไฟล์ใหม่ จะใช้ path เดิม
         ]);
 
         return redirect()->route('document.index')->with('success', 'อัปเดตเอกสารเรียบร้อยแล้ว');
@@ -196,7 +168,7 @@ class DocumentController extends Controller
     public function forceDelete($id) // ลบเอกสารถาวร
     {
         $document = Document::withTrashed()->findOrFail($id); // ค้นหาเอกสารที่ถูกลบตาม ID ที่ส่งมา
-        Storage::delete('public/' . $document->original_name); // ลบไฟล์จาก storage
+        Storage::delete('public/' . $document->path); // ลบไฟล์จาก storage
         $document->forceDelete(); // ลบเอกสารจากฐานข้อมูล
 
         return redirect()->route('document.trash')->with('success', 'ลบเอกสารถาวรเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
@@ -209,16 +181,16 @@ class DocumentController extends Controller
     }
 
     public function deleteSelected(Request $request)
-    {
-        $documentIds = $request->input('selected_documents');
+{
+    $documentIds = $request->input('selected_documents');
 
-        if ($documentIds) {
-            Document::whereIn('id', $documentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
-            return redirect()->route('document.index')->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
-        }
-
-        return redirect()->route('document.index')->with('error', 'กรุณาเลือกเอกสาร');
+    if ($documentIds) {
+        Document::whereIn('id', $documentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
+        return redirect()->route('document.index')->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
     }
+
+    return redirect()->route('document.index')->with('error', 'กรุณาเลือกเอกสาร');
+}
 
     public function restoreAllDocuments() // กู้คืนเอกสารทั้งหมด
     {
@@ -231,7 +203,7 @@ class DocumentController extends Controller
 
         if ($request->filled('query')) {
             $query->where('document_type', 'like', '%' . $request->query('query') . '%')
-                ->orWhere('original_name', 'like', '%' . $request->query('query') . '%');
+                ->orWhere('path', 'like', '%' . $request->query('query') . '%');
         }
 
         if ($request->filled('document_type')) {

@@ -13,58 +13,65 @@ class UserController extends Controller
     // แสดงรายการบุคลากร
     public function index()
     {
-        $users = User::with('prefix')->paginate(10); // ดึงข้อมูลบุคลากรพร้อมคำนำหน้า
+        $users = User::with('prefix')->paginate(10);
         return view('page.users.show', compact('users'));
     }
+
     // ค้นหาบุคลากร
     public function search(Request $request)
     {
-        // รับค่าค้นหาจาก request
         $search = $request->get('search');
-        $userType = $request->get('user_type');  // รับค่าระดับผู้ใช้
+        $userType = $request->get('user_type');
 
-        // ค้นหาผู้ใช้โดยกรองข้อมูล
         $users = User::when($search, function ($query, $search) {
-            return $query->where('username', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%")
-                ->orWhere('firstname', 'like', "%{$search}%")
-                ->orWhere('lastname', 'like', "%{$search}%")
-                ->orWhere('user_type', 'like', "%{$search}%")
-                ->orWhereHas('prefix', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                });
+            return $query->where(function ($q) use ($search) {
+                $q->where('username', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('firstname', 'like', "%{$search}%")
+                  ->orWhere('lastname', 'like', "%{$search}%")
+                  ->orWhere('user_type', 'like', "%{$search}%")
+                  ->orWhereHas('prefix', function ($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%");
+                  });
+            });
         })
-            ->when($userType, function ($query, $userType) {
-                return $query->where('user_type', $userType); // กรองตามระดับผู้ใช้
-            })
-            ->paginate(10); // ใช้การแบ่งหน้าหากข้อมูลมีจำนวนมาก
+        ->when($userType, function ($query, $userType) {
+            return $query->where('user_type', $userType);
+        })
+        ->orderBy('id', 'desc')
+        ->paginate(10)
+        ->withQueryString();
+
+        if ($request->ajax()) {
+            return view('page.users.partials.user-list', compact('users'))->render();
+        }
 
         return view('page.users.show', compact('users'));
     }
-    // แสดงฟอร์มเพิ่มบุคลากร
+
+    // ฟอร์มเพิ่มผู้ใช้
     public function create()
     {
-        $prefixes = Prefix::all(); // ดึงคำนำหน้าทั้งหมดจากฐานข้อมูล
+        $prefixes = Prefix::all();
         return view('page.users.add', compact('prefixes'));
     }
-    // แสดงข้อมูลบุคลากร
+
+    // แสดงข้อมูลผู้ใช้
     public function show($id)
     {
-        $user = User::findOrFail($id); // ดึงข้อมูลบุคลากรตาม ID
-        return view('page.users.show', compact('user'));
+        $user = User::findOrFail($id);
+        return view('page.users.detail', compact('user'));
     }
 
-    // บันทึกข้อมูลบุคลากรใหม่
+    // บันทึกข้อมูลผู้ใช้ใหม่
     public function store(Request $request)
     {
-        // dd($request->all()); // ตรวจสอบค่าที่ถูกส่งมาจากฟอร์ม
         $request->validate([
             'username' => 'required|string|max:50|unique:users,username',
             'prefix' => 'required|exists:prefixes,id',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่สาขา,ผู้ปฏิบัติงานบริหาร,อาจารย์',
-            // 'email' => 'required|email|max:100|unique:users,email',
             'password' => 'required|string|min:8',
         ]);
 
@@ -75,13 +82,13 @@ class UserController extends Controller
             'lastname' => $request->lastname,
             'user_type' => $request->user_type,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // เข้ารหัสรหัสผ่าน
+            'password' => Hash::make($request->password),
         ]);
 
         return redirect()->route('user')->with('success', 'เพิ่มบุคลากรเรียบร้อยแล้ว');
     }
 
-    // แสดงฟอร์มแก้ไขบุคลากร
+    // แสดงฟอร์มแก้ไขผู้ใช้
     public function edit($id)
     {
         $user = User::findOrFail($id);
@@ -89,7 +96,7 @@ class UserController extends Controller
         return view('page.users.edit', compact('user', 'prefixes'));
     }
 
-    // อัปเดตข้อมูลบุคลากร
+    // อัปเดตข้อมูลผู้ใช้
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -100,8 +107,7 @@ class UserController extends Controller
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่สาขา,ผู้ปฏิบัติงานบริหาร,อาจารย์',
-            // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:8', // ถ้าไม่กรอก จะไม่เปลี่ยนรหัสผ่าน
+            'password' => 'nullable|string|min:8',
         ]);
 
         $user->update([
@@ -110,36 +116,33 @@ class UserController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'user_type' => $request->user_type,
-            // 'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password, // เปลี่ยนรหัสผ่านถ้ามีการกรอก
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
         ]);
 
         return redirect()->route('user')->with('success', 'แก้ไขข้อมูลเรียบร้อยแล้ว');
     }
-    // ลบบุคลากร
+
+    // ลบบุคลากร (Soft Delete)
     public function destroy(Request $request)
     {
-        // รับค่าที่ส่งมาจาก checkbox
         $selectedUsers = $request->input('selected_users', []);
 
         if (empty($selectedUsers)) {
             return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
         }
 
-        // ลบผู้ใช้ตาม ID ที่เลือก
         User::whereIn('id', $selectedUsers)->delete();
 
-        return redirect()->route('user.index')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
 
-
-public function profile()
-{
-    $user = auth()->user(); // ดึงข้อมูลผู้ใช้ที่ล็อกอิน
-    $prefixes = Prefix::all(); // สมมุติว่ามี field prefix ในตาราง users
-    return view('profile', compact('user', 'prefixes'));
-}
-
+    // โปรไฟล์ส่วนตัว
+    public function profile()
+    {
+        $user = auth()->user();
+        $prefixes = Prefix::all();
+        return view('profile', compact('user', 'prefixes'));
+    }
 
     public function updateProfile(Request $request)
     {
@@ -149,27 +152,27 @@ public function profile()
             'username' => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
-            // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:8', // ไม่บังคับเปลี่ยนรหัสผ่าน
+            'password' => 'nullable|string|min:8',
         ]);
 
         $user->update([
             'username' => $request->username,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            // 'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password, // เปลี่ยนรหัสผ่านถ้ามีการกรอก
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
         ]);
 
         return redirect()->route('profile')->with('success', 'อัปเดตโปรไฟล์เรียบร้อยแล้ว');
     }
 
+    // แสดงผู้ใช้ที่ถูกลบ (Trash)
     public function trashed()
     {
         $users = User::onlyTrashed()->paginate(10);
         return view('page.users.trash', compact('users'));
     }
 
+    // กู้คืนผู้ใช้ที่ลบ (รายคน)
     public function restore($id)
     {
         $user = User::onlyTrashed()->findOrFail($id);
@@ -177,6 +180,8 @@ public function profile()
 
         return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้เรียบร้อยแล้ว');
     }
+
+    // ลบถาวรผู้ใช้ (รายคน)
     public function forceDelete($id)
     {
         $user = User::onlyTrashed()->findOrFail($id);
@@ -184,46 +189,24 @@ public function profile()
 
         return redirect()->route('user.trashed')->with('success', 'ลบบัญชีผู้ใช้ถาวรเรียบร้อยแล้ว');
     }
-    public function deleteSelected(Request $request)
-    {
-        $selectedUsers = $request->input('selected_users', []);
 
-        if (empty($selectedUsers)) {
-            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
-        }
-
-        User::whereIn('id', $selectedUsers)->delete();
-
-        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
-    }
-    public function deleteAll(Request $request)
-    {
-        $selectedUsers = $request->input('selected_users', []);
-
-        if (empty($selectedUsers)) {
-            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
-        }
-
-        User::onlyTrashed()->whereIn('id', $selectedUsers)->forceDelete();
-
-        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
-    }
+    // กู้คืนผู้ใช้หลายรายการ
     public function restoreSelected(Request $request)
     {
-        // รับข้อมูล ID ของผู้ใช้ที่เลือก
         $ids = $request->input('selected_users', []);
-
-        // กู้คืนผู้ใช้ที่เลือก
         User::onlyTrashed()->whereIn('id', $ids)->restore();
 
-        // กลับไปที่หน้าผู้ใช้ที่ถูกลบพร้อมข้อความ success
         return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
+
+    // กู้คืนผู้ใช้ทั้งหมด
     public function restoreAll()
     {
-        User::onlyTrashed()->restore(); // กู้คืนผู้ใช้ทั้งหมด
-        return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ทั้งหมดเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
+        User::onlyTrashed()->restore();
+        return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ทั้งหมดเรียบร้อยแล้ว');
     }
+
+    // ลบถาวรจาก trash (เลือกเฉพาะที่ติ๊ก)
     public function deleteSelectedAll(Request $request)
     {
         $selectedUsers = $request->input('selected_users', []);
@@ -237,6 +220,21 @@ public function profile()
         return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
 
+    // ลบถาวรผู้ใช้ทั้งหมดในถังขยะ
+    public function deleteAll(Request $request)
+    {
+        $selectedUsers = $request->input('selected_users', []);
+
+        if (empty($selectedUsers)) {
+            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
+        }
+
+        User::onlyTrashed()->whereIn('id', $selectedUsers)->forceDelete();
+
+        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+    }
+
+    // ค้นหาในถังขยะ
     public function searchTrash(Request $request)
     {
         $query = User::onlyTrashed();
@@ -245,9 +243,9 @@ public function profile()
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('username', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('firstname', 'like', "%{$search}%")
-                    ->orWhere('lastname', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('firstname', 'like', "%{$search}%")
+                  ->orWhere('lastname', 'like', "%{$search}%");
             });
         }
 

@@ -17,10 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/run-seed', function () {
-    Artisan::call('db:seed');
-    return 'Seeder has been run.';
-});
+// Route::get('/run-seed', function () {
+//     Artisan::call('db:seed');
+//     return 'Seeder has been run.';
+// });
 
 
 Route::view('dashboard', 'dashboard')
@@ -57,25 +57,31 @@ Route::middleware(['auth','can:admin-or-branch'])->group(function () {
 
 Route::middleware(['auth','can:admin'])->group(function () {
     Route::get('user', [UserController::class, 'index'])->name('user');
-    Route::get('user/add', [UserController::class, 'create'])->name('user.create');
-    Route::get('user/search', [UserController::class, 'search'])->name('user.search');
-    Route::post('user', [UserController::class, 'store'])->name('user.store');
-    Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
-    Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
-    Route::put('user/update/{id}', [UserController::class, 'update'])->name('user.update');
-    Route::delete('/users/delete', [UserController::class, 'destroy'])->name('user.delete');
-    Route::get('user/trashed', [UserController::class, 'trashed'])->name('user.trashed');
-    Route::get('user/trash/search', [UserController::class, 'searchTrash'])->name('user.trashsearch');
-    Route::post('user/restore/{id}', [UserController::class, 'restore'])->name('user.restore'); // กู้คืนผู้ใช้
-    Route::post('user/restore-selected', [UserController::class, 'restoreSelected'])->name('user.restoreSelected');
-    Route::post('user/restore-all', [UserController::class, 'restoreAll'])->name('user.restoreAll'); // กู้คืนทั้งหมด
-    Route::delete('user/force-delete/{id}', [UserController::class, 'forceDelete'])->name('user.forceDelete');
-    Route::post('user/delete-selected', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
-    Route::delete('user/delete-all', [UserController::class, 'deleteAll'])->name('user.deleteAll');
-    Route::delete('user/delete-selected', [UserController::class, 'deleteSelected'])->name('user.deleteSelected'); // ลบที่เลือก
-    // Route::delete('user/delete-all', [UserController::class, 'deleteAll'])->name('user.deleteAll'); // ลบทั้งหมด
-    Route::delete('user/delete-selected-all', [UserController::class, 'deleteSelectedAll'])->name('user.deleteSelectedAll'); // ลบที่เลือกทั้งหมด
+    Route::get('users/add', [UserController::class, 'create'])->name('user.create');
+    Route::get('users/search', [UserController::class, 'search'])->name('user.search');
+
+    // ย้ายบรรทัดนี้ขึ้นมาก่อน users/{user}
+    Route::get('users/trashed', [UserController::class, 'trashed'])->name('user.trashed');
+
+    Route::post('users', [UserController::class, 'store'])->name('user.store');
+
+    // route ที่มี {user} หรือ {id} parameter ต้องอยู่หลัง route ที่มี static path
+    Route::get('users/{user}', [UserController::class, 'show'])->name('user.show');
+    Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('user.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('user.delete');
+
+    // ส่วนอื่นๆ...
+    Route::get('users/trash/search', [UserController::class, 'searchTrash'])->name('user.trashsearch');
+    Route::post('users/restore/{id}', [UserController::class, 'restore'])->name('user.restore');
+    Route::post('users/restore-selected', [UserController::class, 'restoreSelected'])->name('user.restoreSelected');
+    Route::post('users/restore-all', [UserController::class, 'restoreAll'])->name('user.restoreAll');
+    Route::delete('users/force-delete/{id}', [UserController::class, 'forceDelete'])->name('user.forceDelete');
+    Route::post('users/delete-selected', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
+    Route::delete('users/delete-all', [UserController::class, 'deleteAll'])->name('user.deleteAll');
 });
+
+
 
 Route::middleware(['auth'])->group(function(){
  Route::get('/documents', [DocumentController::class, 'index'])->name('document.index');

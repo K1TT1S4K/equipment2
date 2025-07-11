@@ -1,34 +1,29 @@
 <x-layouts.app>
-    <h1 class="text-dark mb-4">เอกสาร</h1>
-    <div class="p-3 mb-4 w-75 justify-content-center mx-auto">
-        {{-- <h3>ค้นหาเอกสาร</h3> --}}
-        <form action="{{ route('document.search') }}" method="GET">
-            <div class="row">
-                <div class="col-md mb-3 mb-sm-0">
-                    {{-- <label for="query" class="form-label">ค้นหา</label> --}}
-                    <input type="text" id="query" name="query" class="form-control border border-dark shadow-lg"
-                        placeholder="ค้นหาเอกสารอ้างอิง, ประเภทเอกสาร ฯลฯ" value="{{ request('query') }}">
+    <div class="py-3 w-90 mx-auto">
+        <h1 class="text-dark w-100 mb-2">เอกสาร</h1>
+    </div>
+    {{-- <h1 class="text-dark w-100 mb-2">เอกสาร</h1> --}}
+    <div class="py-3 w-90 mx-auto">
+        <form id="search-form" onsubmit="return false;">
+            <div class="row g-3 align-items-center mb-3">
+                <div class="col-md-4">
+                    <input type="text" id="query" name="query" class="form-control border border-dark shadow-sm"
+                        placeholder="ค้นหาเอกสาร">
                 </div>
-
-                <div class="col-md mb-3 mb-sm-0">
-                    {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
-                    <select id="document_type" name="document_type" class="form-select border border-dark shadow-lg">
+                <div class="col-md-4">
+                    <select id="document_type" name="document_type" class="form-select border border-dark shadow-sm">
                         <option value="">-- เลือกประเภทเอกสาร --</option>
-                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
-                            {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
-                            ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                        <option value="แทงจำหน่ายครุภัณฑ์"
-                            {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
-                        </option>
-                        <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
-                            โอนครุภัณฑ์</option>
+                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์">ยื่นแทงจำหน่ายครุภัณฑ์</option>
+                        <option value="แทงจำหน่ายครุภัณฑ์">แทงจำหน่ายครุภัณฑ์</option>
+                        <option value="โอนครุภัณฑ์">โอนครุภัณฑ์</option>
                     </select>
                 </div>
-            </div>
-
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary">ค้นหา</button>
-                <a href="{{ route('document.search') }}" class="btn btn-danger ms-2">ล้างการค้นหา</a>
+                <div class="col-md-3"></div>
+                @can('admin-or-branch')
+                    <div class="col-md-1 text-md-end justify-content-md-end">
+                        <a href="{{ route('document.create') }}" class="btn btn-success w-100 w-md-auto">เพิ่มเอกสาร</a>
+                    </div>
+                @endcan
             </div>
         </form>
     </div>
@@ -45,7 +40,7 @@
                 <div class="col-8 align-self-center">
                     <h2>รายการเอกสาร</h2>
                 </div>
-                <div class="col-2">
+                <div class="col-4">
                     <div class="d-flex justify-content-center align-items-center gap-2">
                         <!-- ปุ่มลบทั้งหมด -->
                         <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn"
@@ -55,20 +50,9 @@
                             style="display:none;">ย้ายไปที่ถังขยะ</button>
                     </div>
                 </div>
-                {{-- <div class="col-4"></div> --}}
-                @can('admin-or-branch')
-                    <div class="col-2">
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <div>
-                                <!-- ปุ่มเพิ่มข้อมูล -->
-                                <a href="{{ route('document.create') }}" class="btn btn-success mb-3">เพิ่มเอกสาร</a>
-                            </div>
-                        </div>
-                    </div>
-                @endcan
             </div>
 
-            <table class="documents-table w-100">
+            <table class="mint-table w-100">
                 <thead class="text-center align-middle">
                     <tr>
                         <th><input type="checkbox" id="select-all"></th>
@@ -80,7 +64,11 @@
                         <th>วันที่สร้าง</th>
                     </tr>
                 </thead>
-                <tbody class="align-middle p-3">
+                <tbody id="document-table-body" class="align-middle p-3">
+                    @include('page.documents.partials.rows', ['documents' => $documents])
+                </tbody>
+
+                {{-- <tbody class="align-middle p-3">
                     @foreach ($documents as $key => $document)
                         <tr class="text-center" style="cursor: pointer;"
                             onclick="window.location='{{ route('document.edit', $document->id) }}'">
@@ -100,11 +88,9 @@
                                 {{ $date->year + 543 }}
                             </td>
                             <td class="text-center" onclick="event.stopPropagation();">
-                                @if ($document->original_name)
-                                {{-- @php dd($document->stored_name); @endphp --}}
-                                {{-- {{dd($document->stored_name)}} --}}
-                                    <a href="{{ asset('storage/documents/' . $document->stored_name) }}"
-                                        download="{{ $document->original_name }}">{{ $document->original_name }}</a>
+                                @if ($document->path)
+                                    <a href="{{ asset('storage/' . $document->path) }}"
+                                        download="{{ $document->path }}">{{ $document->path }}</a>
                                 @else
                                     -
                                 @endif
@@ -119,60 +105,60 @@
                             </td>
                         </tr>
                     @endforeach
-                </tbody>
+
+                </tbody> --}}
 
             </table>
         </form>
 
-<<<<<<< HEAD
-        <div class="d-flex justify-content-center">
+        <div class="mt-3">
             {{ $documents->links() }}
+        </div>
+
     </div>
 
-<<<<<<< HEAD
-        {{-- <div class="d-flex justify-content-center">
-=======
-{{-- <div class="d-flex justify-content-center">
-=======
-        {{-- <div class="pagination">
-            {{-- {{ $documents->links() }} --}}
-        {{-- </div> --}}
-{{-- 
-<div class="d-flex justify-content-center">
->>>>>>> parent of 814f366 (fix pagination)
->>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
-    {{$documents->links('vendor.livewire.task-paginate')}}
-</div> --}}
-
+    @push('scripts')
         <script>
-            document.getElementById('select-all').addEventListener('click', function(event) {
-                let checkboxes = document.querySelectorAll('.document-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = event.target.checked;
-                });
-                toggleDeleteButtons();
-            });
+            $(document).ready(function() {
+                function fetchDocuments(url = "{{ route('document.search') }}") {
+                    let query = $('#query').val();
+                    let documentType = $('#document_type').val();
 
-            let checkboxes = document.querySelectorAll('.document-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', toggleDeleteButtons);
-            });
-
-            function toggleDeleteButtons() {
-                let selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
-                let deleteSelectedBtn = document.getElementById('delete-selected-btn');
-                let deleteAllBtn = document.getElementById('delete-all-btn');
-
-                if (selectedCheckboxes.length === 0) {
-                    deleteSelectedBtn.style.display = 'none';
-                    deleteAllBtn.style.display = 'none';
-                } else if (selectedCheckboxes.length === checkboxes.length) {
-                    deleteAllBtn.style.display = 'inline-block';
-                    deleteSelectedBtn.style.display = 'none';
-                } else {
-                    deleteAllBtn.style.display = 'none';
-                    deleteSelectedBtn.style.display = 'inline-block';
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        data: {
+                            query: query,
+                            document_type: documentType
+                        },
+                        success: function(data) {
+                            $('#document-table-body').html(data.rows);
+                            $('#pagination-links').html($(data.pagination).find('ul.pagination'));
+                            $('#pagination-summary').html($(data.pagination).find('div.text-muted').html());
+                        },
+                        error: function() {
+                            $('#document-table-body').html(
+                                `<tr><td colspan="7" class="text-center text-danger">เกิดข้อผิดพลาด</td></tr>`
+                                );
+                            $('#pagination-links').empty();
+                            $('#pagination-summary').empty();
+                        }
+                    });
                 }
-            }
+
+                $('#query, #document_type').on('input change', function() {
+                    fetchDocuments();
+                });
+
+                $(document).on('click', '#pagination-links a', function(e) {
+                    e.preventDefault();
+                    let url = $(this).attr('href');
+                    if (url) {
+                        fetchDocuments(url);
+                    }
+                });
+            });
         </script>
+    @endpush
+
 </x-layouts.app>

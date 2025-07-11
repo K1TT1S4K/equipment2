@@ -170,7 +170,7 @@
     background: white;
 }
 
-.documents-table {
+.mint-table {
     width: 1300px;
     border-collapse: separate;
     border-spacing: 0 10px; /* ระยะห่างระหว่างแถว */
@@ -178,12 +178,12 @@
   }
 
   /* ส่วนหัวตาราง (thead) */
-  .documents-table thead {
+  .mint-table thead {
     background-color: #00C896;
     color: white;
   }
 
-  .documents-table th {
+  .mint-table th {
     padding: 12px 15px;
     background-color: #00C896;
     color: white;
@@ -191,7 +191,14 @@
   }
 
   /* ส่วนข้อมูล (tbody) */
-  .documents-table td {
+  .mint-table tbody tr {
+    box-shadow: 0 0 0 1px #d1d1d1; /* ✅ เส้นขอบเทารอบแถว */
+    border-radius: 8px;
+    background-color: white;
+  }
+
+
+  .mint-table td {
     padding: 12px 15px;
     background-color: white;
     text-align: center;
@@ -200,19 +207,26 @@
   }
 
   /* มุมโค้งเฉพาะแถว */
-  .documents-table tbody tr td:first-child {
+  .mint-table tbody tr td:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
   }
-  .documents-table tbody tr td:last-child {
+  .mint-table tbody tr td:last-child {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
 
   /* Hover Effect */
-  .documents-table tbody tr:hover td {
+  .mint-table tbody tr:hover td {
     background-color: #00FA9A;
   }
+
+  h1 {
+    color: #0B3D91; /* สีกรมเข้ม */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    font-family: 'Mitr', sans-serif; /* ถ้าใส่ฟอนต์ */
+  }
+
 
  .w-80 {
     width: 80%;
