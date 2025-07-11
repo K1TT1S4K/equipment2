@@ -6,20 +6,20 @@
                 @csrf
                 <div class="row">
                     <div class="mb-3 col">
-                        <label class="form-label">หมายเลขครุภัณฑ์</label>
-                        <input type="text" name="number" class="form-control" required>
+                        <label class="form-label">หมายเลขครุภัณฑ์ <span class="text-danger">*</span></label>
+                        <input type="text" name="number" class="form-control" id="number" required>
                     </div>
                     <div class="mb-3 col">
-                        <label class="form-label">ชื่อครุภัณฑ์</label>
-                        <input type="text" name="name" class="form-control" required value="test">
+                        <label class="form-label">ชื่อครุภัณฑ์ <span class="text-danger">*</span></label>
+                        <input type="text" name="name" id="name" class="form-control" required value="test">
                     </div>
                     <div class="mb-3 col">
-                        <label for="equipment_unit_id" class="form-label">หน่วยนับ<button type="button"
+                        <label for="equipment_unit_id" class="form-label">หน่วยนับ <span class="text-danger">*</span><button type="button"
                                 class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
                                 data-bs-target="#unitModal">
                                 <i class="bi bi-gear"></i>
                             </button></label>
-                        <select name="equipment_unit_id" class="form-control" required>
+                        <select name="equipment_unit_id" id="equipment_unit_id" class="form-control" required>
                             {{-- <option value="1" {{request('equipment_unit_id') == 1 ? 'selected' : '' }}>-- เลือกหน่วยนับ --</option> --}}
                             <option value="">-- เลือกหน่วยนับ --</option>
                             @foreach ($equipment_units as $unit)
@@ -29,30 +29,30 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-3"> <label class="form-label">จำนวน</label>
-                        <input type="text" name="amount" class="form-control" required value="1">
+                    <div class="mb-3 col-3"> <label class="form-label">จำนวน <span class="text-danger">*</span></label>
+                        <input type="text" name="amount" id="amount" class="form-control" required value="1">
                     </div>
-                    <div class="mb-3 col-3"> <label class="form-label">ราคา</label>
-                        <input type="text" name="price" class="form-control" required value="100">
+                    <div class="mb-3 col-3"> <label class="form-label">ราคา <span class="text-danger">*</span></label>
+                        <input type="text" name="price" id="price" class="form-control" required value="100">
                     </div>
-                    <div class="col"> <label class="form-label">พบ</label>
-                        <input type="text" name="status_found" class="form-control" required value="1">
+                    <div class="col"> <label class="form-label">พบ <span class="text-danger">*</span></label>
+                        <input type="text" name="status_found" id="status_found" class="form-control" required value="1">
                     </div>
-                    <div class="col"> <label class="form-label">ไม่พบ</label>
-                        <input type="text" name="status_not_found" class="form-control" required value="0">
+                    <div class="col"> <label class="form-label">ไม่พบ <span class="text-danger">*</span></label>
+                        <input type="text" name="status_not_found" id="status_not_found" class="form-control" required value="0">
                     </div>
-                    <div class="col"> <label class="form-label">ชำรุด</label>
-                        <input type="text" name="status_broken" class="form-control" required value="0">
+                    <div class="col"> <label class="form-label">ชำรุด <span class="text-danger">*</span></label>
+                        <input type="text" name="status_broken" id="status_broken" class="form-control" required value="0">
                     </div>
-                    <div class="col"> <label class="form-label">จำหน่าย</label>
-                        <input type="text" name="status_disposal" class="form-control" required value="0">
+                    <div class="col"> <label class="form-label">จำหน่าย <span class="text-danger">*</span></label>
+                        <input type="text" name="status_disposal" id="status_disposal" class="form-control" required value="0">
                     </div>
-                    <div class="col"> <label class="form-label">โอน</label>
-                        <input type="text" name="status_transfer" class="form-control" required value="0">
+                    <div class="col"> <label class="form-label">โอน <span class="text-danger">*</span></label>
+                        <input type="text" name="status_transfer" id="status_transfer" class="form-control" required value="0">
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col"> <label for="title_id" class="form-label">หัวข้อ<button type="button"
+                    <div class="col"> <label for="title_id" class="form-label">หัวข้อ <span class="text-danger">*</span><button type="button"
                                 class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
                                 data-bs-target="#titleModal">
                                 <i class="bi bi-gear"></i>
@@ -80,7 +80,7 @@
                 <div class="row">
                     <div class="mb-3 col-6">
                         <label for="user_id" class="form-label">ผู้ดูแล</label>
-                        <select name="user_id" class="form-control">
+                        <select name="user_id" id="user_id" class="form-control">
                             <option value="">-- เลือกผู้ดูแล --</option>
                             @foreach ($users as $u)
                                 <option value="{{ $u->id }}">{{ $u->prefix->name }}{{ $u->firstname }}
@@ -94,7 +94,7 @@
                                 data-bs-target="#locationModal">
                                 <i class="bi bi-gear"></i>
                             </button></label>
-                        <select name="location_id" class="form-control">
+                        <select name="location_id" id="location_id" class="form-control">
                             <option value="">-- เลือกที่อยู่ --</option>
                             @foreach ($locations as $l)
                                 <option value="{{ $l->id }}">{{ $l->name }}</option>
@@ -104,7 +104,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col"> <label class="form-label">คำอธิบาย</label>
-                        <input type="text" name="description" class="form-control"value="test desc">
+                        <input type="text" name="description" id="description" class="form-control"value="test desc">
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">บันทึก</button>
@@ -113,6 +113,7 @@
         </div>
     </div>
 
+    @can('admin-or-branch')
     <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content border-dark">
@@ -218,5 +219,10 @@
             </div>
         </div>
     </div>
+<<<<<<< HEAD
 
+=======
+    @endcan
+   @vite(['resources/js/pages/equipment_add.js'])
+>>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
 </x-layouts.app>

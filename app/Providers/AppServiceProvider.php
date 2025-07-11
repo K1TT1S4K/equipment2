@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\View;
 use App\Models\Equipment_unit; // หรือโมเดลที่คุณใช้
 use App\Models\Equipment_type;
 use App\Models\Title;
-use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,7 +30,6 @@ class AppServiceProvider extends ServiceProvider
         //     return (bool) $user->is_admin;
         // });
 
-Paginator::useBootstrap();
 
       
         View::composer('components.layouts.app', function ($view) {

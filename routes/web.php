@@ -106,28 +106,28 @@ Route::middleware(['auth'])->group(function () {
     Route::put('profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','can:admin-or-branch'])->group(function () {
     Route::resource('types', EquipmentTypeController::class)->except(['create', 'edit', 'show']);
 
     // เพิ่ม name ให้ route นี้
     Route::get('types/{type}/check-usage', [EquipmentTypeController::class, 'checkUsage'])->name('types.checkUsage');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','admin-or-branch'])->group(function () {
     Route::resource('equipment_units', EquipmentUnitController::class)->except(['create', 'edit', 'show']);
 
     // เพิ่ม name ให้ route นี้
     Route::get('equipment_units/{equipment_unit}/check-usage', [EquipmentUnitController::class, 'checkUsage'])->name('equipment_units.checkUsage');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','can:admin-or-branch'])->group(function () {
     Route::resource('locations', LocationController::class)->except(['create', 'edit', 'show']);
 
     // เพิ่ม name ให้ route นี้
     Route::get('locations/{location}/check-usage', [LocationController::class, 'checkUsage'])->name('locations.checkUsage');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','can:admin-or-branch'])->group(function () {
     Route::resource('titles', TitleController::class)->except(['create', 'edit', 'show']);
 
     // เพิ่ม name ให้ route นี้

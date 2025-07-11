@@ -89,9 +89,11 @@
                                 {{ $date->year + 543 }}
                             </td>
                             <td class="text-center" onclick="event.stopPropagation();">
-                                @if ($document->path)
-                                    <a href="{{ asset('storage/' . $document->path) }}"
-                                        download="{{ $document->path }}">{{ $document->path }}</a>
+                                @if ($document->original_name)
+                                {{-- @php dd($document->stored_name); @endphp --}}
+                                {{-- {{dd($document->stored_name)}} --}}
+                                    <a href="{{ asset('storage/documents/' . $document->stored_name) }}"
+                                        download="{{ $document->original_name }}">{{ $document->original_name }}</a>
                                 @else
                                     -
                                 @endif
@@ -111,11 +113,23 @@
             </table>
         </form>
 
+<<<<<<< HEAD
         <div class="d-flex justify-content-center">
             {{ $documents->links() }}
-        </div>
+    </div>
 
+<<<<<<< HEAD
         {{-- <div class="d-flex justify-content-center">
+=======
+{{-- <div class="d-flex justify-content-center">
+=======
+        {{-- <div class="pagination">
+            {{-- {{ $documents->links() }} --}}
+        {{-- </div> --}}
+{{-- 
+<div class="d-flex justify-content-center">
+>>>>>>> parent of 814f366 (fix pagination)
+>>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
     {{$documents->links('vendor.livewire.task-paginate')}}
 </div> --}}
 

@@ -40,8 +40,8 @@
                 <td>{{ $document->document_type }}</td>
                 <td>{{ $document->date }}</td>
                 <td>
-                    @if ($document->path)
-                        <a href="{{ asset('storage/' . $document->path) }}" download>ดาวน์โหลด</a>
+                    @if ($document->original_name)
+                        <a href="{{ asset('storage/' . $document->original_name) }}" download>ดาวน์โหลด</a>
                     @else
                         -
                     @endif

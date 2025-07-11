@@ -115,14 +115,18 @@ protected function throttleKey(): string
                         </div>
 
                         <!-- Remember Me -->
-                        {{-- <div class="form-check mt-3">
+                        <div class="form-check mt-3">
                             <input wire:model="remember" type="checkbox" class="form-check-input" id="remember" />
                             <label class="form-check-label" for="remember">Remember me</label>
-                        </div> --}}
+                        </div>
 
                         <!-- Submit Button -->
                         <div class="text-center mt-4">
+<<<<<<< HEAD
                             <button type="submit" class="login-button border50" wire:loading.attr="disabled">
+=======
+                            <button type="submit" class="btn btn-primary w-100" wire:loading.attr="disabled">
+>>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
                                 <span wire:loading.remove>Log in</span>
                                 <span wire:loading>
                                     <div class="spinner-border spinner-border-sm text-light" role="status">

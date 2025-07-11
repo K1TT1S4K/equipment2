@@ -13,6 +13,8 @@ class Equipment_document extends Model
     protected $fillable = [
         'equipment_id',
         'document_id',
+        'status',
+        'amount',
         'description',
     ];
 

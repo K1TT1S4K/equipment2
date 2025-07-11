@@ -7,10 +7,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Disposal Equipment</title>
 
+<<<<<<< HEAD
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <!-- Vite Assets (Tailwind or app.css) -->
+=======
+    <!-- Bootstrap CSS -->
+>>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Bootstrap & Icons -->
@@ -22,16 +26,16 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
-      <style>
-    .hover-box {
-      transition: background-color 0.3s ease, transform 0.3s ease;
-    }
+    <style>
+        .hover-box {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
 
-    .hover-box:hover {
-      transform: scale(1.01);
-      cursor: pointer;
-    }
-  </style>
+        .hover-box:hover {
+            transform: scale(1.01);
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body class="bg-lightskyblue">
@@ -169,7 +173,6 @@
     }
 </script>
 
-
 {{-- ค้นหา --}}
 <script>
     function searchTable() {
@@ -178,13 +181,12 @@
 
         rows.forEach(row => {
             // dd(row.textContent.toLowerCase());
-             console.log(row.textContent.toLowerCase());
+            console.log(row.textContent.toLowerCase());
             const text = row.textContent.toLowerCase();
             row.style.display = text.includes(input) ? "" : "none";
         });
     }
 </script>
-
 
 <script>
     // console.log('Script Loaded');
@@ -214,7 +216,6 @@
         });
     });
 </script>
-
 
 {{-- popup จัดการ --}}
 <script>
@@ -310,7 +311,7 @@
                 <tr>
                     <td><input type="text" class="form-control newlocationInput" placeholder="กรอกชื่อที่อยู่"></td>
                     <td>
-                        <button class="btn btn-success saveNewlocationBtn">ตกลง</button>
+                        <button class="btn btn-success saveNewlocationBtn" onclick="location.reload()">ตกลง</button>
                         <button class="btn btn-secondary cancelNewlocationBtn">ยกเลิก</button>
                     </td>
                 </tr>
@@ -323,7 +324,7 @@
                 <tr>
                     <td><input type="text" class="form-control newunitInput" placeholder="กรอกชื่อที่อยู่"></td>
                     <td>
-                        <button class="btn btn-success saveNewunitBtn">ตกลง</button>
+                        <button class="btn btn-success saveNewunitBtn" onclick="location.reload()">ตกลง</button>
                         <button class="btn btn-secondary cancelNewunitBtn">ยกเลิก</button>
                     </td>
                 </tr>
@@ -350,7 +351,7 @@
                     <td><input type="number" class="form-control newtypeAmountInput" placeholder="กรอกจำนวน"></td>
                     <td><input type="number" class="form-control newtypePriceInput" placeholder="กรอกราคา"></td>
                     <td>
-                        <button class="btn btn-success saveNewtypeBtn">ตกลง</button>
+                        <button class="btn btn-success saveNewtypeBtn" onclick="location.reload()">ตกลง</button>
                         <button class="btn btn-secondary cancelNewtypeBtn">ยกเลิก</button>
                     </td>
                 </tr>
@@ -364,7 +365,7 @@
                     <td><input type="text" class="form-control newtitleGroupInput" placeholder="กรอกกลุ่ม"></td>
                     <td><input type="text" class="form-control newtitleNameInput" placeholder="กรอกหัวข้อ"></td>
                     <td>
-                        <button class="btn btn-success saveNewtitleBtn">ตกลง</button>
+                        <button class="btn btn-success saveNewtitleBtn" onclick="location.reload()">ตกลง</button>
                         <button class="btn btn-secondary cancelNewtitleBtn">ยกเลิก</button>
                     </td>
                 </tr>
@@ -460,7 +461,7 @@
             const name = row.find('.location-name').text();
             row.find('.location-name').html(
                 `<input type="text" class="form-control editInput" value="${name}">`);
-            $(this).replaceWith(`<button class="btn btn-success saveEditBtnlocation">ตกลง</button>`);
+            $(this).replaceWith(`<button class="btn btn-success saveEditBtnlocation" onclick="location.reload()">ตกลง</button>`);
         });
 
         // แก้ไข หน่วยนับ
@@ -469,7 +470,7 @@
             const name = row.find('.unit-name').text();
             row.find('.unit-name').html(
                 `<input type="text" class="form-control editInput" value="${name}">`);
-            $(this).replaceWith(`<button class="btn btn-success saveEditBtnunit">ตกลง</button>`);
+            $(this).replaceWith(`<button class="btn btn-success saveEditBtnunit" onclick="location.reload()">ตกลง</button>`);
         });
 
         // แก้ไข ประภท
@@ -542,7 +543,7 @@
                 `<input type="number" class="form-control editAmountInput" value="${amount}">`);
             row.find('.type-price').html(
                 `<input type="number" class="form-control editPriceInput" value="${price}">`);
-            $(this).replaceWith(`<button class="btn btn-success saveEditBtntype">ตกลง</button>`);
+            $(this).replaceWith(`<button class="btn btn-success saveEditBtntype" onclick="location.reload()">ตกลง</button>`);
         });
 
         // แก้ไข หัวข้อ
@@ -555,7 +556,7 @@
 
             row.find('.title-group').html(
                 `<input type="text" class="form-control editGroupInput" value="${group}">`);
-            $(this).replaceWith(`<button class="btn btn-success saveEditBtntitle">ตกลง</button>`);
+            $(this).replaceWith(`<button class="btn btn-success saveEditBtntitle" onclick="location.reload()">ตกลง</button>`);
         });
 
         // บันทึกการแก้ไข ที่อยู่
@@ -675,6 +676,7 @@
                             },
                             success: function() {
                                 loadlocations();
+                                location.reload();
                             }
                         });
                     }
@@ -700,6 +702,7 @@
                             },
                             success: function() {
                                 loadunits();
+                                location.reload();
                             }
                         });
                     }
@@ -725,6 +728,7 @@
                             },
                             success: function() {
                                 loadtypes();
+                                location.reload();
                             }
                         });
                     }
@@ -750,6 +754,7 @@
                             },
                             success: function() {
                                 loadtitles();
+                                location.reload();
                             }
                         });
                     }

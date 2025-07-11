@@ -14,7 +14,8 @@ class Document extends Model
     use SoftDeletes;
     protected $table = 'documents';
     protected $fillable = [
-        'path',
+        'original_name',
+        'stored_name',
         'document_type',
         'date'
     ];

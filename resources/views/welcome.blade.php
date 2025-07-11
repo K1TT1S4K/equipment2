@@ -7,7 +7,11 @@
         <title>Welcome</title>
 
         <!-- Bootstrap CSS -->
+<<<<<<< HEAD
         <link rel="stylesheet" href="css/style.css">
+=======
+        {{-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet"> --}}
+>>>>>>> 4f630470fca786ed4cca9159c74c23d822e61d20
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 
