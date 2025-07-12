@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Document;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -13,15 +14,13 @@ class DocumentSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('documents')->insert([
-            // [
-            //     'original_name' => 2020 + 543 . '_equipment_disposal_request_01.pdf',
-            //     'stored_name' => '00',
-            //     'document_type' => 'ยื่นแทงจำหน่ายครุภัณฑ์',
-            //     'date' => now()->format('2020-m-d'),
-            //     'created_at' => now()->format('2020-m-d H:i:s'),
-            //     'updated_at' => now()->format('2020-m-d H:i:s')
-            // ],
-        ]);
+        // DB::table('documents')->insert([
+        // ]);
+
+        // สร้าง 20 รายการยังไม่ลบ
+        Document::factory()->count(20)->create();
+
+        // สร้าง 5 รายการที่ถูกลบแล้ว
+        Document::factory()->count(5)->deleted()->create();
     }
 }

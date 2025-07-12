@@ -1,5 +1,5 @@
 @if($users->count() > 0)
-<table class="table table-bordered">
+<table class="mint-table w-100">
     <thead>
         <tr>
             <th>Username</th>

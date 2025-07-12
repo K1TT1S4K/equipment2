@@ -6,13 +6,19 @@
 
     <form method="GET" action="{{ route('user.search') }}" class="mb-3 w-90 justify-content-center mx-auto">
         <div class="d-flex">
-            <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded" placeholder="ค้นหาบัญชีผู้ใช้..." value="{{ request()->get('search') }}">
+            <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded"
+                placeholder="ค้นหาบัญชีผู้ใช้..." value="{{ request()->get('search') }}">
             <select name="user_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
                 <option value="">-- เลือกระดับผู้ใช้ --</option>
-                <option value="ผู้ดูแลระบบ" {{ request()->get('user_type') == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>ผู้ดูแลระบบ</option>
-                <option value="เจ้าหน้าที่สาขา" {{ request()->get('user_type') == 'เจ้าหน้าที่สาขา' ? 'selected' : '' }}>เจ้าหน้าที่สาขา</option>
-                <option value="ผู้ปฏิบัติงานบริหาร" {{ request()->get('user_type') == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร</option>
-                <option value="อาจารย์" {{ request()->get('user_type') == 'อาจารย์' ? 'selected' : '' }}>อาจารย์</option>
+                <option value="ผู้ดูแลระบบ" {{ request()->get('user_type') == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>
+                    ผู้ดูแลระบบ</option>
+                <option value="เจ้าหน้าที่สาขา"
+                    {{ request()->get('user_type') == 'เจ้าหน้าที่สาขา' ? 'selected' : '' }}>เจ้าหน้าที่สาขา</option>
+                <option value="ผู้ปฏิบัติงานบริหาร"
+                    {{ request()->get('user_type') == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร
+                </option>
+                <option value="อาจารย์" {{ request()->get('user_type') == 'อาจารย์' ? 'selected' : '' }}>อาจารย์
+                </option>
             </select>
             {{-- <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button> --}}
         </div>
@@ -33,9 +39,11 @@
                 <div class="col-2">
                     <div class="d-flex justify-content-center align-items-center gap-2">
                         <!-- ปุ่มลบทั้งหมด -->
-                        <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn" style="display:none;">ลบรายการทั้งหมด</button>
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn"
+                            style="display:none;">ลบรายการทั้งหมด</button>
                         <!-- ปุ่มลบที่เลือก -->
-                        <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn" style="display:none;">ลบรายการที่เลือก</button>
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn"
+                            style="display:none;">ลบรายการที่เลือก</button>
                     </div>
                 </div>
                 <div class="col-2">
@@ -54,24 +62,27 @@
                         <th>#</th>
                         <th>ชื่อผู้ใช้</th>
                         <th>ชื่อ-นามสกุล</th>
+                        <th>อีเมล</th>
                         <th>ระดับผู้ใช้</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($users as $key => $user)
-                    <tr style="cursor: pointer;" onclick="window.location='{{ route('user.edit', $user->id) }}'">
-                        <td class="text-center" onclick="event.stopPropagation();">
-                            <input type="checkbox" class="user-checkbox" name="selected_users[]" value="{{ $user->id }}">
-                        </td>
-                        <td class="text-center">{{ $users->firstItem() + $key }}</td>
-                        <td>{{ $user->username }}</td>
-                        <td>{{ $user->prefix->name ?? '' }} {{ $user->firstname }} {{ $user->lastname }}</td>
-                        <td class="text-center">{{ $user->user_type }}</td>
-                    </tr>
+                        <tr style="cursor: pointer;" onclick="window.location='{{ route('user.edit', $user->id) }}'">
+                            <td class="text-center" onclick="event.stopPropagation();">
+                                <input type="checkbox" class="user-checkbox" name="selected_users[]"
+                                    value="{{ $user->id }}">
+                            </td>
+                            <td class="text-center">{{ $users->firstItem() + $key }}</td>
+                            <td>{{ $user->username }}</td>
+                            <td>{{ $user->prefix->name ?? '' }} {{ $user->firstname }} {{ $user->lastname }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td class="text-center">{{ $user->user_type }}</td>
+                        </tr>
                     @empty
-                    <tr>
-                        <td colspan="5" class="text-center">ไม่พบข้อมูลผู้ใช้</td>
-                    </tr>
+                        <tr>
+                            <td colspan="5" class="text-center">ไม่พบข้อมูลผู้ใช้</td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -83,7 +94,7 @@
     <script>
         // ฟังก์ชันในการเลือกทั้งหมด
         document.getElementById('select-all').addEventListener('click', function(event) {
-            let checkboxes = document.querySelectorAll('.document-checkbox');
+            let checkboxes = document.querySelectorAll('.user-checkbox');
             checkboxes.forEach(checkbox => {
                 checkbox.checked = event.target.checked;
             });
@@ -91,14 +102,14 @@
         });
 
         // การเพิ่มเหตุการณ์ให้กับ checkboxes แต่ละตัว
-        let checkboxes = document.querySelectorAll('.document-checkbox');
+        let checkboxes = document.querySelectorAll('.user-checkbox');
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', toggleDeleteButtons);
         });
 
         // ฟังก์ชันในการแสดงปุ่มลบที่เหมาะสม
         function toggleDeleteButtons() {
-            let selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
+            let selectedCheckboxes = document.querySelectorAll('.user-checkbox:checked');
             let deleteSelectedBtn = document.getElementById('delete-selected-btn');
             let deleteAllBtn = document.getElementById('delete-all-btn');
 
@@ -113,18 +124,16 @@
                 deleteSelectedBtn.style.display = 'inline-block';
             }
         }
-    </script>
-    <script>
+
+        // ฟอร์มค้นหาอัตโนมัติ
         const form = document.getElementById('search-form');
         const searchInput = document.getElementById('search-input');
         const userTypeSelect = document.getElementById('user-type');
 
-        // ฟังก์ชันส่งฟอร์มเมื่อพิมพ์ หรือเปลี่ยนค่า
         function submitForm() {
             form.submit();
         }
 
-        // รอเวลาพิมพ์ให้หยุดก่อน 500ms ค่อย submit (debounce)
         let typingTimer;
         const doneTypingInterval = 500; // milliseconds
 

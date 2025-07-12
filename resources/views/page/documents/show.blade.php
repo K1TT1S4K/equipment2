@@ -18,9 +18,9 @@
                         <option value="โอนครุภัณฑ์">โอนครุภัณฑ์</option>
                     </select>
                 </div>
-                <div class="col-md-3"></div>
+                <div class="col-md-2"></div>
                 @can('admin-or-branch')
-                    <div class="col-md-1 text-md-end justify-content-md-end">
+                    <div class="col-md-2 text-md-end justify-content-md-end">
                         <a href="{{ route('document.create') }}" class="btn btn-success w-100 w-md-auto">เพิ่มเอกสาร</a>
                     </div>
                 @endcan
