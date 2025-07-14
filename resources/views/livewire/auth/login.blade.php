@@ -114,12 +114,6 @@ protected function throttleKey(): string
                             @enderror
                         </div>
 
-                        <!-- Remember Me -->
-                        {{-- <div class="form-check mt-3">
-                            <input wire:model="remember" type="checkbox" class="form-check-input" id="remember" />
-                            <label class="form-check-label" for="remember">Remember me</label>
-                        </div> --}}
-
                         <!-- Submit Button -->
                         <div class="text-center mt-4">
                             <button type="submit" class="login-button border50" wire:loading.attr="disabled">
@@ -134,11 +128,11 @@ protected function throttleKey(): string
 
 
                         <!-- Forgot Password -->
-                        {{-- @if (Route::has('password.request'))
+                        @if (Route::has('password.request'))
                             <div class="text-center mt-2">
                                 <a href="{{ route('password.request') }}" class="text-muted">Forgot your password?</a>
                             </div>
-                        @endif --}}
+                        @endif
                     </form>
                 </div>
             </div>

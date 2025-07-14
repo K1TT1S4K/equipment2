@@ -80,7 +80,7 @@ class UserSeeder extends Seeder
                 'firstname' => 'กิตติศักดิ์',
                 'lastname' => 'ผาทอง',
                 'user_type' => 'ผู้ดูแลระบบ',
-                'email' => 'test@example.com',
+                'email' => 'kittisak9047@gmail.com',
                 'email_verified_at' => now(),
                 'password' => static::$password ??= Hash::make('password'),
                 'remember_token' => Str::random(10),

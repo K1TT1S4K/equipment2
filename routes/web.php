@@ -7,35 +7,32 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\EquipmentUnitController;
 use App\Http\Controllers\TitleController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Livewire\Auth\ForgotPassword;
 use App\Http\Controllers\DashboardController;
 use App\Models\Equipment;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+// use Livewire\Volt;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Route::get('/run-seed', function () {
-//     Artisan::call('db:seed');
-//     return 'Seeder has been run.';
-// });
+Route::get('/reset-password/{token}', function ($token) {
+    return Volt::render('auth.reset-password', ['token' => $token]);
+})->name('password.reset');
 
-
+// Route::view('dashboard', 'dashboard')
+//     ->middleware(['auth', 'verified'])
+//     ->name('dashboard');
 Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('dashboard');
 
-// Route::middleware(['auth'])->group(function (){
-// Route::get('dashboard/', [EquipmentController::class, 'dashboard'])->name('equipemnt.dashboard');
-// Route::get('dashboard/', [DashboardController::class, 'index'])->name('dashboard.index');
-// });
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('documents', [DocumentController::class, 'index'])->name('document.index');
-//     Route::get('equipments', [EquipmentController::class, 'index'])->name('equipment.index');
-// });
 
 Route::middleware(['auth'])->group(function() {
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');

@@ -227,6 +227,21 @@
     font-family: 'Mitr', sans-serif; /* ถ้าใส่ฟอนต์ */
   }
 
+  .button-border-50 {
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem; /* ปรับขนาดปุ่ม */
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+.button-border-50:hover {
+    background-color: #0056b3;
+}
+
 
  .w-80 {
     width: 80%;
