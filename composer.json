@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "aws/aws-sdk-php": "^3.349",
         "barryvdh/laravel-dompdf": "^3.1",
         "laravel-lang/lang": "^15.22",
         "laravel/framework": "^12.0",
@@ -18,7 +19,11 @@
         "livewire/livewire": "*",
         "livewire/volt": "*",
         "maatwebsite/excel": "^3.1",
-        "phpoffice/phpspreadsheet": "^1.29"
+        "phpoffice/phpspreadsheet": "^1.29",
+        "resend/resend-php": "^0.18.1",
+        "symfony/http-client": "^7.3",
+        "symfony/mailgun-mailer": "^7.3",
+        "symfony/postmark-mailer": "^7.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

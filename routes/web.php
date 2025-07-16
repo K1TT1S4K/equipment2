@@ -21,9 +21,20 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// Route::get('/reset-password/{token}', function ($token) {
+//     return Volt::render('auth.reset-password', ['token' => $token]);
+// })->name('password.reset');
+
 Route::get('/reset-password/{token}', function ($token) {
-    return Volt::render('auth.reset-password', ['token' => $token]);
-})->name('password.reset');
+    return view('livewire.auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
+
+// Route::get('/contact', 'contact-form')->name('contact');
+
+// Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+// Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+// Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+// Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 // Route::view('dashboard', 'dashboard')
 //     ->middleware(['auth', 'verified'])

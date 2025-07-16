@@ -3,10 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Notifications\CustomResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
@@ -66,6 +68,15 @@ class User extends Authenticatable
             ->implode('');
     }
 
+    /**
+     * คืนค่า email สำหรับใช้รีเซ็ตรหัสผ่าน
+     *
+     * @return string|null
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->email;
+    }
 
 
     public function prefix()
@@ -84,5 +95,10 @@ class User extends Authenticatable
     public function logs(): HasMany
     {
         return $this->hasMany(Equipment_log::class);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPassword($token));
     }
 }
