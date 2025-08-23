@@ -20,16 +20,52 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
-      <style>
-    .hover-box {
-      transition: background-color 0.3s ease, transform 0.3s ease;
-    }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/0.7.0/chartjs-plugin-datalabels.min.js">
+    </script>
 
-    .hover-box:hover {
-      transform: scale(1.01);
-      cursor: pointer;
-    }
-  </style>
+    <script src="https://cdn.anychart.com/js/8.0.1/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/js/8.0.1/anychart-pie.min.js"></script>
+
+    <style>
+        .hover-box {
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .hover-box:hover {
+            transform: scale(1.01);
+            cursor: pointer;
+        }
+
+        .left {
+            flex: 9;
+            padding: 0
+        }
+
+        .right {
+            flex: 3;
+            /* ครึ่ง ๆ เท่ากัน */
+            padding: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            /* ใช้ Flexbox */
+            height: 100vh;
+            /* เต็มความสูงหน้าจอ */
+        }
+
+        #pie-chart {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        input.is-invalid {
+            border-color: red !important;
+        }
+    </style>
 </head>
 
 <body style="background-color: var(--bs-light-green);">
@@ -40,13 +76,10 @@
             {{ $slot }}
         </div>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-</script>
+</script> --}}
 {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> --}}
 {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -174,7 +207,7 @@
 
         rows.forEach(row => {
             // dd(row.textContent.toLowerCase());
-             console.log(row.textContent.toLowerCase());
+            console.log(row.textContent.toLowerCase());
             const text = row.textContent.toLowerCase();
             row.style.display = text.includes(input) ? "" : "none";
         });
@@ -223,6 +256,7 @@
         // ที่อยู่
         function loadlocations() {
             $.get("{{ route('locations.index') }}", function(data) {
+                $("#locationSelect").html("")
                 let rows = '';
                 data.forEach(loc => {
                     rows += `
@@ -233,6 +267,7 @@
                                 <button class="btn btn-sm btn-danger deleteBtnlocation">ลบ</button>
                             </td>
                         </tr>`;
+                         $("#locationSelect").append(`<option value="${loc.id}">${loc.name}</option>`)
                 });
                 $('#locationTableBody').html(rows);
             });
@@ -241,6 +276,7 @@
         // หน่วยนับ
         function loadunits() {
             $.get("{{ route('equipment_units.index') }}", function(data) {
+                $("#unitSelect").html("")
                 let rows = '';
                 data.forEach(loc => {
                     rows += `
@@ -251,6 +287,7 @@
                                 <button class="btn btn-sm btn-danger deleteBtnunit">ลบ</button>
                             </td>
                         </tr>`;
+                        $("#unitSelect").append(`<option value="${loc.id}">${loc.name}</option>`)
                 });
                 $('#unitTableBody').html(rows);
             });
@@ -259,6 +296,7 @@
         // ประเภท
         function loadtypes() {
             $.get("{{ route('types.index') }}", function(data) {
+                $("#equipmentTypeSelect").html("")
                 let rows = '';
                 data.forEach(loc => {
                     rows += `
@@ -276,6 +314,7 @@
                                 <button class="btn btn-sm btn-danger deleteBtntype">ลบ</button>
                             </td>
                         </tr>`;
+                        $("#equipmentTypeSelect").append(`<option value="${loc.id}">${loc.name}</option>`)
                 });
                 $('#typeTableBody').html(rows);
             });
@@ -284,6 +323,7 @@
         // หัวข้อ
         function loadtitles() {
             $.get("{{ route('titles.index') }}", function(data) {
+                $("#titleSelect").html("")
                 let rows = '';
                 data.forEach(loc => {
                     rows += `
@@ -295,6 +335,7 @@
                                 <button class="btn btn-sm btn-danger deleteBtntitle">ลบ</button>
                             </td>
                         </tr>`;
+                    $("#titleSelect").append(`<option value="${loc.id}">${loc.group} - ${loc.name}</option>`)
                 });
                 $('#titleTableBody').html(rows);
             });
@@ -751,6 +792,90 @@
                     }
                 }
             });
+        });
+        @php
+            $totals = DB::table('equipment')
+                ->selectRaw(
+                    '
+            SUM(status_found) as total_found,
+            SUM(status_not_found) as total_not_found,
+            SUM(status_broken) as total_broken,
+            SUM(status_disposal) as total_disposal,
+            SUM(status_transfer) as total_transfer
+        ',
+                )
+                ->first();
+
+            $equipments = DB::table('equipment')->get();
+        @endphp
+
+        var xValues = ["พบ", "ไม่พบ", "ชำรุด", "จำหน่าย", "โอน"];
+        var yValues = [{{ $totals->total_found }}, {{ $totals->total_not_found }},
+            {{ $totals->total_broken }},
+            {{ $totals->total_disposal }}, {{ $totals->total_transfer }}
+        ];
+        var barColors = [
+            "#28a745",
+            "#dc3545",
+            "#ffc107",
+            "#6c757d",
+            "#17a2b8"
+        ];
+
+        new Chart("myChart", {
+            type: "pie",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true, // ทำให้สัดส่วนไม่เพี้ยน
+                aspectRatio: 1, // 1:1 สำหรับ pie/donut chart
+                layout: {
+                    padding: 0 // กำหนด padding รอบกราฟเป็น 0
+                },
+                legend: {
+                    display: true,
+                    position: "right",
+                    labels: {
+                        fontSize: 20, // << ขนาดตัวอักษร
+                        boxWidth: 30, // << ขนาดสี่เหลี่ยมสีด้านหน้า
+                        padding: 30
+                    }
+                },
+                title: {
+                    display: false
+                },
+                plugins: {
+                    datalabels: {
+                        color: "#fff", // สีตัวอักษรบนกราฟ
+                        font: {
+                            weight: "bold",
+                            size: 14
+                        },
+                        formatter: (value, ctx) => {
+                            let sum = 0;
+                            let dataArr = ctx.chart.data.datasets[0].data;
+                            dataArr.map(data => {
+                                sum += data;
+                            });
+                            let percentage = (value * 100 / sum).toFixed(1);
+
+                            // 👇 ถ้าเปอร์เซ็นต์น้อยกว่า 5% จะไม่แสดง
+                            if (percentage < 5) {
+                                return null;
+                            }
+                            return percentage + "%";
+                        }
+                    }
+                }
+
+            },
+            plugins: [ChartDataLabels] // เปิดใช้งาน plugin
         });
     });
 </script>

@@ -96,10 +96,11 @@ protected function throttleKey(): string
                             <label for="username">Username</label>
                             <input wire:model.defer="username" type="text" name="username"
                                 class="form-control @error('username') is-invalid @enderror" required autofocus
-                                autocomplete="username" placeholder="Your username" />
-                            @error('username')
+                                autocomplete="username" placeholder="Username" />
+                            {{-- @error('username')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @enderror --}}
+                            <div class="invalid-feedback">Username หรือ Password ของคุณไม่ถูกต้อง</div>
                         </div>
 
 

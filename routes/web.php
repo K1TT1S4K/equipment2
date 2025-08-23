@@ -1,5 +1,6 @@
 <?php
 
+// นี่คือ contract ไว้กำหนด method ที่เราต้องการ
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\UserController;
@@ -22,6 +23,10 @@ Route::get('/run-seed', function () {
     return 'Seeder has been run.';
 });
 
+// ตัวอย่าง Route พื้นฐาน
+// Route::get('/greeting', function () {
+//     return 'Hello World';
+// });
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -39,7 +44,8 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function() {
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
-    Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.index');
+    // Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.index');
+    Route::get('/export/{titleId}', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
 });
 
@@ -48,7 +54,7 @@ Route::middleware(['auth','can:admin-or-branch'])->group(function () {
     Route::post('equipment', [EquipmentController::class, 'store'])->name('equipment.store');
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
     Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
-    Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
+    // Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
     Route::get('/get-equipment-types/{title_id}', [EquipmentController::class, 'getEquipmentTypes']);
     Route::post('/equipment/move-to-trash', [EquipmentController::class, 'moveToTrash'])->name('equipment.moveToTrash');

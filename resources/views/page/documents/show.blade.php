@@ -1,36 +1,30 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">เอกสาร</h3>
-    <div class="card shadow-lg p-3 mb-4 bg-body">
-        <form action="{{ route('document.search') }}" method="GET">
-            <div class="row">
-                <div class="col-md mb-3 mb-sm-0">
-                    <label for="query" class="form-label">ค้นหา</label>
-                    <input type="text" id="query" name="query" class="form-control"
-                        placeholder="เอกสารอ้างอิง, ประเภทเอกสาร ฯลฯ" value="{{ request('query') }}">
-                </div>
+    <h3 class="text-dark mb-4">จัดการเอกสาร</h3>
+    <form action="{{ route('document.search') }}" method="GET" class="mb-3">
+        <div class="d-flex">
 
-                <div class="col-md mb-3 mb-sm-0">
-                    <label for="document_type" class="form-label">ประเภทเอกสาร</label>
-                    <select id="document_type" name="document_type" class="form-select">
-                        <option value="">-- เลือกประเภทเอกสาร --</option>
-                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
-                            {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
-                            ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                        <option value="แทงจำหน่ายครุภัณฑ์"
-                            {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
-                        </option>
-                        <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
-                            โอนครุภัณฑ์</option>
-                    </select>
-                </div>
-            </div>
+            {{-- <label for="query" class="form-label">ค้นหา</label> --}}
+            <input type="text" id="query" name="query" class="form-control shadow-lg p-2 mb-3 rounded"
+                placeholder="ค้นหาเอกสาร" value="{{ request('query') }}">
+            {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
+            <select id="document_type" name="document_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
+                <option value="">-- เลือกประเภทเอกสาร --</option>
+                <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
+                    {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
+                    ยื่นแทงจำหน่ายครุภัณฑ์</option>
+                <option value="แทงจำหน่ายครุภัณฑ์"
+                    {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
+                </option>
+                <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
+                    โอนครุภัณฑ์</option>
+            </select>
 
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary">ค้นหา</button>
-                <a href="{{ route('document.search') }}" class="btn btn-danger ms-2">ล้างการค้นหา</a>
-            </div>
-        </form>
-    </div>
+
+            <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
+            {{-- <a href="{{ route('document.search') }}" class="btn btn-danger ms-2">ล้างการค้นหา</a> --}}
+
+        </div>
+    </form>
 
     <div class="card shadow-lg p-3 mb-4 bg-body">
         <h3>รายการเอกสาร</h3>
@@ -77,7 +71,7 @@
                     </tr>
                 </thead>
                 <tbody class="align-middle p-3">
-                    @foreach ($documents as $key => $document)
+                    @forelse ($documents as $key => $document)
                         <tr class="text-center" style="cursor: pointer;"
                             onclick="window.location='{{ route('document.edit', $document->id) }}'">
                             <td onclick="event.stopPropagation();">
@@ -92,9 +86,9 @@
                             @endphp
                             <td class="text-center">{{ $date->isoFormat('D MMM YYYY') }}</td>
                             <td class="text-center" onclick="event.stopPropagation();">
-                                @if ($document->path)
-                                    <a href="{{ asset('storage/' . $document->path) }}"
-                                        download="{{ $document->path }}">{{ $document->path }}</a>
+                                @if ($document->stored_name)
+                                    <a href="{{ asset('storage/' . $document->stored_name) }}"
+                                        download="{{ $document->original_name }}">{{ $document->original_name }}</a>
                                 @else
                                     -
                                 @endif
@@ -103,10 +97,16 @@
                                 $updated = \Carbon\Carbon::parse($document->updated_at)->locale('th');
                                 $created = \Carbon\Carbon::parse($document->created_at)->locale('th');
                             @endphp
-                            <td class="text-center">{{ $updated->isoFormat('D MMM') }} {{ $updated->year + 543 }}</td>
-                            <td class="text-center">{{ $created->isoFormat('D MMM') }} {{ $created->year + 543 }}</td>
+                            <td class="text-center">{{ $updated->isoFormat('D MMM') }} {{ $updated->year + 543 }}
+                                {{ $updated->format('H:i:s') }}</td>
+                            <td class="text-center">{{ $created->isoFormat('D MMM') }} {{ $created->year + 543 }}
+                                {{ $created->format('H:i:s') }}</td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="100%" class="text-center">ไม่มีข้อมูล</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </form>
@@ -115,7 +115,7 @@
             {{ $documents->links() }}
         </div>
 
-{{-- <div class="d-flex justify-content-center">
+        {{-- <div class="d-flex justify-content-center">
     {{$documents->links('vendor.livewire.task-paginate')}}
 </div> --}}
 

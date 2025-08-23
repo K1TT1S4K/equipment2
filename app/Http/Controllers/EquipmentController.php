@@ -26,7 +26,7 @@ class EquipmentController extends Controller
         $users = User::all();
         $equipment_units = Equipment_unit::all();
         $equipment_types = Equipment_type::all();
-        $equipments = Equipment::all();
+        $equipments = Equipment::paginate(10);
         $locations = Location::all();
         $titles = Title::all();
         $logs = Equipment_log::all();
@@ -304,8 +304,11 @@ class EquipmentController extends Controller
     }
 
 
-    public function export()
+    public function export($titleId)
     {
-        return Excel::download(new EquipmentsExport, 'equipments.xlsx');
+        // dd($titleId);
+        $title = Title::findOrFail($titleId); // ดึง title ตาม ID
+
+        return Excel::download(new EquipmentsExport($title), 'equipments.xlsx');
     }
 }

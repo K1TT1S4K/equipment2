@@ -13,7 +13,7 @@
                         <label class="form-label">คำนำหน้า</label>
                         <select name="prefix" class="form-control" required>
                             <option value="">-- เลือกคำนำหน้า --</option>
-                            @foreach($prefixes as $prefix)
+                            @foreach ($prefixes as $prefix)
                                 <option value="{{ $prefix->id }}">{{ $prefix->name }}</option>
                             @endforeach
                         </select>
@@ -47,8 +47,9 @@
                     <label class="form-label">รหัสผ่าน</label>
                     <input type="password" name="password" class="form-control" required>
                 </div>
-                <button type="submit" class="btn btn-primary">บันทึก</button>
-                <a href="{{ route('user') }}" class="btn btn-secondary">ยกเลิก</a>
+                <div class="text-end"><button type="submit" class="btn btn-primary">บันทึก</button>
+                    <a href="{{ route('user') }}" class="btn btn-secondary">ยกเลิก</a>
+                    </div>
             </form>
         </div>
     </div>

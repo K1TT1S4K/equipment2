@@ -76,8 +76,8 @@
                     @enderror
                 </div>
 
-                <button type="submit" class="btn btn-success">บันทึก</button>
-                <a href="{{ route('user') }}" class="btn btn-secondary">ยกเลิก</a>
+                <div class="text-end"><button type="submit" class="btn btn-success">บันทึก</button>
+                <a href="{{ route('user') }}" class="btn btn-secondary">ยกเลิก</a></div>
             </form>
         </div>
     </div>

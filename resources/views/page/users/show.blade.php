@@ -3,13 +3,19 @@
 
     <form method="GET" action="{{ route('user.search') }}" class="mb-3">
         <div class="d-flex">
-            <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded" placeholder="ค้นหาบัญชีผู้ใช้..." value="{{ request()->get('search') }}">
+            <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded"
+                placeholder="ค้นหาบัญชีผู้ใช้" value="{{ request()->get('search') }}">
             <select name="user_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
                 <option value="">-- เลือกระดับผู้ใช้ --</option>
-                <option value="ผู้ดูแลระบบ" {{ request()->get('user_type') == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>ผู้ดูแลระบบ</option>
-                <option value="เจ้าหน้าที่สาขา" {{ request()->get('user_type') == 'เจ้าหน้าที่สาขา' ? 'selected' : '' }}>เจ้าหน้าที่สาขา</option>
-                <option value="ผู้ปฏิบัติงานบริหาร" {{ request()->get('user_type') == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร</option>
-                <option value="อาจารย์" {{ request()->get('user_type') == 'อาจารย์' ? 'selected' : '' }}>อาจารย์</option>
+                <option value="ผู้ดูแลระบบ" {{ request()->get('user_type') == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>
+                    ผู้ดูแลระบบ</option>
+                <option value="เจ้าหน้าที่สาขา"
+                    {{ request()->get('user_type') == 'เจ้าหน้าที่สาขา' ? 'selected' : '' }}>เจ้าหน้าที่สาขา</option>
+                <option value="ผู้ปฏิบัติงานบริหาร"
+                    {{ request()->get('user_type') == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร
+                </option>
+                <option value="อาจารย์" {{ request()->get('user_type') == 'อาจารย์' ? 'selected' : '' }}>อาจารย์
+                </option>
             </select>
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
         </div>
@@ -27,9 +33,11 @@
                 <div class="col-4">
                     <div>
                         <!-- ปุ่มลบทั้งหมด -->
-                        <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn" style="display:none;">ลบรายการทั้งหมด</button>
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn"
+                            style="display:none;">ลบรายการทั้งหมด</button>
                         <!-- ปุ่มลบที่เลือก -->
-                        <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn" style="display:none;">ลบรายการที่เลือก</button>
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn"
+                            style="display:none;">ลบรายการที่เลือก</button>
                     </div>
                 </div>
                 <div class="col-4"></div>
@@ -54,22 +62,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $key => $user)
-                    <tr class="align-middle border border-secondary-subtle" style="cursor: pointer;" onclick="window.location='{{ route('user.edit', $user->id) }}'">
-                        <td class="text-center" style="width: 3%" onclick="event.stopPropagation();">
-                            <input type="checkbox" class="document-checkbox" name="selected_users[]" value="{{ $user->id }}">
-                        </td>
-                        <td class="text-center" style="width: 3%">{{ $key + 1 }}</td>
-                        <td style="width: 10%">{{ $user->username }}</td>
-                        <td class="p-3" style="width: 20%">{{ $user->prefix->name }} {{ $user->firstname }} {{ $user->lastname }}</td>
-                        <td class="text-center" style="width: 10%">{{ $user->user_type }}</td>
-                        {{-- <td>{{ $user->email }}</td> --}}
-                    </tr>
-                    @endforeach
+                    @forelse ($users as $key => $user)
+                        <tr class="align-middle border border-secondary-subtle" style="cursor: pointer;"
+                            onclick="window.location='{{ route('user.edit', $user->id) }}'">
+                            <td class="text-center" style="width: 3%" onclick="event.stopPropagation();">
+                                <input type="checkbox" class="document-checkbox" name="selected_users[]"
+                                    value="{{ $user->id }}">
+                            </td>
+                            {{-- <td class="text-center" style="width: 3%">{{ $key + 1 }}</td> --}}
+                            <td class="text-center" style="width: 3%">
+                                {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
+                            <td style="width: 10%">{{ $user->username }}</td>
+                            <td class="p-3" style="width: 20%">{{ $user->prefix->name }} {{ $user->firstname }}
+                                {{ $user->lastname }}</td>
+                            <td class="text-center" style="width: 10%">{{ $user->user_type }}</td>
+                            {{-- <td>{{ $user->email }}</td> --}}
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="100%" class="text-center">ไม่มีข้อมูล</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </form>
 
+        <div class="d-flex justify-content-center">
+            {{ $users->links() }}
+        </div>
         {{-- {{ $documents->links() }} --}}
     </div>
 

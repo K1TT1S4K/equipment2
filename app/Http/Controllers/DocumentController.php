@@ -23,14 +23,15 @@ class DocumentController extends Controller
         $documents = Document::when($search, function ($query, $search) {
             return $query->where('document_type', 'like', "%{$search}%")
                 ->orWhere('date', 'like', "%{$search}%")
-                ->orWhere('path', 'like', "%{$search}%")
+                ->orWhere('stored_name', 'like', "%{$search}%")
+                ->orWhere('original_name', 'like', "%{$search}%")
                 ->orWhere('created_at', 'like', "%{$search}%")
                 ->orWhere('updated_at', 'like', "%{$search}%");
         })
             ->when($documentType, function ($query, $documentType) {
                 return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
             })
-            ->paginate();
+            ->paginate(10);
 
         return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
     }
@@ -51,13 +52,18 @@ class DocumentController extends Controller
         $file = $request->file('document'); // รับไฟล์เอกสาร
         // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
         $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
-        $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
+        // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
+        $filePath = $file->store('', 'public'); // เก็บด้วยชื่อเดิม
 
         Document::create([ // สร้างเอกสารใหม่ในฐานข้อมูล
+            // dd('99'),
+            'original_name' => $originalName,
+            'stored_name' => $filePath,
             'document_type' => $request->document_type, // ประเภทเอกสาร
             'date' => $request->date, // วันที่
-            'path' => $filePath, // ที่อยู่ไฟล์ใน storage
+            // 'path' => $filePath, // ที่อยู่ไฟล์ใน storage
             // 'path' => 'documents/' . $originalName, // ที่อยู่ไฟล์ใน storage
+            
         ]);
 
         return redirect()->route('document.index')->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร

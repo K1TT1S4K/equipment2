@@ -19,9 +19,9 @@
                 <div class="mb-3 col-6">
                     <label class="form-label">คำนำหน้า</label>
                     <select name="prefix" class="form-control border border-dark" required>
-                        @foreach($prefixes as $prefix)
-                                <option value="{{ $prefix->id }}">{{ $prefix->name }}</option>
-                            @endforeach
+                        @foreach ($prefixes as $prefix)
+                            <option value="{{ $prefix->id }}">{{ $prefix->name }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -43,11 +43,28 @@
                     required>
             </div> --}}
             <div class="mb-3">
-                <label class="form-label">รหัสผ่านใหม่ (ถ้าต้องการเปลี่ยน)</label>
+                <label class="form-label">รหัสผ่านเก่า</label>
+                <input type="password" name="old_password" class="form-control border border-dark">
+            </div>
+
+            @error('old_password')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+
+            <div class="mb-3">
+                <label class="form-label">รหัสผ่านใหม่</label>
                 <input type="password" name="password" class="form-control border border-dark">
             </div>
 
-            <button type="submit" class="btn btn-primary">บันทึก</button>
+            <div class="mb-3">
+                <label class="form-label">ยืนยันรหัสผ่านใหม่</label>
+                <input type="password" name="password_confirmation" class="form-control border border-dark">
+            </div>
+            @error('password')
+                <div class="alert alert-danger">รหัสผ่านใหม่ไม่ตรงกัน</div>
+            @enderror
+
+            <div class="text-end"><button type="submit" class="btn btn-primary">บันทึก</button></div>
         </form>
     </div>
 

@@ -133,12 +133,12 @@ class UserController extends Controller
     }
 
 
-public function profile()
-{
-    $user = auth()->user(); // ดึงข้อมูลผู้ใช้ที่ล็อกอิน
-    $prefixes = Prefix::all(); // สมมุติว่ามี field prefix ในตาราง users
-    return view('profile', compact('user', 'prefixes'));
-}
+    public function profile()
+    {
+        $user = auth()->user(); // ดึงข้อมูลผู้ใช้ที่ล็อกอิน
+        $prefixes = Prefix::all(); // สมมุติว่ามี field prefix ในตาราง users
+        return view('profile', compact('user', 'prefixes'));
+    }
 
 
     public function updateProfile(Request $request)
@@ -150,18 +150,46 @@ public function profile()
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:8', // ไม่บังคับเปลี่ยนรหัสผ่าน
+            'old_password' => [function ($attribute, $value, $fail) {
+                if (!\Hash::check($value, auth()->user()->password)) {
+                    $fail('รหัสผ่านเก่าไม่ถูกต้อง');
+                }
+            }],
+            'password' => 'nullable|string|min:8|confirmed', // เพิ่ม validated แบบ Laravel
         ]);
+
+        // note: 'confirmed' จะตรวจสอบว่ามี input 'password_confirmation' ตรงกัน
+        // ดังนั้นต้องเปลี่ยนชื่อ field confirm_password เป็น password_confirmation
+
+        $passwordChanged = false;
+
+        if ($request->filled('password')) {
+            if (!$request->filled('old_password') || !Hash::check($request->old_password, $user->password)) {
+                // เก็บข้อความผิดพลาดลง session
+                return back()->with('error', 'เปลี่ยนรหัสผ่านไม่สำเร็จ: รหัสผ่านเก่าไม่ถูกต้อง');
+            }
+
+            $user->password = Hash::make($request->password);
+            $passwordChanged = true;
+        }
 
         $user->update([
             'username' => $request->username,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             // 'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password, // เปลี่ยนรหัสผ่านถ้ามีการกรอก
+            'password' => $user->password,
         ]);
 
-        return redirect()->route('profile')->with('success', 'อัปเดตโปรไฟล์เรียบร้อยแล้ว');
+
+        // แสดงข้อความสำเร็จ
+        if ($passwordChanged) {
+            return redirect()->route('profile')->with('success', 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว');
+        } else {
+            return redirect()->route('profile')->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
+        }
+
+        // return redirect()->route('profile')->with('success', 'อัปเดตโปรไฟล์เรียบร้อยแล้ว');
     }
 
     public function trashed()
@@ -212,6 +240,19 @@ public function profile()
     {
         // รับข้อมูล ID ของผู้ใช้ที่เลือก
         $ids = $request->input('selected_users', []);
+        // dd($ids);
+        // $ids = explode(',', $request->input('selected_users', []));
+        // $selected = explode(',', $request->input('selected_documents'));
+
+        // ถ้ามันเป็น JSON string เช่น '["8","9"]'
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true);
+        }
+
+        // ถ้าเป็น int หรือ string เดี่ยว เช่น "8"
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
 
         // กู้คืนผู้ใช้ที่เลือก
         User::onlyTrashed()->whereIn('id', $ids)->restore();

@@ -21,12 +21,15 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\Exportable;
 
-class BaseClass extends Model implements FromCollection, WithHeadings, WithColumnWidths, WithEvents, WithStyles, WithTitle
+class EquipmentsExport implements FromCollection, WithHeadings, WithColumnWidths, WithEvents, WithStyles
 {
     /**
      * @return \Illuminate\Support\Collection
      */
+
+    use Exportable;
 
     protected $title;
 
@@ -35,10 +38,10 @@ class BaseClass extends Model implements FromCollection, WithHeadings, WithColum
         $this->title = $title;
     }
 
-    public function title(): string
-    {
-        return ($this->title->group) . "-" . ($this->title->name); // 📝 ชื่อตามที่คุณต้องการ
-    }
+    // public function title(): string
+    // {
+    //     return $this->title->group . "-" . $this->title->name;
+    // }
 
     public function collection()
     {
@@ -131,6 +134,9 @@ class BaseClass extends Model implements FromCollection, WithHeadings, WithColum
             }
         });
         return $dataWithExtra;
+        // return Equipment::where('title_id',$this->id)->get();
+
+        // dd(99);
     }
 
     public function headings(): array
@@ -197,20 +203,20 @@ class BaseClass extends Model implements FromCollection, WithHeadings, WithColum
     }
 }
 
-class EquipmentsExport implements WithMultipleSheets
-{
-    public function sheets(): array
-    {
-        $data = Title::all();
-        $tab = [];
+// class EquipmentsExport implements WithMultipleSheets
+// {
+//     public function sheets(): array
+//     {
+//         $data = Title::all();
+//         $tab = [];
 
-        foreach ($data as $title) {
-            $tab[] = new BaseClass($title);
-        }
-        // dd($tab);
-        return $tab;
-    }
-}
+//         foreach ($data as $title) {
+//             $tab[] = new BaseClass($title);
+//         }
+//         // dd($tab);
+//         return $tab;
+//     }
+// }
 
 // class T1 extends Model implements FromCollection, WithHeadings, WithColumnWidths, WithEvents, WithStyles
 // {

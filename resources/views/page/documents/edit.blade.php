@@ -35,7 +35,7 @@
                     @endif
                 </div>
                 @can('admin-or-branch')
-                    <div class="text-center">
+                    <div class="text-end">
                         <button type="submit" class="btn btn-primary">บันทึก</button>
                         <a href="{{ route('document.index') }}" class="btn btn-secondary">ยกเลิก</a>
                     </div>
