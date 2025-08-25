@@ -21,19 +21,75 @@ use App\Exports\UsersExport;
 
 class EquipmentController extends Controller
 {
-    public function index()
+    // public function index(Request $request)
+    // {
+    //     $users = User::all();
+    //     $equipment_units = Equipment_unit::all();
+    //     $equipment_types = Equipment_type::all();
+    //     $equipments = Equipment::paginate(10);
+    //     $locations = Location::all();
+    //     $titles = Title::all();
+    //     $logs = Equipment_log::all();
+
+    //     $equipment_trash = Equipment::onlyTrashed()->get();
+
+    //     $equipments->appends($request->all());
+
+    //     return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
+    // }
+
+    // ตอนแรกเป็น search แต่เปลี่ยนเป็น index เพราะต้องการให้หน้าแรกแสดงข้อมูลเหมืนกัน
+    public function index(Request $request)
     {
         $users = User::all();
         $equipment_units = Equipment_unit::all();
         $equipment_types = Equipment_type::all();
-        $equipments = Equipment::paginate(10);
+        // $equipments = Equipment::all();
         $locations = Location::all();
         $titles = Title::all();
         $logs = Equipment_log::all();
-
         $equipment_trash = Equipment::onlyTrashed()->get();
 
+        // dd($request->input('unit_filter')!='all'); 
+
+        $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
+        $title = $request->input('title_filter'); // ค้นหาจากประเภทหัวข้อ
+        $unit = $request->input('unit_filter'); //ค้นหาจากประเภทหน่วยนับ
+        $location = $request->input('location_filter');
+        $user = $request->input('user_filter');
+
+        $equipments = Equipment::when($search, function ($query, $search) {
+            return $query->where('number', 'like', "%{$search}%")
+                ->orWhere('name', 'like', "%{$search}%")
+                ->orWhere('price', 'like', "%{$search}%")
+                ->orWhere('total_price', 'like', "%{$search}%")
+                ->orWhere('status_found', 'like', "%{$search}%")
+                ->orWhere('status_not_found', 'like', "%{$search}%")
+                ->orWhere('status_broken', 'like', "%{$search}%")
+                ->orWhere('status_disposal', 'like', "%{$search}%")
+                ->orWhere('status_transfer', 'like', "%{$search}%")
+                ->orWhere('created_at', 'like', "%{$search}%")
+                ->orWhere('updated_at', 'like', "%{$search}%");
+        })
+            ->when($title, function ($query, $title) {
+                return $query->where('title_id', $title); // กรองตามหัวข้อ
+            })
+            ->when($unit != 'all', function ($query, $unit) {
+                return $query->where('equipment_unit_id', $unit); // กรองตามหน่วยนับ
+            })
+            ->when($location != 'all', function ($query, $location) {
+                return $query->where('location_id', $location); // กรองตามที่อยู่
+            })
+            ->when($user != 'all', function ($query, $user) {
+                return $query->where('user_id', $user); // กรองตามผู้ดูแล
+            })
+            ->paginate(10);
+
+            $equipments->appends($request->all());
+            // dd($request->query());
+            
         return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
+        // dd($request->query());
     }
 
     public function create()

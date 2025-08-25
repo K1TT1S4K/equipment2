@@ -1,8 +1,79 @@
 <x-layouts.app>
-    @php $count = 0; @endphp
+    {{-- เอาไว้นับครุภัณฑ์ แต่ไม่ได้ใช้แล้ว --}}
+    {{-- @php $count = 0; @endphp --}}
 
     <h3 class="text-dark mb-4">จัดการครุภัณฑ์</h3>
-    <form action="#" method="GET">
+
+    <form action="{{ route('equipment.index') }}" method="GET" class="mb-3">
+        <div class="d-flex">
+
+            {{-- <label for="query" class="form-label">ค้นหา</label> --}}
+            <input type="text" id="query" name="query" class="form-control shadow-lg p-2 mb-3 rounded"
+                placeholder="ค้นหาเอกสาร" value="{{ request('query') }}">
+
+            <select class="form-control shadow-lg p-2 mb-1 rounded" id="title_filter" name="title_filter">
+                @foreach ($titles as $t)
+                    <option value="{{ $t->id }}" {{ request('title_filter') == $t->id ? 'selected' : '' }}>
+                        {{ $t->group }} - {{ $t->name }}
+                    </option>
+                @endforeach
+            </select>
+
+            <div class="d-flex mb-2">
+                <select class="form-control shadow-lg p-2 mb-1 me-2 rounded" id="unit_filter" name="unit_filter">
+                    <option value="all"
+                        {{ request('unit_filter') == 'all' || !request('unit_filter') ? 'selected' : '' }}>
+                        ---หน่วยนับ---
+                    </option>
+                    @foreach ($equipment_units as $unit)
+                        <option value="{{ $unit->id }}"
+                            {{ request('unit_filter') == $unit->id ? 'selected' : '' }}>
+                            {{ $unit->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <select class="form-control shadow-lg p-2 mb-1 me-2 rounded" id="location_filter"
+                    name="location_filter">
+                    <option value="all"
+                        {{ request('location_filter') == 'all' || !request('location_filter') ? 'selected' : '' }}>
+                        ---สถานที่ทั้งหมด---
+                    </option>
+                    @foreach ($locations as $location)
+                        <option value="{{ $location->id }}"
+                            {{ request('location_filter') == $location->id ? 'selected' : '' }}>
+                            @if ($location->id == null)
+                                ---ไม่ได้กำหนดสถานที่---
+                            @else
+                                {{ $location->name }}
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
+                <select class="form-control shadow-lg p-2 mb-1 rounded" id="user_filter" name="user_filter">
+                    <option value="all"
+                        {{ request('user_filter') == 'all' || !request('user_filter') ? 'selected' : '' }}>
+                        ---ผู้ดูแลทั้งหมด---
+                    </option>
+                    @foreach ($users as $user)
+                        <option value="{{ $user->id }}"
+                            {{ request('user_filter') == $user->id ? 'selected' : '' }}>
+                            @if ($user->id == null)
+                                ---ไม่ได้กำหนดผู้ดูแล---
+                            @else
+                                {{ $user->prefix->name }}{{ $user->firstname }}
+                                {{ $user->lastname }}
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
+
+        </div>
+    </form>
+
+    {{-- <form action="#" method="GET">
         <div class="d-flex mb-2">
             <select class="form-control shadow-lg p-2 mb-1 rounded" id="title_filter" name="title_filter"
                 onchange="this.form.submit()">
@@ -42,8 +113,6 @@
                             {{ $location->location->name }}
                         @endif
                     </option>
-                    {{-- @empty
-                                <option value="">ไม่พบข้อมูล</option> --}}
                 @endforeach
             </select>
             <select class="form-control shadow-lg p-2 mb-1 rounded" id="user_filter" name="user_filter"
@@ -65,18 +134,15 @@
                 @endforeach
             </select>
         </div>
-    </form>
+    </form> --}}
     {{-- ค้นหา --}}
-    <form onsubmit="searchTable(); return false;">
+    {{-- <form onsubmit="searchTable(); return false;">
         <div class="d-flex">
-            {{-- <div class="col-auto">
-                    <label for="equipments-search" class="form-label">ค้นหา</label>
-                </div> --}}
             <input type="text" class="form-control shadow-lg p-1 mb-3 rounded" id="equipments-search"
                 placeholder="ค้นหาครุภัณฑ์">
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
         </div>
-    </form>
+    </form> --}}
     {{-- แถบปุ่ม --}}
     <div class="row mt-1">
         <div class="d-flex justify-content-between">
@@ -304,7 +370,8 @@
                                         <td class="border border-dark align-middle"
                                             style="background-color: rgb(226, 227, 229)"
                                             onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ ++$count }}<br>
+                                            {{-- {{ ++$count }}<br> --}}
+                                            {{ $loop->iteration + ($equipments->currentPage() - 1) * $equipments->perPage() }}
                                         </td>
                                         <td class="border border-dark align-middle"
                                             style="background-color: rgb(226, 227, 229)"
@@ -415,7 +482,8 @@
                                 </td>
                                 <td class="border border-dark align-middle"
                                     onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ ++$count }}<br>
+                                    {{-- {{ ++$count }}<br> --}}
+                                    {{ $loop->iteration + ($equipments->currentPage() - 1) * $equipments->perPage() }}
                                 </td>
                                 <td class="border border-dark align-middle"
                                     onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
@@ -495,6 +563,21 @@
                     @endforelse
                 </tbody>
             </table>
+
+            {{-- ตัวแบ่งหน้า --}}
+            <div class="d-flex justify-content-center">
+                {{-- ไว้ดูค่าเพื่อ debug --}}
+                {{-- <pre>
+                    {{ print_r(request()->all(), true) }}
+    {{ $equipments->url(2) }}
+</pre> --}}
+                {{ $equipments->links() }}
+            </div>
         </div>
     </div>
 </x-layouts.app>
+
+
+<script>
+
+</script>

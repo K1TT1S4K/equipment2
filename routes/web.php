@@ -55,6 +55,7 @@ Route::middleware(['auth','can:admin-or-branch'])->group(function () {
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
     Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
     // Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
+    Route::get('equipments/search', [EquipmentController::class, 'search'])->name('equipment.search');
     Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
     Route::get('/get-equipment-types/{title_id}', [EquipmentController::class, 'getEquipmentTypes']);
     Route::post('/equipment/move-to-trash', [EquipmentController::class, 'moveToTrash'])->name('equipment.moveToTrash');

@@ -33,6 +33,9 @@ class DocumentController extends Controller
             })
             ->paginate(10);
 
+            // สำคัญ: เก็บ query string เอาไว้
+            $documents->appends($request->all());
+
         return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
     }
 

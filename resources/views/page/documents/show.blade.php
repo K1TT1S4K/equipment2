@@ -112,6 +112,11 @@
         </form>
 
         <div class="d-flex justify-content-center">
+                            {{-- ไว้ดูค่าเพื่อ debug --}}
+                <pre>
+{{ print_r(request()->all(), true) }}
+{{ $documents->url(2) }}
+</pre>
             {{ $documents->links() }}
         </div>
 
