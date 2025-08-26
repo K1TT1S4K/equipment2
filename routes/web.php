@@ -21,24 +21,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Route::get('/reset-password/{token}', function ($token) {
-//     return Volt::render('auth.reset-password', ['token' => $token]);
-// })->name('password.reset');
-
 Route::get('/reset-password/{token}', function ($token) {
     return view('livewire.auth.reset-password', ['token' => $token]);
 })->middleware('guest')->name('password.reset');
 
-// Route::get('/contact', 'contact-form')->name('contact');
-
-// Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-// Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-// Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-// Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
-
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified'])
-//     ->name('dashboard');
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth'])
     ->name('dashboard');
@@ -47,7 +33,7 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function() {
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
-    Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.index');
+    Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
 });
 
@@ -78,8 +64,7 @@ Route::middleware(['auth','can:admin'])->group(function () {
     Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('users/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('user.delete');
-
-    // ส่วนอื่นๆ...
+    // หน้ากู้คืนผู้ใช้ที่ถูกลบ
     Route::get('users/trash/search', [UserController::class, 'searchTrash'])->name('user.trashsearch');
     Route::post('users/restore/{id}', [UserController::class, 'restore'])->name('user.restore');
     Route::post('users/restore-selected', [UserController::class, 'restoreSelected'])->name('user.restoreSelected');
@@ -88,8 +73,6 @@ Route::middleware(['auth','can:admin'])->group(function () {
     Route::post('users/delete-selected', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
     Route::delete('users/delete-all', [UserController::class, 'deleteAll'])->name('user.deleteAll');
 });
-
-
 
 Route::middleware(['auth'])->group(function(){
  Route::get('/documents', [DocumentController::class, 'index'])->name('document.index');
