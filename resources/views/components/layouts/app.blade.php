@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Disposal Equipment</title>
+     <link rel="icon" href="{{ asset('storage/RMUTI.png') }}" type="image/png">
 
     <!-- Bootstrap CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -66,6 +67,7 @@
             border-color: red !important;
         }
     </style>
+
 </head>
 
 <body style="background-color: var(--bs-light-green);">

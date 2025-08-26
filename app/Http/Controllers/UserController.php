@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Prefix;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -59,22 +60,33 @@ class UserController extends Controller
     {
         // dd($request->all()); // ตรวจสอบค่าที่ถูกส่งมาจากฟอร์ม
         $request->validate([
-            'username' => 'required|string|max:50|unique:users,username',
+            // 'username' => 'required|string|max:50|unique:users,username|unique:users,username',
+            'username' => ['required', 'string', 'max:50', function ($attribute, $value, $fail) {
+                // ตรวจสอบว่าเหมือนกับ username ที่มีอยู่แล้วหรือไม่
+                $exists = User::where('username', $value)->exists();
+                if ($exists) {
+                    $fail('ชื่อผู้ใช้นี้มีอยู่แล้ว');
+                }
+            }],
             'prefix' => 'required|exists:prefixes,id',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่สาขา,ผู้ปฏิบัติงานบริหาร,อาจารย์',
-            'email' => 'required|email|max:100|unique:users,email',
+            // 'email' => 'required|email|max:100|unique:users,email',
+            // 'email' => Str::random(15) . "@gmail.com",
             'password' => 'required|string|min:8',
         ]);
 
+        $email = Str::random(15) . "@gmail.com";
+        // dd($email);
         User::create([
             'username' => $request->username,
             'prefix_id' => $request->prefix,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'user_type' => $request->user_type,
-            'email' => $request->email,
+            // 'email' => $request->email,
+            'email' => $email,
             'password' => Hash::make($request->password), // เข้ารหัสรหัสผ่าน
         ]);
 
@@ -95,7 +107,14 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'username' => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
+            // 'username' => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
+            'username' => ['required', 'string', 'max:50', function ($attribute, $value, $fail) use ($user) {
+                // ตรวจสอบว่าเหมือนกับ username ที่มีอยู่แล้วหรือไม่
+                $exists = User::where('username', $value)->where('id', '!=', $user->id)->exists();
+                if ($exists) {
+                    $fail('ชื่อผู้ใช้นี้มีอยู่แล้ว');
+                }
+            }],
             'prefix' => 'required|exists:prefixes,id',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
@@ -147,6 +166,13 @@ class UserController extends Controller
 
         $request->validate([
             'username' => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
+            // 'username' => ['required', 'string', 'max:50', function ($attribute, $value, $fail) use ($user) {
+            //     // ตรวจสอบว่าเหมือนกับ username ที่มีอยู่แล้วหรือไม่
+            //     $exists = User::where('username', $value)->where('id', '!=', $user->id)->exists();
+            //     if ($exists) {
+            //         $fail('ชื่อผู้ใช้นี้มีอยู่แล้ว');
+            //     }
+            // }],
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
@@ -286,7 +312,7 @@ class UserController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('username', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
+                    // ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('firstname', 'like', "%{$search}%")
                     ->orWhere('lastname', 'like', "%{$search}%");
             });

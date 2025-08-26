@@ -15,6 +15,9 @@
                     <label class="form-label">ชื่อผู้ใช้</label>
                     <input type="text" name="username" class="form-control border border-dark"
                         value="{{ $user->username }}" required>
+                                                @error('username')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                 </div>
                 <div class="mb-3 col-6">
                     <label class="form-label">คำนำหน้า</label>

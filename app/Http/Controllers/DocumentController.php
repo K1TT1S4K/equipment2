@@ -33,8 +33,8 @@ class DocumentController extends Controller
             })
             ->paginate(10);
 
-            // สำคัญ: เก็บ query string เอาไว้
-            $documents->appends($request->all());
+        // สำคัญ: เก็บ query string เอาไว้
+        $documents->appends($request->all());
 
         return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
     }
@@ -66,7 +66,7 @@ class DocumentController extends Controller
             'date' => $request->date, // วันที่
             // 'path' => $filePath, // ที่อยู่ไฟล์ใน storage
             // 'path' => 'documents/' . $originalName, // ที่อยู่ไฟล์ใน storage
-            
+
         ]);
 
         return redirect()->route('document.index')->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
@@ -146,13 +146,13 @@ class DocumentController extends Controller
         Document::onlyTrashed()->forceDelete(); // ลบเอกสารทั้งหมดถาวร
         return redirect()->route('document.trash')->with('success', 'ลบเอกสารทั้งหมดเรียบร้อยแล้ว');
     }
-    public function deleteSelectedAll(Request $request)
-    {
-        $ids = $request->input('selected_documents', []); // รับ ID ของเอกสารที่เลือก
-        Document::whereIn('id', $ids)->forceDelete(); // ลบเอกสารที่เลือกถาวร
+    // public function deleteSelectedAll(Request $request)
+    // {
+    //     $ids = $request->input('selected_documents', []); // รับ ID ของเอกสารที่เลือก
+    //     Document::whereIn('id', $ids)->forceDelete(); // ลบเอกสารที่เลือกถาวร
 
-        return redirect()->route('document.trash')->with('success', 'ลบเอกสารที่เลือกเรียบร้อยแล้ว');
-    }
+    //     return redirect()->route('document.trash')->with('success', 'ลบเอกสารที่เลือกเรียบร้อยแล้ว');
+    // }
     public function forceDelete($id) // ลบเอกสารถาวร
     {
         $document = Document::withTrashed()->findOrFail($id); // ค้นหาเอกสารที่ถูกลบตาม ID ที่ส่งมา
@@ -169,16 +169,17 @@ class DocumentController extends Controller
     }
 
     public function deleteSelected(Request $request)
-{
-    $documentIds = $request->input('selected_documents');
+    {
+        $documentIds = $request->input('selected_documents');
+// dd('99');
 
-    if ($documentIds) {
-        Document::whereIn('id', $documentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
-        return redirect()->route('document.index')->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
+        if ($documentIds) {
+            Document::whereIn('id', $documentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
+            return redirect()->route('document.index')->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
+        }
+
+        return redirect()->route('document.index')->with('error', 'กรุณาเลือกเอกสาร');
     }
-
-    return redirect()->route('document.index')->with('error', 'กรุณาเลือกเอกสาร');
-}
 
     public function restoreAllDocuments() // กู้คืนเอกสารทั้งหมด
     {

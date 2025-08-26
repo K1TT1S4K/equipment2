@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EquipmentsExport;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 use App\Imports\UsersImport;
 use App\Exports\UsersExport;
@@ -85,9 +86,9 @@ class EquipmentController extends Controller
             })
             ->paginate(10);
 
-            $equipments->appends($request->all());
-            // dd($request->query());
-            
+        $equipments->appends($request->all());
+        // dd($request->query());
+
         return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
         // dd($request->query());
     }
@@ -359,12 +360,74 @@ class EquipmentController extends Controller
         return response()->json(['message' => 'ย้ายข้อมูลออกจากถังขยะสำเร็จ']);
     }
 
-
     public function export($titleId)
     {
         // dd($titleId);
         $title = Title::findOrFail($titleId); // ดึง title ตาม ID
 
         return Excel::download(new EquipmentsExport($title), 'equipments.xlsx');
+    }
+
+    /// ฟังก์ชัน delete ก้อปมาจากคุณกิต
+    public function deleteAll()
+    {
+        Equipment::onlyTrashed()->forceDelete(); // ลบครุภัณฑ์ทั้งหมดถาวร
+        return redirect()->route('equipment.trash')->with('success', 'ลบเอกสารทั้งหมดเรียบร้อยแล้ว');
+    }
+    /// ฟังก์ชัน delete ก้อปมาจากคุณกิต
+    public function deleteSelectedAll(Request $request)
+    {
+        $ids = $request->input('selected_equipments', []); // รับ ID ของครุภัณฑ์ที่เลือก
+        Equipment::whereIn('id', $ids)->forceDelete(); // ลบครุภัณฑ์ที่เลือกถาวร
+
+        return redirect()->route('equipment.trash')->with('success', 'ลบเอกสารที่เลือกเรียบร้อยแล้ว');
+    }
+    /// ฟังก์ชัน delete ก้อปมาจากคุณกิต
+    public function deleteSelected(Request $request)
+    {
+        $equipmentIds = $request->input('selected_equipments');
+
+        if ($equipmentIds) {
+            Equipment::whereIn('id', $equipmentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
+            // dd('900');
+            return redirect()->route('equipment.index')->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
+        }
+
+        return redirect()->route('equipment.index')->with('error', 'กรุณาเลือกเอกสาร');
+    }
+
+    public function forceDelete($id) // ลบครุภัณฑ์ถาวร
+    {
+        $equipment = Equipment::withTrashed()->findOrFail($id); // ค้นหาครุภัณฑ์ที่ถูกลบตาม ID ที่ส่งมา
+        Storage::delete('public/' . $equipment->path); // ลบไฟล์จาก storage
+        $equipment->forceDelete(); // ลบครุภัณฑ์จากฐานข้อมูล
+
+        return redirect()->route('document.trash')->with('success', 'ลบครุภัณฑ์ถาวรเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าครุภัณฑ์
+    }
+    /// ฟังก์ชัน restore ก้อปมาจากคุณกิต
+    public function restore($id) // กู้คืนครุภัณฑ์ที่ถูกลบ
+    {
+        $equipment = Equipment::onlyTrashed()->findOrFail($id); // ค้นหาครุภัณฑ์ที่ถูกลบตาม ID ที่ส่งมา
+        $equipment->restore(); // กู้คืนครุภัณฑ์
+        return redirect()->route('equipment.trash')->with('success', 'กู้คืนครุภัณฑ์เรียบร้อยแล้ว');
+    }
+    /// ฟังก์ชัน restore ก้อปมาจากคุณกิต
+    public function restoreAll()
+    {
+        Equipment::onlyTrashed()->restore(); // กู้คืนครุภัณฑ์ทั้งหมด
+        return redirect()->route('equipment.trash')->with('success', 'กู้คืนครุภัณฑ์ทั้งหมดเรียบร้อยแล้ว');
+    }
+    /// ฟังก์ชัน restore ก้อปมาจากคุณกิต
+    public function restoreMultiple(Request $request)
+    {
+        $ids = explode(',', $request->input('selected_equipments', ''));
+        Equipment::onlyTrashed()->whereIn('id', $ids)->restore();
+        return redirect()->route('equipment.trash')->with('success', 'กู้คืนครุภัณฑ์ที่เลือกเรียบร้อยแล้ว');
+    }
+    /// ฟังก์ชัน restore ก้อปมาจากคุณกิต
+    public function restoreAllEquipments() // กู้คืนครุภัณฑ์ทั้งหมด
+    {
+        Equipment::onlyTrashed()->restore(); // กู้คืนครุภัณฑ์ทั้งหมด
+        return redirect()->route('equipment.trash')->with('success', 'กู้คืนครุภัณฑ์ทั้งหมดเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าครุภัณฑ์
     }
 }

@@ -113,10 +113,10 @@
 
         <div class="d-flex justify-content-center">
                             {{-- ไว้ดูค่าเพื่อ debug --}}
-                <pre>
+                {{-- <pre>
 {{ print_r(request()->all(), true) }}
 {{ $documents->url(2) }}
-</pre>
+</pre> --}}
             {{ $documents->links() }}
         </div>
 
