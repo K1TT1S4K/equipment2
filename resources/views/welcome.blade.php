@@ -4,7 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Welcome</title>
+        <title>ระบบแทงจำหน่ายครุภัณฑ์</title>
+        <link rel="icon" href="{{ asset('storage/RMUTI.png') }}" type="image/png">
 
         <!-- Bootstrap CSS -->
         {{-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet"> --}}

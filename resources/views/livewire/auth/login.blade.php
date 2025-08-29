@@ -93,10 +93,10 @@ protected function throttleKey(): string
                     <form wire:submit.prevent="login">
                         <!-- Email Address -->
                         <div class="form-group mt-3">
-                            <label for="username">Username</label>
+                            <label for="username">ชื่อผู้ใช้</label>
                             <input wire:model.defer="username" type="text" name="username"
                                 class="form-control @error('username') is-invalid @enderror" required autofocus
-                                autocomplete="username" placeholder="Username" />
+                                autocomplete="username" placeholder="ชื่อผู้ใช้" />
                             {{-- @error('username')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror --}}
@@ -106,10 +106,10 @@ protected function throttleKey(): string
 
                         <!-- Password -->
                         <div class="form-group mt-3">
-                            <label for="password">Password</label>
+                            <label for="password">รหัสผ่าน</label>
                             <input wire:model.defer="password" type="password" name="password"
                                 class="form-control @error('password') is-invalid @enderror" required
-                                autocomplete="current-password" placeholder="Password" />
+                                autocomplete="current-password" placeholder="รหัสผ่าน" />
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -118,13 +118,13 @@ protected function throttleKey(): string
                         <!-- Remember Me -->
                         <div class="form-check mt-3">
                             <input wire:model="remember" type="checkbox" class="form-check-input" id="remember" />
-                            <label class="form-check-label" for="remember">Remember me</label>
+                            <label class="form-check-label" for="remember">จดจำการลงชื่อเข้าใช้</label>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="text-center mt-4">
                             <button type="submit" class="btn btn-primary w-100" wire:loading.attr="disabled">
-                                <span wire:loading.remove>Log in</span>
+                                <span wire:loading.remove>ลงชื่อเข้าใช้</span>
                                 <span wire:loading>Loading...</span>
                             </button>
                         </div>

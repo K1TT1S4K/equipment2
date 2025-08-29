@@ -1,6 +1,31 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">เอกสาร</h3>
-    <div class="card shadow-lg p-3 mb-4 bg-body">
+    <h3 class="text-dark mb-4">กู้คืนเอกสาร</h3>
+    <form action="{{ route('trash.search') }}" method="GET" class="mb-3">
+        <div class="d-flex">
+
+            {{-- <label for="query" class="form-label">ค้นหา</label> --}}
+            <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded" placeholder="ค้นหาเอกสาร"
+                value="{{ request('search') }}">
+            {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
+            <select id="document_type" name="document_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
+                <option value="">-- เลือกประเภทเอกสาร --</option>
+                <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
+                    {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
+                    ยื่นแทงจำหน่ายครุภัณฑ์</option>
+                <option value="แทงจำหน่ายครุภัณฑ์"
+                    {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
+                </option>
+                <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
+                    โอนครุภัณฑ์</option>
+            </select>
+
+
+            <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
+            {{-- <a href="{{ route('document.search') }}" class="btn btn-danger ms-2">ล้างการค้นหา</a> --}}
+
+        </div>
+    </form>
+    {{-- <div class="card shadow-lg p-3 mb-4 bg-body">
         <form action="{{ route('trash.search') }}" method="GET">
             <div class="row">
                 <div class="col-md mb-3 mb-sm-0">
@@ -13,9 +38,11 @@
                     <label for="document_type" class="form-label">ประเภทเอกสาร</label>
                     <select id="document_type" name="document_type" class="form-select">
                         <option value="">-- เลือกประเภทเอกสาร --</option>
-                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์" {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
+                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
+                            {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
                             ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                        <option value="แทงจำหน่ายครุภัณฑ์" {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
+                        <option value="แทงจำหน่ายครุภัณฑ์"
+                            {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
                             แทงจำหน่ายครุภัณฑ์</option>
                         <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
                             โอนครุภัณฑ์</option>
@@ -28,7 +55,7 @@
                 <a href="{{ route('document.trash') }}" class="btn btn-danger ms-2">ล้างการค้นหา</a>
             </div>
         </form>
-    </div>
+    </div> --}}
 
     <div class="card shadow-lg p-3 mb-4 bg-body">
         <div class="row">
@@ -49,7 +76,8 @@
                 </div>
 
                 <div id="bulk-restore-selected" style="display: none;">
-                    <form id="bulk-restore-selected-form" action="{{ route('document.restoreMultiple') }}" method="POST">
+                    <form id="bulk-restore-selected-form" action="{{ route('document.restoreMultiple') }}"
+                        method="POST">
                         @csrf
                         <input type="hidden" name="selected_documents" id="selected_documents_json_restore_selected">
                         <button type="submit" class="btn btn-warning"
@@ -71,7 +99,8 @@
                 </div>
 
                 <div id="bulk-delete-selected" style="display: none;">
-                    <form id="bulk-delete-selected-form" action="{{ route('document.deleteSelected') }}" method="POST">
+                    <form id="bulk-delete-selected-form" action="{{ route('document.deleteSelected') }}"
+                        method="POST">
                         @csrf
                         <input type="hidden" name="selected_documents" id="selected_documents_json_delete_selected">
                         <button type="submit" class="btn btn-danger"
@@ -86,46 +115,73 @@
         <div class="row p-3">
             <table class="table table-striped table-hover w-full">
                 <thead class="text-center table-dark align-middle">
-                    <tr>
+                    <tr class="text-center">
                         <th><input type="checkbox" id="select-all"></th>
-                        <th>ลำดับ</th>
-                        <th>ประเภทเอกสาร</th>
-                        <th>วันที่ดำเนินการ</th>
-                        <th>เอกสารอ้างอิง</th>
-                        <th>วันที่ลบ</th>
+                        <th class="align-middle">ลำดับ</th>
+                        <th class="align-middle">ประเภทเอกสาร</th>
+                        <th class="align-middle">วันที่ดำเนินการ</th>
+                        <th class="align-middle">เอกสารอ้างอิง</th>
+                        <th class="align-middle">วันที่ลบ</th>
+                        {{-- <th class="align-middle">วันที่สร้าง</th> --}}
                     </tr>
                 </thead>
-                <tbody class="align-middle p-3 text-center">
-                    @forelse ($documents as $doc)
-                        <tr>
-                            <td><input type="checkbox" name="selected_documents[]" value="{{ $doc->id }}" class="document-checkbox"></td>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $doc->document_type }}</td>
-                            <td>{{ \Carbon\Carbon::parse($doc->date)->locale('th')->isoFormat('D MMM YYYY') }}</td>
-                            <td>
-                                @if ($doc->path)
-                                    <a href="{{ asset('storage/' . $doc->path) }}" download>{{ $doc->path }}</a>
+                <tbody class="align-middle p-3">
+                    @forelse ($documents as $key => $document)
+                        <tr class="text-center" style="cursor: pointer;"
+                            onclick="window.location='{{ route('document.edit', $document->id) }}'">
+                            <td onclick="event.stopPropagation();">
+                                <input type="checkbox" class="document-checkbox" name="selected_documents[]"
+                                    value="{{ $document->id }}">
+                            </td>
+                            <td>{{ $loop->iteration + ($documents->currentPage() - 1) * $documents->perPage() }}</td>
+                            <td>{{ $document->document_type }}</td>
+                            @php
+                                $date = \Carbon\Carbon::parse($document->date)->locale('th');
+                                // $buddhistYear = $date->year + 543;
+                            @endphp
+                            <td class="text-center">{{ $date->isoFormat('D MMM YYYY') }}</td>
+                            <td class="text-center" onclick="event.stopPropagation();">
+                                @if ($document->stored_name)
+                                    <a href="{{ asset('storage/' . $document->stored_name) }}"
+                                        download="{{ $document->original_name }}">{{ $document->original_name }}</a>
                                 @else
-                                    ไม่มีไฟล์แนบ
+                                    -
                                 @endif
                             </td>
-                            <td>{{ $doc->deleted_at?->format('d/m/Y') }}</td>
+                            @php
+                                $updated = \Carbon\Carbon::parse($document->updated_at)->locale('th');
+                                $created = \Carbon\Carbon::parse($document->created_at)->locale('th');
+                                $deleted = \Carbon\Carbon::parse($document->deleted_at)->locale('th');
+                            @endphp
+                            <td class="text-center">{{ $deleted->isoFormat('D MMM') }} {{ $deleted->year + 543 }}
+                                {{ $deleted->format('H:i:s') }}</td>
+                            {{-- <td class="text-center">{{ $created->isoFormat('D MMM') }} {{ $created->year + 543 }}
+                                {{ $created->format('H:i:s') }}</td> --}}
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted">ไม่พบเอกสารที่ตรงกับเงื่อนไขการค้นหา</td>
+                            <td colspan="100%" class="text-center">ไม่มีข้อมูล</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
+                <div class="d-flex justify-content-center">
+                            {{-- ไว้ดูค่าเพื่อ debug --}}
+                {{-- <pre>
+{{ print_r(request()->all(), true) }}
+{{ $documents->url(2) }}
+</pre> --}}
+            {{ $documents->links() }}
+        </div>
+
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 const checkboxes = document.querySelectorAll('input[name="selected_documents[]"]');
                 const selectAll = document.getElementById('select-all');
 
-                selectAll.addEventListener('click', function (event) {
+                selectAll.addEventListener('click', function(event) {
                     checkboxes.forEach(cb => cb.checked = event.target.checked);
                     toggleButtons();
                 });
@@ -161,7 +217,7 @@
                 function bindFormSubmission(formId, hiddenInputId) {
                     const form = document.getElementById(formId);
                     const hiddenInput = document.getElementById(hiddenInputId);
-                    form.addEventListener('submit', function (e) {
+                    form.addEventListener('submit', function(e) {
                         const selectedIds = Array.from(document.querySelectorAll('.document-checkbox:checked'))
                             .map(cb => cb.value);
                         if (selectedIds.length === 0) {

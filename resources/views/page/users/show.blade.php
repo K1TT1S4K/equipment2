@@ -22,7 +22,7 @@
     </form>
 
     <div class="card shadow-lg p-3 mb-4 bg-body">
-        <h3>รายการเอกสาร</h3>
+        <h3>รายการบุคลากร</h3>
 
         <!-- ย้าย form มาอยู่ตรงนี้ ครอบทั้งปุ่มลบและตาราง -->
         <form action="{{ route('user.deleteSelected') }}" method="POST" id="delete-form">
@@ -50,32 +50,32 @@
                 </div>
             </div>
 
-            <table class="table table-striped table-bordered mt-3 table-hover w-full">
-                <thead class="table-dark text-white text-center border border-dark">
-                    <tr>
+            <table class="table mt-3 table-hover w-full">
+                <thead class="text-center table-dark align-middle">
+                    <tr class="text-center">
                         <th><input type="checkbox" id="select-all"></th>
-                        <th>#</th>
-                        <th>ชื่อผู้ใช้</th>
-                        <th>ชื่อ-นามสกุล</th>
-                        <th>ระดับผู้ใช้</th>
+                        <th class="align-middle">ลำดับ</th>
+                        <th class="align-middle">ชื่อผู้ใช้</th>
+                        <th class="align-middle">ชื่อ-นามสกุล</th>
+                        <th class="align-middle">ระดับผู้ใช้</th>
                         {{-- <th>อีเมล</th> --}}
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="align-middle p-3">
                     @forelse ($users as $key => $user)
-                        <tr class="align-middle border border-secondary-subtle" style="cursor: pointer;"
+                        <tr class="text-center" style="cursor: pointer;"
                             onclick="window.location='{{ route('user.edit', $user->id) }}'">
-                            <td class="text-center" style="width: 3%" onclick="event.stopPropagation();">
+                            <td onclick="event.stopPropagation();">
                                 <input type="checkbox" class="document-checkbox" name="selected_users[]"
                                     value="{{ $user->id }}">
                             </td>
                             {{-- <td class="text-center" style="width: 3%">{{ $key + 1 }}</td> --}}
-                            <td class="text-center" style="width: 3%">
+                            <td>
                                 {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
-                            <td style="width: 10%">{{ $user->username }}</td>
-                            <td class="p-3" style="width: 20%">{{ $user->prefix->name }} {{ $user->firstname }}
+                            <td>{{ $user->username }}</td>
+                            <td>{{ $user->prefix->name }} {{ $user->firstname }}
                                 {{ $user->lastname }}</td>
-                            <td class="text-center" style="width: 10%">{{ $user->user_type }}</td>
+                            <td>{{ $user->user_type }}</td>
                             {{-- <td>{{ $user->email }}</td> --}}
                         </tr>
                     @empty

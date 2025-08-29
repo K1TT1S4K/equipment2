@@ -200,15 +200,15 @@
 
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
-                    <thead class="table-dark">
-                        <tr class="text-center">
+                    <thead class="table-dark text-white text-center border border-dark">
+                        <tr>
                             <th class="border align-middle" rowspan="2">
-                                <div class="form-check d-flex justify-content-center align-items-center"
-                                    style="height: 100%;">
+                                {{-- <div class="form-check d-flex justify-content-center align-items-center"
+                                    style="height: 100%;"> --}}
                                     {{-- <input class="form-check-input" type="checkbox" id="select-all"
                                     style="transform: scale(1.5);"> --}}
                                     <input type="checkbox" id="select-all">
-                                </div>
+                                {{-- </div> --}}
                             </th>
                             <th class="border align-middle" rowspan="2">ลำดับ</th>
                             <th class="border align-middle" rowspan="2" style="width: 9%">รหัสครุภัณฑ์</th>
@@ -222,7 +222,7 @@
                             <th class="border align-middle" rowspan="2">ราคารวม</th>
                             <th class="border align-middle" colspan="5" style="width:10%">สถานะ</th>
                             <th class="border align-middle" rowspan="2" style="width: 16%">หมายเหตุ</th>
-                            <th class="border align-middle" rowspan="2">วันที่แก้</th>
+                            <th class="border align-middle" rowspan="2">วันที่แก้ไข</th>
                             <th class="border align-middle" rowspan="2">วันที่สร้าง</th>
                             {{-- <th class="border align-middle" rowspan="2">จัดการ</th> --}}
                         </tr>

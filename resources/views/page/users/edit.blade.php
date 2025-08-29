@@ -5,16 +5,17 @@
             <form action="{{ route('user.update', $user->id) }}" method="POST">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">ชื่อผู้ใช้</label>
+                        <label class="form-label">ชื่อผู้ใช้ <span class="text-danger">*</span></label>
                         <input type="text" name="username" class="form-control" value="{{ old('username', $user->username) }}" required>
                         @error('username')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">คำนำหน้า</label>
+                        <label class="form-label">คำนำหน้า <span class="text-danger">*</span></label>
                         <select name="prefix" class="form-control" required>
                             <option value="">-- เลือกคำนำหน้า --</option>
                             @foreach($prefixes as $prefix)
@@ -31,14 +32,14 @@
 
                 <div class="row">
                     <div class="mb-3 col-6">
-                        <label class="form-label">ชื่อ</label>
+                        <label class="form-label">ชื่อ <span class="text-danger">*</span></label>
                         <input type="text" name="firstname" class="form-control" value="{{ old('firstname', $user->firstname) }}" required>
                         @error('firstname')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
                     </div>
                     <div class="mb-3 col-6">
-                        <label class="form-label">นามสกุล</label>
+                        <label class="form-label">นามสกุล <span class="text-danger">*</span></label>
                         <input type="text" name="lastname" class="form-control" value="{{ old('lastname', $user->lastname) }}" required>
                         @error('lastname')
                             <small class="text-danger">{{ $message }}</small>
@@ -47,7 +48,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">สิทธิ์บุคลากร</label>
+                    <label class="form-label">สิทธิ์บุคลากร <span class="text-danger">*</span></label>
                     <select name="user_type" class="form-control" required>
                         <option value="">-- ระบุสิทธิ์บุคลากร --</option>
                         <option value="ผู้ดูแลระบบ" {{ $user->user_type == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>ผู้ดูแลระบบ</option>
@@ -69,15 +70,15 @@
                 </div> --}}
 
                 <div class="mb-3">
-                    <label class="form-label">รหัสผ่าน (หากไม่ต้องการเปลี่ยน ปล่อยว่างไว้)</label>
+                    <label class="form-label">รหัสผ่าน</label>
                     <input type="password" name="password" class="form-control">
                     @error('password')
                         <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
 
-                <div class="text-end"><button type="submit" class="btn btn-success">บันทึก</button>
-                <a href="{{ route('user') }}" class="btn btn-secondary">ยกเลิก</a></div>
+                <div class="text-end"><button type="submit" class="btn btn-primary">บันทึก</button>
+                <a href="{{ url()->previous() }}" class="btn btn-secondary">ยกเลิก</a></div>
             </form>
         </div>
     </div>

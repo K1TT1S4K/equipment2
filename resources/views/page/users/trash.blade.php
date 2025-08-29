@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">ผู้ใช้ที่ถูกลบ</h3>
+    <h3 class="text-dark mb-4">กู้คืนผู้ใช้</h3>
 
     <form method="GET" action="{{ route('user.trashsearch') }}" class="mb-3">
         <div class="d-flex">

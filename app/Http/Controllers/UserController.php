@@ -90,7 +90,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password), // เข้ารหัสรหัสผ่าน
         ]);
 
-        return redirect()->route('user')->with('success', 'เพิ่มบุคลากรเรียบร้อยแล้ว');
+        return redirect($request->input('redirect_to', route('user')))->with('success', 'เพิ่มบุคลากรเรียบร้อยแล้ว');
     }
 
     // แสดงฟอร์มแก้ไขบุคลากร
@@ -133,7 +133,7 @@ class UserController extends Controller
             'password' => $request->password ? Hash::make($request->password) : $user->password, // เปลี่ยนรหัสผ่านถ้ามีการกรอก
         ]);
 
-        return redirect()->route('user')->with('success', 'แก้ไขข้อมูลเรียบร้อยแล้ว');
+        return redirect($request->input('redirect_to',route('user')))->with('success', 'แก้ไขข้อมูลเรียบร้อยแล้ว');
     }
     // ลบบุคลากร
     public function destroy(Request $request)
@@ -164,8 +164,17 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
+        // dd(($user->id));
         $request->validate([
-            'username' => ['required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
+            'username' => ['required', 'string', 'max:50', function ($attribute, $value, $fail) use ($user) {
+                // ตรวจสอบว่าเหมือนกับ username ที่มีอยู่แล้วหรือไม่
+                // dd($value);
+                $exists = User::where('username', $value)->where('id', '!=', $user->id)->exists();
+
+                if ($exists) {
+                    $fail('ชื่อผู้ใช้นี้มีอยู่แล้ว');
+                }
+            }],
             // 'username' => ['required', 'string', 'max:50', function ($attribute, $value, $fail) use ($user) {
             //     // ตรวจสอบว่าเหมือนกับ username ที่มีอยู่แล้วหรือไม่
             //     $exists = User::where('username', $value)->where('id', '!=', $user->id)->exists();

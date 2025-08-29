@@ -12,15 +12,15 @@
 
             <div class="row">
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">ชื่อผู้ใช้</label>
+                    <label class="form-label">ชื่อผู้ใช้ <span class="text-danger">*</span></label>
                     <input type="text" name="username" class="form-control border border-dark"
                         value="{{ $user->username }}" required>
-                                                @error('username')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                    @error('username')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
                 <div class="mb-3 col-6">
-                    <label class="form-label">คำนำหน้า</label>
+                    <label class="form-label">คำนำหน้า <span class="text-danger">*</span></label>
                     <select name="prefix" class="form-control border border-dark" required>
                         @foreach ($prefixes as $prefix)
                             <option value="{{ $prefix->id }}">{{ $prefix->name }}</option>
@@ -30,12 +30,12 @@
             </div>
             <div class="row">
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">ชื่อ</label>
+                    <label class="form-label">ชื่อ <span class="text-danger">*</span></label>
                     <input type="text" name="firstname" class="form-control border border-dark"
                         value="{{ $user->firstname }}" required>
                 </div>
                 <div class="mb-3 col-md-6">
-                    <label class="form-label">นามสกุล</label>
+                    <label class="form-label">นามสกุล <span class="text-danger">*</span></label>
                     <input type="text" name="lastname" class="form-control border border-dark"
                         value="{{ $user->lastname }}" required>
                 </div>
@@ -48,11 +48,10 @@
             <div class="mb-3">
                 <label class="form-label">รหัสผ่านเก่า</label>
                 <input type="password" name="old_password" class="form-control border border-dark">
+                @error('old_password')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
-
-            @error('old_password')
-                <div class="alert alert-danger">{{ $message }}</div>
-            @enderror
 
             <div class="mb-3">
                 <label class="form-label">รหัสผ่านใหม่</label>
@@ -62,10 +61,10 @@
             <div class="mb-3">
                 <label class="form-label">ยืนยันรหัสผ่านใหม่</label>
                 <input type="password" name="password_confirmation" class="form-control border border-dark">
+                @error('password')
+                    <div class="text-danger">รหัสผ่านใหม่ไม่ตรงกัน</div>
+                @enderror
             </div>
-            @error('password')
-                <div class="alert alert-danger">รหัสผ่านใหม่ไม่ตรงกัน</div>
-            @enderror
 
             <div class="text-end"><button type="submit" class="btn btn-primary">บันทึก</button></div>
         </form>

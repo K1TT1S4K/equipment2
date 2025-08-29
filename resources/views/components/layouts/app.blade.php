@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Disposal Equipment</title>
-     <link rel="icon" href="{{ asset('storage/RMUTI.png') }}" type="image/png">
+    <title>ระบบแทงจำหน่ายครุภัณฑ์</title>
+    <link rel="icon" href="{{ asset('storage/RMUTI.png') }}" type="image/png">
 
     <!-- Bootstrap CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

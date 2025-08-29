@@ -6,9 +6,9 @@
             <form action="{{ route('document.update', $document->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-
+                <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
                 <div class="mb-3">
-                    <label for="document_type" class="form-label">ประเภทเอกสาร</label>
+                    <label for="document_type" class="form-label">ประเภทเอกสาร <span class="text-danger">*</span></label>
                     <select name="document_type" class="form-select" required>
                         <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
                             {{ $document->document_type == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
@@ -22,13 +22,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="date" class="form-label">วันที่ดำเนินการ</label>
+                    <label for="date" class="form-label">วันที่ดำเนินการ <span class="text-danger">*</span></label>
                     <input type="date" name="date" class="form-control" value="{{ $document->date }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="newFile" class="form-label">อัปโหลดไฟล์เอกสาร (PDF, DOC, DOCX)</label>
-                    <input type="file" name="newFile" class="form-control" accept=".pdf,.doc,.docx">
+                    <label for="newFile" class="form-label">เอกสารอ้างอิง <span class="text-danger">*</span> pdf</label>
+                    <input type="file" name="newFile" class="form-control"   accept=".pdf">
                     @if ($document && $document->path)
                         <small class="form-text text-muted">ไฟล์เดิม: <a href="{{ url('storage/' . $document->path) }}"
                                 download>{{ basename($document->path) }}</a></small>
@@ -41,13 +41,13 @@
                     </div>
                 @endcan
 
-                @if($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
-                @can('officer')
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary">บันทึก</button>
-                        <a href="{{ route('document.index') }}" class="btn btn-secondary">ยกเลิก</a>
-                    </div>
-                @endcan
+                @if ($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                    @can('officer')
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">บันทึก</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-secondary">ยกเลิก</a>
+                        </div>
+                    @endcan
                 @endif
             </form>
         </div>

@@ -58,7 +58,7 @@
                 @endcan
             </div>
 
-            <table class="table table-striped table-hover w-full">
+            <table class="table table-hover w-full">
                 <thead class="text-center table-dark align-middle">
                     <tr class="text-center">
                         <th><input type="checkbox" id="select-all"></th>

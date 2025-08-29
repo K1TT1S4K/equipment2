@@ -59,8 +59,9 @@
                 {{-- ปุ่มด้านขวา --}}
                 <div class="d-flex align-items-center gap-3">
                     {{-- แสดงสถานะผู้ใช้ --}}
-                    <div class="text-white">
-                        <strong>{{ Auth::user()->user_type }}</strong>
+                    <div class="text-white text-center">
+                        <strong>{{ Auth::user()->prefix->name}} {{ Auth::user()->firstname}} {{Auth::user()->lastname}}</strong><br>
+                        {{ Auth::user()->user_type }}
                     </div>
                     {{-- กู้คืนข้อมูล --}}
                     @can('admin')
@@ -94,7 +95,7 @@
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="btn btn-danger">
-                            Log Out
+                            ออกจากระบบ
                         </button>
                     </form>
                 </div>

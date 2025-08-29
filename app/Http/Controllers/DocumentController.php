@@ -49,7 +49,7 @@ class DocumentController extends Controller
         $request->validate([ // ตรวจสอบความถูกต้องของข้อมูล
             'document_type' => 'required|string', // ประเภทเอกสาร
             'date' => 'required|date', // วันที่
-            'document' => 'required|file|mimes:pdf,doc,docx|max:2048' // ขนาดไฟล์ไม่เกิน 2MB
+            'document' => 'required|file|mimes:pdf|max:2048' // ขนาดไฟล์ไม่เกิน 2MB
         ]);
 
         $file = $request->file('document'); // รับไฟล์เอกสาร
@@ -69,7 +69,7 @@ class DocumentController extends Controller
 
         ]);
 
-        return redirect()->route('document.index')->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
+        return redirect($request->input('redirect_to',route('document.index')))->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
     }
 
     public function edit($id) // แสดงฟอร์มสำหรับแก้ไขเอกสาร
@@ -83,7 +83,7 @@ class DocumentController extends Controller
         $request->validate([
             'document_type' => 'required|string',
             'date' => 'required|date',
-            'newFile' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            'newFile' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         $document = Document::findOrFail($id);
@@ -114,7 +114,7 @@ class DocumentController extends Controller
             'path' => $document->path, // เผื่อไม่ได้อัปโหลดไฟล์ใหม่ จะใช้ path เดิม
         ]);
 
-        return redirect()->route('document.index')->with('success', 'อัปเดตเอกสารเรียบร้อยแล้ว');
+        return redirect($request->input('redirect_to', route('document.index')))->with('success', 'อัปเดตเอกสารเรียบร้อยแล้ว');
     }
 
 
@@ -186,21 +186,68 @@ class DocumentController extends Controller
         Document::onlyTrashed()->restore(); // กู้คืนเอกสารทั้งหมด
         return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารทั้งหมดเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
     }
-    public function searchTrash(Request $request)
+    // public function searchTrash(Request $request)
+    // {
+    //     $query = Document::onlyTrashed();
+
+    //     if ($request->filled('query')) {
+    //         $query->where('document_type', 'like', '%' . $request->query('query') . '%')
+    //             ->orWhere('path', 'like', '%' . $request->query('query') . '%');
+    //     }
+
+    //     if ($request->filled('document_type')) {
+    //         $query->where('document_type', $request->query('document_type'));
+    //     }
+
+    //     $documents = $query->get();
+
+    //     return view('page.documents.trash', compact('documents'));
+    // }
+
+        public function searchTrash(Request $request)
     {
         $query = Document::onlyTrashed();
 
-        if ($request->filled('query')) {
-            $query->where('document_type', 'like', '%' . $request->query('query') . '%')
-                ->orWhere('path', 'like', '%' . $request->query('query') . '%');
+        if($request->filled('search')) {
+            $search = $request->input('search');
+            // dd($search);
+            $query->where(function ($q) use ($search) {
+                $q->where('document_type', 'like', "%{$search}%")
+                ->orWhere('date', 'like', "%{$search}%")
+                ->orWhere('stored_name', 'like', "%{$search}%")
+                ->orWhere('original_name', 'like', "%{$search}%")
+                ->orWhere('created_at', 'like', "%{$search}%")
+                ->orWhere('updated_at', 'like', "%{$search}%");
+            });
         }
 
         if ($request->filled('document_type')) {
-            $query->where('document_type', $request->query('document_type'));
+            $query->where('document_type', $request->input('document_type'));
         }
 
-        $documents = $query->get();
+        $documents = $query->orderByDesc('deleted_at')->paginate(10);
 
         return view('page.documents.trash', compact('documents'));
+
+        // $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
+        // $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
+
+        // $documents = Document::onlyTrashed()->when($search, function ($query, $search) {
+        //     return $query->where('document_type', 'like', "%{$search}%")
+        //         ->orWhere('date', 'like', "%{$search}%")
+        //         ->orWhere('stored_name', 'like', "%{$search}%")
+        //         ->orWhere('original_name', 'like', "%{$search}%")
+        //         ->orWhere('created_at', 'like', "%{$search}%")
+        //         ->orWhere('updated_at', 'like', "%{$search}%");
+        // })
+        //     ->when($documentType, function ($query, $documentType) {
+        //         return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
+        //     })
+        //     ->paginate(10);
+
+        // // สำคัญ: เก็บ query string เอาไว้
+        // $documents->appends($request->all());
+
+        // return view('page.documents.trash', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
     }
 }

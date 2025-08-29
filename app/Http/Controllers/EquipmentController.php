@@ -109,10 +109,6 @@ class EquipmentController extends Controller
 
     public function store(Request $request)
     {
-
-        // dd($request->all());
-
-
         $request->validate([
             'number' => 'required|string|max:255|unique:equipment,number',
             'name' => 'required|string|max:2000',
@@ -154,7 +150,7 @@ class EquipmentController extends Controller
             'description'  =>  $request->description
         ]);
 
-        return redirect()->route('equipment.index')->with('success', 'เพิ่มครุภัณฑ์สำเร็จ');
+        return redirect($request->input('redirect_to', route('equipment.index')))->with('success', 'เพิ่มครุภัณฑ์สำเร็จ');
     }
 
     public function edit($id)
@@ -302,8 +298,8 @@ class EquipmentController extends Controller
                 'action' => $message,
             ]);
         }
-
-        return redirect()->route('equipment.edit', $equipment->id)->with('success',  'ดำเนินการสำเร็จ');
+        return redirect($request->input('redirect_to', route('equipment.index')))->with('success', 'แก้ไขข้อมูลสำเร็จ');
+        // return redirect()->route('equipment.edit', $equipment->id)->with('success',  'ดำเนินการสำเร็จ');
     }
 
 
