@@ -52,7 +52,8 @@
                                 </button>
                             @endcan
                         </label> --}}
-                                <label for="equipment_unit_id" class="form-label">หน่วยนับ <span class="text-danger">*</span>
+                                <label for="equipment_unit_id" class="form-label">หน่วยนับ <span
+                                        class="text-danger">*</span>
                                     <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
                                         data-bs-toggle="modal" data-bs-target="#unitModal">
                                         <i class="bi bi-gear"></i>
@@ -69,11 +70,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="mb-3 col-3"> <label class="form-label">จำนวน <span class="text-danger">*</span></label>
+                            <div class="mb-3 col-3"> <label class="form-label">จำนวน <span
+                                        class="text-danger">*</span></label>
                                 <input type="number" name="amount" class="form-control" required
                                     value="{{ $equipment->amount }}">
                             </div>
-                            <div class="mb-3 col-3"> <label class="form-label">ราคา <span class="text-danger">*</span></label>
+                            <div class="mb-3 col-3"> <label class="form-label">ราคา <span
+                                        class="text-danger">*</span></label>
                                 <input type="number" name="price" class="form-control"
                                     value="{{ $equipment->price }}">
                             </div>
@@ -81,26 +84,31 @@
                                 <input type="number" name="status_found" class="form-control" required
                                     value="{{ $equipment->status_found }}">
                             </div>
-                            <div class="col"> <label class="form-label">ไม่พบ <span class="text-danger">*</span></label>
+                            <div class="col"> <label class="form-label">ไม่พบ <span
+                                        class="text-danger">*</span></label>
                                 <input type="number" name="status_not_found" class="form-control" required
                                     value="{{ $equipment->status_not_found }}">
                             </div>
-                            <div class="col"> <label class="form-label">ชำรุด <span class="text-danger">*</span></label>
+                            <div class="col"> <label class="form-label">ชำรุด <span
+                                        class="text-danger">*</span></label>
                                 <input type="number" name="status_broken" class="form-control" required
                                     value="{{ $equipment->status_broken }}">
                             </div>
-                            <div class="col"> <label class="form-label">จำหน่าย <span class="text-danger">*</span></label>
+                            <div class="col"> <label class="form-label">จำหน่าย <span
+                                        class="text-danger">*</span></label>
                                 <input type="number" name="status_disposal" class="form-control" required
                                     value="{{ $equipment->status_disposal }}">
                             </div>
-                            <div class="col"> <label class="form-label">โอน <span class="text-danger">*</span></label>
+                            <div class="col"> <label class="form-label">โอน <span
+                                        class="text-danger">*</span></label>
                                 <input type="number" name="status_transfer" class="form-control" required
                                     value="{{ $equipment->status_transfer }}">
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col"> <label for="title_id"
-                                    class="form-label">หัวข้อ  <span class="text-danger">*</span>@can('admin-or-branch')
+                            <div class="col"> <label for="title_id" class="form-label">หัวข้อ <span
+                                        class="text-danger">*</span>
+                                    @can('admin-or-branch')
                                         <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
                                             data-bs-toggle="modal" data-bs-target="#titleModal">
                                             <i class="bi bi-gear"></i>
@@ -181,8 +189,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col"> <label class="form-label">คำอธิบาย</label>
-                                <textarea rows="4" cols="20" type="text" name="description"
-                                    class="form-control">{{ $equipment->description }}</textarea>
+                                <textarea rows="4" cols="20" type="text" name="description" class="form-control">{{ $equipment->description }}</textarea>
                             </div>
                         </div>
                         <div class="text-end">
@@ -200,23 +207,27 @@
         <div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="log-tab">
             <div class="card shadow-lg p-3 mb-3 bg-body rounded border border-dark">
                 <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="col-4">ชื่อ</th>
-                                <th class="col-2">เวลา</th>
-                                <th class="col-6">การกระทำ</th>
+                    <table class="table mt-3 table-hover w-full">
+                        <thead class="text-center table-dark align-middle">
+                            <tr class="text-center">
+                                <th class="col-4 align-middle">ชื่อ</th>
+                                <th class="col-2 align-middle">เวลา</th>
+                                <th class="col-6 align-middle">การกระทำ</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($logs->where('equipment_id', $equipment->id)->sortByDesc('created_at') as $log)
+                            @forelse ($logs->where('equipment_id', $equipment->id)->sortByDesc('created_at') as $log)
                                 <tr>
                                     <td>{{ $log->user?->prefix?->name }}{{ $log->user?->firstname }}
                                         {{ $log->user?->lastname }}</td>
                                     <td>{{ $log->created_at }}</td>
                                     <td class="white-space-pre">{{ $log->action }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -238,19 +249,54 @@
                         </div>
                     </div>
                     <hr>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="col">สถานะ</th>
-                                <th class="col">ประเภท</th>
-                                <th class="col">จำนวน</th>
-                                <th class="col">เวลาดำเนินการเอกสาร</th>
-                                <th class="col">เอกสาร</th>
-                                <th class="col">จัดการ</th>
+                    <table class="table mt-3 table-hover w-full">
+                        <thead class="text-center table-dark align-middle">
+                            <tr class="text-center">
+                                {{-- <th class="align-middle">สถานะ</th> --}}
+                                <th rowspan="2">
+                                    <input type="checkbox" id="select-all">
+                                </th>
+                                <th class="align-middle">ประเภท</th>
+                                <th class="align-middle">จำนวน</th>
+                                <th class="align-middle">วันที่ดำเนินการ</th>
+                                <th class="align-middle">เอกสาร</th>
+                                {{-- <th class="align-middle">จัดการ</th> --}}
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="align-middle p-3">
                             {{-- ข้อมูลเอกสาร --}}
+                            {{-- {{dd($equipment_documents)}} --}}
+                            @forelse ($equipment_documents->where('equipment_id', $equipment->id) as $key => $equipment_document)
+                                <tr class="text-center" style="cursor: pointer;">
+                                    <td onclick="event.stopPropagation();">
+                                        <input type="checkbox" class="document-checkbox" name="selected_users[]"
+                                            value="{{ $equipment_document->id }}">
+                                    </td>
+                                    <td>
+                                        {{ $equipment_document->document->document_type }}
+                                    </td>
+                                    <td>
+                                        {{ $equipment_document->amount }}
+                                    </td>
+                                    @php
+                                        $date = \Carbon\Carbon::parse($equipment_document->document->date)->locale('th');
+                                        // $buddhistYear = $date->year + 543;
+                                    @endphp
+                                    <td>{{ $date->isoFormat('D MMM YYYY') }}</td>
+                                    <td>
+                                        @if ($equipment_document->document->stored_name)
+                                            <a href="{{ asset('storage/' . $equipment_document->document->stored_name) }}"
+                                                download="{{ $equipment_document->document->original_name }}">{{ $equipment_document->document->original_name }}</a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

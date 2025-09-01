@@ -11,7 +11,7 @@ class DocumentController extends Controller
     public function index()
     {
         // $documents = Document::all();
-        $documents = Document::paginate(10); // แสดงเอกสารทั้งหมดในหน้าแรก โดยแบ่งหน้า 10 รายการต่อหน้า
+        $documents = Document::orderBy('created_at', 'desc')->paginate(10); // แสดงเอกสารทั้งหมดในหน้าแรก โดยแบ่งหน้า 10 รายการต่อหน้า
         return view('page.documents.show', compact('documents'));
     }
 
@@ -31,6 +31,7 @@ class DocumentController extends Controller
             ->when($documentType, function ($query, $documentType) {
                 return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         // สำคัญ: เก็บ query string เอาไว้
@@ -164,6 +165,7 @@ class DocumentController extends Controller
     public function restoreMultiple(Request $request)
     {
         $ids = explode(',', $request->input('selected_documents', ''));
+        // dd($ids);
         Document::onlyTrashed()->whereIn('id', $ids)->restore();
         return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารที่เลือกเรียบร้อยแล้ว');
     }

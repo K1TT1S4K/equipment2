@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Equipment_document extends Model
 {
+    protected $table = 'equipment_documents'; 
     //
     use HasFactory;
     protected $fillable = [
@@ -16,10 +18,20 @@ class Equipment_document extends Model
         'description',
     ];
 
-    public function equipments() : HasMany {
-        return $this->hasMany(Equipment::class);
+    // public function equipments() : HasMany {
+    //     return $this->hasMany(Equipment::class);
+    // }
+    // public function documents() : HasMany {
+    //     return $this->hasMany(Document::class);
+    // }
+
+    public function equipment(): BelongsTo
+    {
+        return $this->belongsTo(Equipment::class, 'equipment_id');
     }
-    public function documents() : HasMany {
-        return $this->hasMany(Document::class);
+
+    public function document(): BelongsTo
+    {
+        return $this->belongsTo(Document::class, 'document_id');
     }
 }

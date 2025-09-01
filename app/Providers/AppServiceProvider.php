@@ -10,6 +10,8 @@ use App\Models\Equipment_unit; // หรือโมเดลที่คุณ�
 use App\Models\Equipment_type;
 use App\Models\Title;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,21 +33,25 @@ class AppServiceProvider extends ServiceProvider
         //     return (bool) $user->is_admin;
         // });
 
-Paginator::useBootstrap();
+        // Event::listen(Login::class, function ($event) {
+        //     $event->user->update([
+        //         'last_login_at' => now(),
+        //     ]);
+        // });
 
-      
+        Paginator::useBootstrap();
+
+
         View::composer('components.layouts.app', function ($view) {
             $units = Equipment_unit::all(); // ดึงข้อมูลหน่วยอุปกรณ์
             $equipment_types = Equipment_type::all(); // ดึงข้อมูลประเภทอุปกรณ์
             $titles = Title::all();
-        
+
             $view->with([
                 'units' => $units,
                 'equipment_types' => $equipment_types,
                 'titles' => $titles
             ]);
         });
-        
-        
     }
 }

@@ -28,9 +28,9 @@ Route::get('/run-seed', function () {
 //     return 'Hello World';
 // });
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// Route::view('dashboard', 'dashboard')
+//     ->middleware(['auth', 'verified'])
+//     ->name('dashboard');
 
 // Route::middleware(['auth'])->group(function (){
 // Route::get('dashboard/', [EquipmentController::class, 'dashboard'])->name('equipemnt.dashboard');
@@ -43,6 +43,7 @@ Route::view('dashboard', 'dashboard')
 // });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
     // Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.index');
     Route::get('/export/{titleId}', [EquipmentController::class, 'export'])->name('equipment.export');
@@ -55,13 +56,14 @@ Route::middleware(['auth', 'can:admin-or-branch'])->group(function () {
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
     Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
     // Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
+    Route::get('/equipment/trash', [EquipmentController::class, 'trash'])->name('equipment.trash');
     Route::get('equipments/search', [EquipmentController::class, 'search'])->name('equipment.search');
     Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
     Route::get('/get-equipment-types/{title_id}', [EquipmentController::class, 'getEquipmentTypes']);
     Route::post('/equipment/move-to-trash', [EquipmentController::class, 'moveToTrash'])->name('equipment.moveToTrash');
     Route::post('/equipment/restore-from-trash', [EquipmentController::class, 'restoreFromTrash'])->name('equipment.restoreFromTrash');
     Route::delete('/equipments/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.delete');
-    Route::delete('equipment/force-delete/{id}', [EquipmentController::class, 'forceDelete'])->name('equipment.forceDelete');
+    Route::post('equipment/force-delete-multiple', [EquipmentController::class, 'forceDeleteMultiple'])->name('equipment.forceDeleteMultiple');
     // Route::post('equipments/delete-selected', [EquipmentController::class, 'deleteSelected'])->name('equipment.deleteSelected');
     Route::delete('equipments/delete-all', [EquipmentController::class, 'deleteAll'])->name('equipment.deleteAll');
     Route::post('/equipments/delete-selected', [EquipmentController::class, 'deleteSelected'])->name('equipment.deleteSelected');

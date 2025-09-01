@@ -104,7 +104,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="100%" class="text-center">ไม่มีข้อมูล</td>
+                            <td colspan="100%" class="text-center">ไม่พบข้อมูล
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

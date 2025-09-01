@@ -28,4 +28,10 @@ class Document extends Model
     // {
     //     return $this->hasMany(Document::class);
     // }
+
+        public function equipments(): HasMany
+    {
+        // foreign key ใน table equipment_documents คือ equipment_id
+        return $this->hasMany(Equipment::class, 'document_id');
+    }
 }

@@ -24,13 +24,12 @@
     <div class="card shadow-lg p-3 bg-body">
         <div class="row mb-2">
             <div class="col-4">
-                <h4>รายการผู้ใช้</h4>
+                <h3>รายการผู้ใช้</h3>
             </div>
-            <div class="col-4 text-center">
+            {{-- <div class="col-4 text-center">
                 <p class="text-muted" id="selected-count-info" style="font-size: 0.9rem;"></p>
-            </div>
-            <div class="col-4">
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="min-height: 50px;">
+            </div> --}}
+            <div class="col-8 d-flex justify-content-end gap-2">
                     <div id="bulk-restore-all" style="display: none;">
                         <button type="submit" form="bulk-restore-form" class="btn btn-warning"
                             onclick="return confirm('คุณต้องการกู้คืนผู้ใช้ทั้งหมดที่เลือกใช่หรือไม่?')">
@@ -58,20 +57,19 @@
                             ลบถาวรที่เลือก
                         </button>
                     </div>
-                </div>
             </div>
         </div>
 
-        <div class="row px-3">
-            <table class="table table-striped table-hover w-full">
+        <div class="row p-3">
+            <table class="table table-hover w-full">
                 <thead class="text-center table-dark align-middle">
                     <tr>
                         <th><input type="checkbox" id="select-all"></th>
                         <th>ลำดับ</th>
                         <th>ชื่อผู้ใช้</th>
                         <th>ชื่อ-นามสกุล</th>
-                        <th>อีเมล</th>
-                        <th>สถานะ</th>
+                        {{-- <th>อีเมล</th> --}}
+                        <th>ระดับผู้ใช้</th>
                         <th>วันที่ลบ</th>
                     </tr>
                 </thead>
@@ -83,13 +81,16 @@
                             </td>
                             <td>{{ $user->username }}</td>
                             <td>{{ $user->prefix->name }} {{ $user->firstname }} {{ $user->lastname }}</td>
-                            <td>{{ $user->email }}</td>
+                            {{-- <td>{{ $user->email }}</td> --}}
                             <td>{{ $user->user_type }}</td>
-                            <td>{{ \Carbon\Carbon::parse($user->deleted_at)->format('d/m/Y H:i') }}</td>
+                            @php
+                                $deleted = \Carbon\Carbon::parse($user->deleted_at)->locale('th');
+                            @endphp
+                            <td>{{ $deleted->isoFormat('D MMM') }} {{ $deleted->year + 543}} {{$deleted->format('H:i:s')}}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted">ไม่พบข้อมูลที่คุณค้นหา</td>
+                            <td colspan="7" class="text-center text-muted">ไม่พบข้อมูล</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -127,15 +128,15 @@
         checkbox.addEventListener('change', toggleActionButtons);
     });
 
-    function getSelectedUserIds() {
-        return Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value);
-    }
+    // function getSelectedUserIds() {
+    //     return Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value);
+    // }
 
-    function updateSelectedCount() {
-        const selectedCount = getSelectedUserIds().length;
-        const info = document.getElementById('selected-count-info');
-        info.textContent = selectedCount > 0 ? `เลือกผู้ใช้แล้ว ${selectedCount} รายการ` : '';
-    }
+    // function updateSelectedCount() {
+    //     const selectedCount = getSelectedUserIds().length;
+    //     const info = document.getElementById('selected-count-info');
+    //     info.textContent = selectedCount > 0 ? `เลือกผู้ใช้แล้ว ${selectedCount} รายการ` : '';
+    // }
 
     function updateHiddenInputs() {
         const selected = getSelectedUserIds();
@@ -153,7 +154,9 @@
             .length ? 'inline-block' : 'none';
         document.getElementById('bulk-restore-all').style.display = selected.length === all.length && all.length > 0 ?
             'inline-block' : 'none';
-        document.getElementById('bulk-delete-selected').style.display = selected.length > 0 ? 'inline-block' : 'none';
+        // document.getElementById('bulk-delete-selected').style.display = selected.length > 0  'inline-block' : 'none';
+        document.getElementById('bulk-delete-selected').style.display = selected.length > 0 && selected.length < all
+            .length ? 'inline-block' : 'none';
         document.getElementById('bulk-delete-all').style.display = selected.length === all.length && all.length > 0 ?
             'inline-block' : 'none';
 

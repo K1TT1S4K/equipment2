@@ -39,8 +39,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
+        $this->redirectIntended(default: route('dashboard.index', absolute: false), navigate: true);
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        // dd(now());
+        Auth::user()->update([
+            'last_login_at' => now(),
+        ]);
+
+        // location.reload();
     }
 
     /**
@@ -67,11 +73,10 @@ new #[Layout('components.layouts.auth')] class extends Component {
     /**
      * Get the authentication rate limiting throttle key.
      */
-protected function throttleKey(): string
-{
-    return Str::transliterate(Str::lower($this->username) . '|' . request()->ip());
-}
-
+    protected function throttleKey(): string
+    {
+        return Str::transliterate(Str::lower($this->username) . '|' . request()->ip());
+    }
 }; ?>
 
 <div class="flex flex-col gap-6">
@@ -141,3 +146,9 @@ protected function throttleKey(): string
         </div>
     </div>
 </div>
+
+<script>
+    // console.log(sessionStorage.setItem('dashboardRefreshed'));
+    sessionStorage.setItem('dashboardRefreshed', 'false');
+    // console.log(sessionStorage.getItem('dashboardRefreshed'));
+</script>

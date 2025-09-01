@@ -58,6 +58,7 @@
                         <th class="align-middle">ชื่อผู้ใช้</th>
                         <th class="align-middle">ชื่อ-นามสกุล</th>
                         <th class="align-middle">ระดับผู้ใช้</th>
+                        <th class="align-middle">วันที่ล็อกอินล่าสุด</th>
                         {{-- <th>อีเมล</th> --}}
                     </tr>
                 </thead>
@@ -77,10 +78,18 @@
                                 {{ $user->lastname }}</td>
                             <td>{{ $user->user_type }}</td>
                             {{-- <td>{{ $user->email }}</td> --}}
+                            @php
+                                $last_login = $user->last_login_at ? \Carbon\Carbon::parse($user->last_login_at)->locale('th') : null;
+                            @endphp
+                            <td class="text-center">
+                                {{ $last_login
+                                    ? $last_login->isoFormat('D MMM') . ' ' . ($last_login->year + 543) . ' ' . $last_login->format('H:i:s')
+                                    : '-' }}
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="100%" class="text-center">ไม่มีข้อมูล</td>
+                            <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
                         </tr>
                     @endforelse
                 </tbody>

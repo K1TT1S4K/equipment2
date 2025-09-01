@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Imports\UsersImport;
 use App\Exports\UsersExport;
+use App\Models\Document as ModelsDocument;
+use App\Models\Equipment_document;
+use Dom\Document;
 
 class EquipmentController extends Controller
 {
@@ -58,7 +61,7 @@ class EquipmentController extends Controller
         $unit = $request->input('unit_filter'); //ค้นหาจากประเภทหน่วยนับ
         $location = $request->input('location_filter');
         $user = $request->input('user_filter');
-
+        // dd($unit, $user);
         $equipments = Equipment::when($search, function ($query, $search) {
             return $query->where('number', 'like', "%{$search}%")
                 ->orWhere('name', 'like', "%{$search}%")
@@ -73,23 +76,90 @@ class EquipmentController extends Controller
                 ->orWhere('updated_at', 'like', "%{$search}%");
         })
             ->when($title, function ($query, $title) {
-                return $query->where('title_id', $title); // กรองตามหัวข้อ
+                $query->where('title_id', $title); // กรองตามหัวข้อ
             })
-            ->when($unit != 'all', function ($query, $unit) {
-                return $query->where('equipment_unit_id', $unit); // กรองตามหน่วยนับ
+            ->when($unit, function ($query, $unit) {
+                if($unit != 'all') $query->where('equipment_unit_id', $unit); // กรองตามหน่วยนับ
             })
-            ->when($location != 'all', function ($query, $location) {
-                return $query->where('location_id', $location); // กรองตามที่อยู่
+            ->when($location, function ($query, $location) {
+                if ($location != 'all') $query->where('location_id', $location); // กรองตามที่อยู่
             })
-            ->when($user != 'all', function ($query, $user) {
-                return $query->where('user_id', $user); // กรองตามผู้ดูแล
+            ->when($user, function ($query, $user) {
+                if($user != 'all') $query->where('user_id', $user); // กรองตามผู้ดูแล
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        // dd($equipments);
         $equipments->appends($request->all());
         // dd($request->query());
 
         return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
+        // dd($request->query());
+    }
+
+    public function trash(Request $request)
+    {
+        $users = User::all();
+        $equipment_units = Equipment_unit::all();
+        $equipment_types = Equipment_type::all();
+        // $equipments = Equipment::all();
+        $locations = Location::all();
+        $titles = Title::all();
+        $logs = Equipment_log::all();
+        $equipment_trash = Equipment::onlyTrashed()->get();
+
+        // dd($request->input('unit_filter')!='all'); 
+
+        $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
+        $title = $request->input('title_filter'); // ค้นหาจากประเภทหัวข้อ
+        $unit = $request->input('unit_filter'); //ค้นหาจากประเภทหน่วยนับ
+        $location = $request->input('location_filter');
+        $user = $request->input('user_filter');
+        // dd($unit, $user);
+        $equipments = Equipment::when($search, function ($query, $search) {
+            return $query->where('number', 'like', "%{$search}%")
+                ->orWhere('name', 'like', "%{$search}%")
+                ->orWhere('price', 'like', "%{$search}%")
+                ->orWhere('total_price', 'like', "%{$search}%")
+                ->orWhere('status_found', 'like', "%{$search}%")
+                ->orWhere('status_not_found', 'like', "%{$search}%")
+                ->orWhere('status_broken', 'like', "%{$search}%")
+                ->orWhere('status_disposal', 'like', "%{$search}%")
+                ->orWhere('status_transfer', 'like', "%{$search}%")
+                ->orWhere('created_at', 'like', "%{$search}%")
+                ->orWhere('updated_at', 'like', "%{$search}%");
+        })
+            ->when($title, function ($query, $title) {
+                $query->where('title_id', $title); // กรองตามหัวข้อ
+            })
+            ->when($unit, function ($query, $unit) {
+                if($unit != 'all') $query->where('equipment_unit_id', $unit); // กรองตามหน่วยนับ
+            })
+            ->when($location, function ($query, $location) {
+                if ($location != 'all') $query->where('location_id', $location); // กรองตามที่อยู่
+            })
+            ->when($user, function ($query, $user) {
+                if($user != 'all') $query->where('user_id', $user); // กรองตามผู้ดูแล
+            })
+            ->onlyTrashed()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        // dd($equipments);
+        // $equipments->appends([
+        //     'title_filter'=> '1',
+        //     'unit_filter'=>'all',
+        //     'location_filter'=>'all',
+        //     'user_filter'=>'all'
+        // ]);
+
+        $equipments->appends($request->all());
+
+        // dd($equipments);
+        // dd($request->query());
+
+        return view('page.equipments.trash', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
         // dd($request->query());
     }
 
@@ -163,8 +233,10 @@ class EquipmentController extends Controller
         $locations = Location::all();
         $titles = Title::all();
         $logs = Equipment_log::all();
+        $equipment_documents = Equipment_document::all();
+        $documents = ModelsDocument::all();
 
-        return view('page.equipments.edit', compact('equipment', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
+        return view('page.equipments.edit', compact('equipments', 'equipment_documents', 'equipment', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs')) . $id;
     }
 
     public function update(Request $request, $id)
@@ -381,25 +453,19 @@ class EquipmentController extends Controller
     /// ฟังก์ชัน delete ก้อปมาจากคุณกิต
     public function deleteSelected(Request $request)
     {
+// dd(99);
+// dd($request->input('selected_equipments'));
+        // dd($request->input('redirect_to'));
         $equipmentIds = $request->input('selected_equipments');
-
         if ($equipmentIds) {
             Equipment::whereIn('id', $equipmentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
             // dd('900');
-            return redirect()->route('equipment.index')->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
+            return redirect($request->input('redirect_to', route('equipment.index')))->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
         }
-
-        return redirect()->route('equipment.index')->with('error', 'กรุณาเลือกเอกสาร');
+        //  return redirect($request->input('redirect_to',route('document.index')))->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
+        return redirect($request->input('redirect_to', route('equipment.index')))->with('error', 'กรุณาเลือกเอกสาร');
     }
 
-    public function forceDelete($id) // ลบครุภัณฑ์ถาวร
-    {
-        $equipment = Equipment::withTrashed()->findOrFail($id); // ค้นหาครุภัณฑ์ที่ถูกลบตาม ID ที่ส่งมา
-        Storage::delete('public/' . $equipment->path); // ลบไฟล์จาก storage
-        $equipment->forceDelete(); // ลบครุภัณฑ์จากฐานข้อมูล
-
-        return redirect()->route('document.trash')->with('success', 'ลบครุภัณฑ์ถาวรเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าครุภัณฑ์
-    }
     /// ฟังก์ชัน restore ก้อปมาจากคุณกิต
     public function restore($id) // กู้คืนครุภัณฑ์ที่ถูกลบ
     {
@@ -416,10 +482,22 @@ class EquipmentController extends Controller
     /// ฟังก์ชัน restore ก้อปมาจากคุณกิต
     public function restoreMultiple(Request $request)
     {
+    //    dd($request->input('redirect_to'));
         $ids = explode(',', $request->input('selected_equipments', ''));
+        // dd($ids);
         Equipment::onlyTrashed()->whereIn('id', $ids)->restore();
-        return redirect()->route('equipment.trash')->with('success', 'กู้คืนครุภัณฑ์ที่เลือกเรียบร้อยแล้ว');
+        return redirect($request->input('redirect_to', route('equipment.trash')))->with('success', 'กู้คืนครุภัณฑ์ที่เลือกเรียบร้อยแล้ว');
     }
+
+    public function forceDeleteMultiple(Request $request) // ลบครุภัณฑ์ถาวร
+    {
+                // dd(99);
+        $ids = explode(',', $request->input('selected_equipments', ''));
+        // dd($ids);
+        Equipment::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+        return redirect($request->input('redirect_to', route('equipment.trash')))->with('success', 'ลบครุภัณฑ์ถาวรเรียบร้อยแล้ว');
+    }
+
     /// ฟังก์ชัน restore ก้อปมาจากคุณกิต
     public function restoreAllEquipments() // กู้คืนครุภัณฑ์ทั้งหมด
     {

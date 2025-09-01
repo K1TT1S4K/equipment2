@@ -57,8 +57,8 @@
         </form>
     </div> --}}
 
-    <div class="card shadow-lg p-3 mb-4 bg-body">
-        <div class="row">
+    <div class="card shadow-lg p-3 bg-body">
+        <div class="row mb-2">
             <div class="col-4">
                 <h3>รายการเอกสาร</h3>
             </div>
@@ -99,8 +99,7 @@
                 </div>
 
                 <div id="bulk-delete-selected" style="display: none;">
-                    <form id="bulk-delete-selected-form" action="{{ route('document.deleteSelected') }}"
-                        method="POST">
+                    <form id="bulk-delete-selected-form" action="{{ route('document.deleteSelected') }}" method="POST">
                         @csrf
                         <input type="hidden" name="selected_documents" id="selected_documents_json_delete_selected">
                         <button type="submit" class="btn btn-danger"
@@ -112,64 +111,62 @@
             </div>
         </div>
 
-        <div class="row p-3">
-            <table class="table table-striped table-hover w-full">
-                <thead class="text-center table-dark align-middle">
-                    <tr class="text-center">
-                        <th><input type="checkbox" id="select-all"></th>
-                        <th class="align-middle">ลำดับ</th>
-                        <th class="align-middle">ประเภทเอกสาร</th>
-                        <th class="align-middle">วันที่ดำเนินการ</th>
-                        <th class="align-middle">เอกสารอ้างอิง</th>
-                        <th class="align-middle">วันที่ลบ</th>
-                        {{-- <th class="align-middle">วันที่สร้าง</th> --}}
-                    </tr>
-                </thead>
-                <tbody class="align-middle p-3">
-                    @forelse ($documents as $key => $document)
-                        <tr class="text-center" style="cursor: pointer;"
-                            onclick="window.location='{{ route('document.edit', $document->id) }}'">
-                            <td onclick="event.stopPropagation();">
-                                <input type="checkbox" class="document-checkbox" name="selected_documents[]"
-                                    value="{{ $document->id }}">
-                            </td>
-                            <td>{{ $loop->iteration + ($documents->currentPage() - 1) * $documents->perPage() }}</td>
-                            <td>{{ $document->document_type }}</td>
-                            @php
-                                $date = \Carbon\Carbon::parse($document->date)->locale('th');
-                                // $buddhistYear = $date->year + 543;
-                            @endphp
-                            <td class="text-center">{{ $date->isoFormat('D MMM YYYY') }}</td>
-                            <td class="text-center" onclick="event.stopPropagation();">
-                                @if ($document->stored_name)
-                                    <a href="{{ asset('storage/' . $document->stored_name) }}"
-                                        download="{{ $document->original_name }}">{{ $document->original_name }}</a>
-                                @else
-                                    -
-                                @endif
-                            </td>
-                            @php
-                                $updated = \Carbon\Carbon::parse($document->updated_at)->locale('th');
-                                $created = \Carbon\Carbon::parse($document->created_at)->locale('th');
-                                $deleted = \Carbon\Carbon::parse($document->deleted_at)->locale('th');
-                            @endphp
-                            <td class="text-center">{{ $deleted->isoFormat('D MMM') }} {{ $deleted->year + 543 }}
-                                {{ $deleted->format('H:i:s') }}</td>
-                            {{-- <td class="text-center">{{ $created->isoFormat('D MMM') }} {{ $created->year + 543 }}
+        <table class="table table-hover w-full">
+            <thead class="text-center table-dark align-middle">
+                <tr class="text-center">
+                    <th><input type="checkbox" id="select-all"></th>
+                    <th class="align-middle">ลำดับ</th>
+                    <th class="align-middle">ประเภทเอกสาร</th>
+                    <th class="align-middle">วันที่ดำเนินการ</th>
+                    <th class="align-middle">เอกสารอ้างอิง</th>
+                    <th class="align-middle">วันที่ลบ</th>
+                    {{-- <th class="align-middle">วันที่สร้าง</th> --}}
+                </tr>
+            </thead>
+            <tbody class="align-middle p-3">
+                @forelse ($documents as $key => $document)
+                    <tr class="text-center" style="cursor: pointer;"
+                        onclick="window.location='{{ route('document.edit', $document->id) }}'">
+                        <td onclick="event.stopPropagation();">
+                            <input type="checkbox" class="document-checkbox" name="selected_documents[]"
+                                value="{{ $document->id }}">
+                        </td>
+                        <td>{{ $loop->iteration + ($documents->currentPage() - 1) * $documents->perPage() }}</td>
+                        <td>{{ $document->document_type }}</td>
+                        @php
+                            $date = \Carbon\Carbon::parse($document->date)->locale('th');
+                            // $buddhistYear = $date->year + 543;
+                        @endphp
+                        <td class="text-center">{{ $date->isoFormat('D MMM YYYY') }}</td>
+                        <td class="text-center" onclick="event.stopPropagation();">
+                            @if ($document->stored_name)
+                                <a href="{{ asset('storage/' . $document->stored_name) }}"
+                                    download="{{ $document->original_name }}">{{ $document->original_name }}</a>
+                            @else
+                                -
+                            @endif
+                        </td>
+                        @php
+                            $updated = \Carbon\Carbon::parse($document->updated_at)->locale('th');
+                            $created = \Carbon\Carbon::parse($document->created_at)->locale('th');
+                            $deleted = \Carbon\Carbon::parse($document->deleted_at)->locale('th');
+                        @endphp
+                        <td class="text-center">{{ $deleted->isoFormat('D MMM') }} {{ $deleted->year + 543 }}
+                            {{ $deleted->format('H:i:s') }}</td>
+                        {{-- <td class="text-center">{{ $created->isoFormat('D MMM') }} {{ $created->year + 543 }}
                                 {{ $created->format('H:i:s') }}</td> --}}
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="100%" class="text-center">ไม่มีข้อมูล</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
 
-                <div class="d-flex justify-content-center">
-                            {{-- ไว้ดูค่าเพื่อ debug --}}
-                {{-- <pre>
+        <div class="d-flex justify-content-center">
+            {{-- ไว้ดูค่าเพื่อ debug --}}
+            {{-- <pre>
 {{ print_r(request()->all(), true) }}
 {{ $documents->url(2) }}
 </pre> --}}
@@ -220,6 +217,7 @@
                     form.addEventListener('submit', function(e) {
                         const selectedIds = Array.from(document.querySelectorAll('.document-checkbox:checked'))
                             .map(cb => cb.value);
+                            //  console.log("Selected IDs:", selectedIds); // ✅ debug
                         if (selectedIds.length === 0) {
                             e.preventDefault();
                             alert('กรุณาเลือกเอกสารที่ต้องการ');

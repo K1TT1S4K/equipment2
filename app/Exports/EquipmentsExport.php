@@ -45,6 +45,10 @@ class EquipmentsExport implements FromCollection, WithHeadings, WithColumnWidths
 
     public function collection()
     {
+        $count = 1;
+
+        //ดึงค่าจากตาราง Equipment_unit โดยให้ id เป็น key และให้ name เป็น value
+        // หลังจากนั้นเปลี่ยนจาก collection เป็น array ปกติด้วย toArray()
         $unitMap = Equipment_unit::pluck('name', 'id')->toArray();
         $typeNameMap = Equipment_type::pluck('name', 'id')->toArray();
         $typeUnitMap = Equipment_type::pluck('equipment_unit_id', 'id')->toArray();
@@ -60,7 +64,7 @@ class EquipmentsExport implements FromCollection, WithHeadings, WithColumnWidths
 
         $displayedTypes = [];
 
-        $dataWithExtra = $data->flatMap(function ($item, $key) use ($data, $typeNameMap, $typeUnitMap, $typeAmountMap, $typePriceMap, $typeTotalPriceMap, $unitMap, $userPrefixMap, $userFirstnameMap, $userLastnameMap, $prefixMap, $locationMap, &$displayedTypes) {
+        $dataWithExtra = $data->flatMap(function ($item, $key) use (&$count, $data, $typeNameMap, $typeUnitMap, $typeAmountMap, $typePriceMap, $typeTotalPriceMap, $unitMap, $userPrefixMap, $userFirstnameMap, $userLastnameMap, $prefixMap, $locationMap, &$displayedTypes) {
             $firstname = $userFirstnameMap[$item->user_id] ?? '';
             $firstname = $firstname ? $firstname . " " : $firstname;
 
@@ -89,7 +93,7 @@ class EquipmentsExport implements FromCollection, WithHeadings, WithColumnWidths
                 foreach ($data->where('equipment_type_id', $type) as $key => $itemList) {
                     // dd($data);
                     $result[] = (object)[
-                        'index' => (int)$key + 1,
+                        'index' => $count,
                         'number' => $itemList->number,
                         'name' => $itemList->name,
                         'unit_name' => $unitMap[$itemList->equipment_unit_id] ?? null,
@@ -106,12 +110,13 @@ class EquipmentsExport implements FromCollection, WithHeadings, WithColumnWidths
                             . ($location)
                             . ($description),
                     ];
+                    $count ++;
                 }
                 $displayedTypes[] = $type;
                 return $result;
             } elseif ((!(in_array($item->equipment_type_id, $displayedTypes))) && $item->title_id == $this->title->id) {
-                return [(object)[
-                    'index' => $key + 1,
+                $result[] = (object)[
+                    'index' => $count,
                     'number' => $item->number,
                     'name' => $item->name,
                     'unit_name' => $unitMap[$item->equipment_unit_id] ?? null,
@@ -130,13 +135,13 @@ class EquipmentsExport implements FromCollection, WithHeadings, WithColumnWidths
                         . ($location)
                         // . ($item->description ?? '')
                         . ($description),
-                ]];
+                ];
+                            $count ++;
             }
+
+            return $result;
         });
         return $dataWithExtra;
-        // return Equipment::where('title_id',$this->id)->get();
-
-        // dd(99);
     }
 
     public function headings(): array

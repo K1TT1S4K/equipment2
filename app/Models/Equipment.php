@@ -33,6 +33,12 @@ class Equipment extends Model
         'user_id',
     ];
 
+    public function documents(): HasMany
+    {
+        // foreign key ใน table equipment_documents คือ equipment_id
+        return $this->hasMany(Equipment_document::class, 'equipment_id');
+    }
+
     // ความสัมพันธ์กับ Equipment_type
     public function equipmentType()
     {

@@ -11,7 +11,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
         <div class="container-fluid">
             <!-- Logo -->
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
+            <a class="navbar-brand" href="{{ route('dashboard.index') }}">
                 <img src="{{ asset('image/RMUTI.png') }}" style="width: 30px; height: auto; display: block; margin: auto;"
                     class="d-inline-block align-text-top">
             </a>
@@ -25,8 +25,8 @@
             <div class="collapse navbar-collapse" id="navbarMenu">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                            href="{{ route('dashboard') }}">
+                        <a class="nav-link active"
+                            href="{{ route('dashboard.index') }}">
                             แดชบอร์ด
                         </a>
                     </li>
@@ -71,7 +71,7 @@
                                 กู้คืนข้อมูล
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
-                                {{-- <li><a class="dropdown-item" href="#">กู้คืนครุภัณฑ์</a></li> --}}
+                                <li><a class="dropdown-item" href="{{ route('equipment.trash') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">กู้คืนครุภัณฑ์</a></li>
                                 <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
                                 <li><a class="dropdown-item" href="{{ route('user.trashed') }}">กู้คืนบุคลากร</a></li>
                             </ul>

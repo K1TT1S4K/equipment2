@@ -14,7 +14,7 @@ class UserController extends Controller
     // แสดงรายการบุคลากร
     public function index()
     {
-        $users = User::with('prefix')->paginate(10); // ดึงข้อมูลบุคลากรพร้อมคำนำหน้า
+        $users = User::with('prefix')->orderBy('created_at', 'desc')->paginate(10); // ดึงข้อมูลบุคลากรพร้อมคำนำหน้า
         return view('page.users.show', compact('users'));
     }
     // ค้นหาบุคลากร
@@ -38,6 +38,7 @@ class UserController extends Controller
             ->when($userType, function ($query, $userType) {
                 return $query->where('user_type', $userType); // กรองตามระดับผู้ใช้
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(10); // ใช้การแบ่งหน้าหากข้อมูลมีจำนวนมาก
 
         return view('page.users.show', compact('users'));
