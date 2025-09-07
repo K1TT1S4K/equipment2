@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\Equipment;
+use App\Models\Equipment_document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -70,13 +72,19 @@ class DocumentController extends Controller
 
         ]);
 
-        return redirect($request->input('redirect_to',route('document.index')))->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
+        return redirect($request->input('redirect_to', route('document.index')))->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
     }
 
     public function edit($id) // แสดงฟอร์มสำหรับแก้ไขเอกสาร
     {
         $document = Document::findOrFail($id); // ค้นหาเอกสารตาม ID ที่ส่งมา
-        return view('page.documents.edit', compact('document')); // ส่งเอกสารไปยัง view
+        $equipments_documents = Equipment_document::where('document_id', $document->id)->orderByDesc('created_at')->paginate(10);
+        $equipment_ids = $equipments_documents->pluck('equipment_id');
+        $equipments = Equipment::all();
+
+        // dd($document->id, $equipments_documents, $equipments);
+
+        return view('page.documents.edit', compact('document', 'equipments_documents', 'equipments')); // ส่งเอกสารไปยัง view
     }
 
     public function update(Request $request, $id)
@@ -142,26 +150,7 @@ class DocumentController extends Controller
         Document::onlyTrashed()->restore(); // กู้คืนเอกสารทั้งหมด
         return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารทั้งหมดเรียบร้อยแล้ว');
     }
-    public function deleteAll()
-    {
-        Document::onlyTrashed()->forceDelete(); // ลบเอกสารทั้งหมดถาวร
-        return redirect()->route('document.trash')->with('success', 'ลบเอกสารทั้งหมดเรียบร้อยแล้ว');
-    }
-    // public function deleteSelectedAll(Request $request)
-    // {
-    //     $ids = $request->input('selected_documents', []); // รับ ID ของเอกสารที่เลือก
-    //     Document::whereIn('id', $ids)->forceDelete(); // ลบเอกสารที่เลือกถาวร
 
-    //     return redirect()->route('document.trash')->with('success', 'ลบเอกสารที่เลือกเรียบร้อยแล้ว');
-    // }
-    public function forceDelete($id) // ลบเอกสารถาวร
-    {
-        $document = Document::withTrashed()->findOrFail($id); // ค้นหาเอกสารที่ถูกลบตาม ID ที่ส่งมา
-        Storage::delete('public/' . $document->path); // ลบไฟล์จาก storage
-        $document->forceDelete(); // ลบเอกสารจากฐานข้อมูล
-
-        return redirect()->route('document.trash')->with('success', 'ลบเอกสารถาวรเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
-    }
     public function restoreMultiple(Request $request)
     {
         $ids = explode(',', $request->input('selected_documents', ''));
@@ -173,7 +162,6 @@ class DocumentController extends Controller
     public function deleteSelected(Request $request)
     {
         $documentIds = $request->input('selected_documents');
-// dd('99');
 
         if ($documentIds) {
             Document::whereIn('id', $documentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
@@ -183,43 +171,28 @@ class DocumentController extends Controller
         return redirect()->route('document.index')->with('error', 'กรุณาเลือกเอกสาร');
     }
 
-    public function restoreAllDocuments() // กู้คืนเอกสารทั้งหมด
+    public function forceDeleteSelected(Request $request)
     {
-        Document::onlyTrashed()->restore(); // กู้คืนเอกสารทั้งหมด
-        return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารทั้งหมดเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
+       $ids = explode(',', $request->input('selected_documents', ''));
+
+        Document::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+        return redirect()->route('document.trash')->with('success', 'ลบถาวรเรียบร้อยแล้ว');
     }
-    // public function searchTrash(Request $request)
-    // {
-    //     $query = Document::onlyTrashed();
 
-    //     if ($request->filled('query')) {
-    //         $query->where('document_type', 'like', '%' . $request->query('query') . '%')
-    //             ->orWhere('path', 'like', '%' . $request->query('query') . '%');
-    //     }
-
-    //     if ($request->filled('document_type')) {
-    //         $query->where('document_type', $request->query('document_type'));
-    //     }
-
-    //     $documents = $query->get();
-
-    //     return view('page.documents.trash', compact('documents'));
-    // }
-
-        public function searchTrash(Request $request)
+    public function searchTrash(Request $request)
     {
         $query = Document::onlyTrashed();
 
-        if($request->filled('search')) {
+        if ($request->filled('search')) {
             $search = $request->input('search');
             // dd($search);
             $query->where(function ($q) use ($search) {
                 $q->where('document_type', 'like', "%{$search}%")
-                ->orWhere('date', 'like', "%{$search}%")
-                ->orWhere('stored_name', 'like', "%{$search}%")
-                ->orWhere('original_name', 'like', "%{$search}%")
-                ->orWhere('created_at', 'like', "%{$search}%")
-                ->orWhere('updated_at', 'like', "%{$search}%");
+                    ->orWhere('date', 'like', "%{$search}%")
+                    ->orWhere('stored_name', 'like', "%{$search}%")
+                    ->orWhere('original_name', 'like', "%{$search}%")
+                    ->orWhere('created_at', 'like', "%{$search}%")
+                    ->orWhere('updated_at', 'like', "%{$search}%");
             });
         }
 
@@ -230,26 +203,5 @@ class DocumentController extends Controller
         $documents = $query->orderByDesc('deleted_at')->paginate(10);
 
         return view('page.documents.trash', compact('documents'));
-
-        // $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
-        // $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
-
-        // $documents = Document::onlyTrashed()->when($search, function ($query, $search) {
-        //     return $query->where('document_type', 'like', "%{$search}%")
-        //         ->orWhere('date', 'like', "%{$search}%")
-        //         ->orWhere('stored_name', 'like', "%{$search}%")
-        //         ->orWhere('original_name', 'like', "%{$search}%")
-        //         ->orWhere('created_at', 'like', "%{$search}%")
-        //         ->orWhere('updated_at', 'like', "%{$search}%");
-        // })
-        //     ->when($documentType, function ($query, $documentType) {
-        //         return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
-        //     })
-        //     ->paginate(10);
-
-        // // สำคัญ: เก็บ query string เอาไว้
-        // $documents->appends($request->all());
-
-        // return view('page.documents.trash', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
     }
 }

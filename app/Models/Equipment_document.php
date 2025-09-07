@@ -16,14 +16,8 @@ class Equipment_document extends Model
         'equipment_id',
         'document_id',
         'description',
+        'amount'
     ];
-
-    // public function equipments() : HasMany {
-    //     return $this->hasMany(Equipment::class);
-    // }
-    // public function documents() : HasMany {
-    //     return $this->hasMany(Document::class);
-    // }
 
     public function equipment(): BelongsTo
     {

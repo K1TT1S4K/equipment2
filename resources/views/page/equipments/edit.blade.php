@@ -9,12 +9,12 @@
                 แก้ไขข้อมูล
             </button>
         </li>
-        <li class="nav-item" role="presentation">
+        {{-- <li class="nav-item" role="presentation">
             <button class="nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" type="button"
                 role="tab" aria-controls="log" aria-selected="false">
                 ประวัติการแก้ไข
             </button>
-        </li>
+        </li> --}}
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="document-tab" data-bs-toggle="tab" data-bs-target="#document" type="button"
                 role="tab" aria-controls="document" aria-selected="false">
@@ -33,6 +33,10 @@
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
+                        <input type="hidden" id="currentEquipmentUnitId" value="{{ $equipment->equipment_unit_id }}">
+                        <input type="hidden" id="currentEquipmentTitleId" value="{{ $equipment->title_id }}">
+                        <input type="hidden" id="currentEquipmentTypeId" value="{{ $equipment->equipment_type_id }}">
+                        <input type="hidden" id="currentEquipmentLocationId" value="{{ $equipment->location_id }}">
                         <div class="row">
                             <div class="mb-3 col">
                                 <label class="form-label">หมายเลขครุภัณฑ์ <span class="text-danger">*</span></label>
@@ -238,24 +242,9 @@
         <div class="tab-pane fade" id="document" role="tabpanel" aria-labelledby="document-tab">
             <div class="card shadow-lg p-3 mb-3 bg-body rounded border border-dark">
                 <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col h4">พบ: {{ $equipment->status_found }}</div>
-                        <div class="col h4">ไม่พบ: {{ $equipment->status_not_found }}</div>
-                        <div class="col h4">ชำรุด: {{ $equipment->status_broken }}</div>
-                        <div class="col h4">จำหน่าย: {{ $equipment->status_disposal }}</div>
-                        <div class="col h4">โอน: {{ $equipment->status_transfer }}</div>
-                        <div class="col">
-                            <button type="submit" class="btn btn-success">เพิ่ม</button>
-                        </div>
-                    </div>
-                    <hr>
                     <table class="table mt-3 table-hover w-full">
                         <thead class="text-center table-dark align-middle">
                             <tr class="text-center">
-                                {{-- <th class="align-middle">สถานะ</th> --}}
-                                <th rowspan="2">
-                                    <input type="checkbox" id="select-all">
-                                </th>
                                 <th class="align-middle">ประเภท</th>
                                 <th class="align-middle">จำนวน</th>
                                 <th class="align-middle">วันที่ดำเนินการ</th>
@@ -268,10 +257,6 @@
                             {{-- {{dd($equipment_documents)}} --}}
                             @forelse ($equipment_documents->where('equipment_id', $equipment->id) as $key => $equipment_document)
                                 <tr class="text-center" style="cursor: pointer;">
-                                    <td onclick="event.stopPropagation();">
-                                        <input type="checkbox" class="document-checkbox" name="selected_users[]"
-                                            value="{{ $equipment_document->id }}">
-                                    </td>
                                     <td>
                                         {{ $equipment_document->document->document_type }}
                                     </td>
@@ -279,7 +264,9 @@
                                         {{ $equipment_document->amount }}
                                     </td>
                                     @php
-                                        $date = \Carbon\Carbon::parse($equipment_document->document->date)->locale('th');
+                                        $date = \Carbon\Carbon::parse($equipment_document->document->date)->locale(
+                                            'th',
+                                        );
                                         // $buddhistYear = $date->year + 543;
                                     @endphp
                                     <td>{{ $date->isoFormat('D MMM YYYY') }}</td>
@@ -305,7 +292,7 @@
     </div>
 
     @can('admin-or-branch')
-        <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">
+        {{-- <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content border-dark">
                     <div class="modal-header">
@@ -322,13 +309,13 @@
                                 </tr>
                             </thead>
                             <tbody id="unitTableBody">
-                                {{-- โหลดข้อมูลด้วย JS --}}
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="modal fade" id="titleModal" tabindex="-1" aria-labelledby="titleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">

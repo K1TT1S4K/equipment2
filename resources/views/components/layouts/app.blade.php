@@ -70,7 +70,6 @@
             /* background-color: blue !important; */
         }
     </style>
-
 </head>
 
 <body style="background-color: var(--bs-light-green);">
@@ -261,6 +260,8 @@
 
         // ที่อยู่
         function loadlocations() {
+            let equipmentLocationId = $("#currentEquipmentLocationId").val();
+            console.log('this' + equipmentLocationId);
             $.get("{{ route('locations.index') }}", function(data) {
                 $("#locationSelect").html("")
                 let rows = '';
@@ -274,7 +275,9 @@
                             </td>
                         </tr>`;
                     $("#locationSelect").append(
-                        `<option value="${loc.id}">${loc.name}</option>`)
+                        `<option value="${loc.id}" ${(equipmentLocationId && equipmentLocationId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
+                        )
+                    console.log(loc.id)
                 });
                 $('#locationTableBody').html(rows);
             });
@@ -282,6 +285,7 @@
 
         // หน่วยนับ
         function loadunits() {
+            let equipmentUnitId = $("#currentEquipmentUnitId").val();
             $.get("{{ route('equipment_units.index') }}", function(data) {
                 $("#unitSelect").html("")
                 let rows = '';
@@ -294,7 +298,9 @@
                                 <button class="btn btn-sm btn-danger deleteBtnunit">ลบ</button>
                             </td>
                         </tr>`;
-                    $("#unitSelect").append(`<option value="${loc.id}">${loc.name}</option>`)
+                    $("#unitSelect").append(
+                        `<option value="${loc.id}" ${(equipmentUnitId && equipmentUnitId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
+                        )
                 });
                 $('#unitTableBody').html(rows);
             });
@@ -302,12 +308,12 @@
 
         // ประเภท
         function loadtypes() {
+            let equipmentTypeId = $("#currentEquipmentTypeId").val();
             $.get("{{ route('types.index') }}", function(data) {
                 $("#equipmentTypeSelect").html("");
 
                 // เพิ่ม option เริ่มต้น
                 $("#equipmentTypeSelect").append(`<option value="">-- เลือกประเภท --</option>`);
-// dd(loc)
                 let rows = '';
                 data.forEach(loc => {
                     rows += `
@@ -326,7 +332,8 @@
                             </td>
                         </tr>`;
                     $("#equipmentTypeSelect").append(
-                        `<option value="${loc.id}">${loc.name}</option>`)
+                        `<option value="${loc.id}" ${(equipmentTypeId && equipmentTypeId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
+                        )
                 });
                 $('#typeTableBody').html(rows);
             });
@@ -334,6 +341,7 @@
 
         // หัวข้อ
         function loadtitles() {
+            let equipmentTitleId = $("#currentEquipmentTitleId").val();
             $.get("{{ route('titles.index') }}", function(data) {
                 $("#titleSelect").html("")
 
@@ -352,7 +360,8 @@
                             </td>
                         </tr>`;
                     $("#titleSelect").append(
-                        `<option value="${loc.id}">${loc.group} - ${loc.name}</option>`)
+                        `<option value="${loc.id}" ${(equipmentTitleId && equipmentTitleId == loc.id) ? 'selected' : ''}>${loc.group} - ${loc.name}</option>`
+                        )
                 });
                 $('#titleTableBody').html(rows);
             });

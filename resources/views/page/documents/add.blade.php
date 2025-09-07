@@ -18,6 +18,10 @@
                         </option>
                         <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
                             โอนครุภัณฑ์</option>
+                        <option value="ไม่พบ" {{ request('document_type') == 'ไม่พบ' ? 'selected' : '' }}>
+                            ไม่พบ</option>
+                        <option value="ชำรุด" {{ request('document_type') == 'ชำรุด' ? 'selected' : '' }}>
+                            ชำรุด</option>
                     </select>
                 </div>
                 <div class="mb-3">
@@ -27,7 +31,7 @@
                 <div class="mb-3">
                     <label for="formFile" class="form-label">เอกสารอ้างอิง <span class="text-danger">*</span>
                         pdf</label>
-                    <input type="file" class="form-control" id="document" name="document"   accept=".pdf" required>
+                    <input type="file" class="form-control" id="document" name="document" accept=".pdf" required>
                 </div>
                 <div class="text-end">
                     <button type="submit" class="btn btn-primary">บันทึก</button>

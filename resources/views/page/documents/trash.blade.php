@@ -88,8 +88,9 @@
                 </div>
 
                 <div id="bulk-delete-all" style="display: none;">
-                    <form id="bulk-delete-all-form" action="{{ route('document.deleteSelected') }}" method="POST">
+                    <form id="bulk-delete-all-form" action="{{ route('document.forceDeleteSelected') }}" method="POST">
                         @csrf
+                        @method('DELETE')
                         <input type="hidden" name="selected_documents" id="selected_documents_json_delete_all">
                         <button type="submit" class="btn btn-danger"
                             onclick="return confirm('คุณต้องการลบถาวรเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
@@ -99,8 +100,9 @@
                 </div>
 
                 <div id="bulk-delete-selected" style="display: none;">
-                    <form id="bulk-delete-selected-form" action="{{ route('document.deleteSelected') }}" method="POST">
+                    <form id="bulk-delete-selected-form" action="{{ route('document.forceDeleteSelected') }}" method="POST">
                         @csrf
+                        @method('DELETE')
                         <input type="hidden" name="selected_documents" id="selected_documents_json_delete_selected">
                         <button type="submit" class="btn btn-danger"
                             onclick="return confirm('คุณต้องการลบถาวรเอกสารที่เลือกใช่หรือไม่?')">

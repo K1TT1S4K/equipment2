@@ -9,7 +9,9 @@ use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\EquipmentUnitController;
 use App\Http\Controllers\TitleController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EquipmentDocumentController;
 use App\Models\Equipment;
+use App\Models\Equipment_document;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -48,6 +50,8 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.index');
     Route::get('/export/{titleId}', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
+    Route::post('equipments_documents',[EquipmentDocumentController::class, 'store'])->name('equipments_documents.store');
+    Route::delete('equipments_documents/delete-selected', [EquipmentDocumentController::class, 'deleteSelected'])->name('equipments_documents.deleteSelected');
 });
 
 Route::middleware(['auth', 'can:admin-or-branch'])->group(function () {
@@ -64,7 +68,6 @@ Route::middleware(['auth', 'can:admin-or-branch'])->group(function () {
     Route::post('/equipment/restore-from-trash', [EquipmentController::class, 'restoreFromTrash'])->name('equipment.restoreFromTrash');
     Route::delete('/equipments/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.delete');
     Route::post('equipment/force-delete-multiple', [EquipmentController::class, 'forceDeleteMultiple'])->name('equipment.forceDeleteMultiple');
-    // Route::post('equipments/delete-selected', [EquipmentController::class, 'deleteSelected'])->name('equipment.deleteSelected');
     Route::delete('equipments/delete-all', [EquipmentController::class, 'deleteAll'])->name('equipment.deleteAll');
     Route::post('/equipments/delete-selected', [EquipmentController::class, 'deleteSelected'])->name('equipment.deleteSelected');
     Route::delete('equipments/delete-selected-all', [EquipmentController::class, 'deleteSelectedAll'])->name('equipment.deleteSelectedAll');
@@ -111,13 +114,11 @@ Route::middleware(['auth', 'can:admin-or-branch-or-officer'])->group(function ()
     Route::get('/trash/search', [DocumentController::class, 'searchTrash'])->name('trash.search');
     Route::post('/restore/{id}', [DocumentController::class, 'restore'])->name('document.restore');
     Route::post('/restore-multiple', [DocumentController::class, 'restoreMultiple'])->name('document.restoreMultiple');
-    Route::post('/restore-all', [DocumentController::class, 'restoreAllDocuments'])->name('document.restoreAll');
-    Route::delete('/force-delete/{id}', [DocumentController::class, 'forceDelete'])->name('document.forceDelete');
-    // Route::post('/delete-selected', [DocumentController::class, 'deleteSelected'])->name('document.deleteSelected');
-    Route::delete('/delete-all', [DocumentController::class, 'deleteAll'])->name('document.deleteAll');
     Route::delete('/delete-selected', [DocumentController::class, 'deleteSelected'])->name('document.deleteSelected');
-    Route::delete('/delete-selected-all', [DocumentController::class, 'deleteSelectedAll'])->name('document.deleteSelectedAll');
+        Route::delete('/force-delete-selected', [DocumentController::class, 'forceDeleteSelected'])->name('document.forceDeleteSelected');
+
 });
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('profile', [UserController::class, 'profile'])->name('profile');

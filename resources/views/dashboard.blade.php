@@ -86,118 +86,186 @@
                 </div>
             </div>
         </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <script src="js/Chart.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/0.7.0/chartjs-plugin-datalabels.min.js">
         </script>
         <script>
-            // sessionStorage.setItem('dashboardRefreshed', 'false');
-            // console.log(sessionStorage.getItem('dashboardRefreshed'))
-            if (sessionStorage.getItem('dashboardRefreshed') == 'false') {
-                sessionStorage.setItem('dashboardRefreshed', 'true');
-                location.reload();
-            }
+            document.addEventListener('DOMContentLoaded', function() {
+                    (function() {
+                        var xValues = ["พบ", "ไม่พบ", "ชำรุด", "จำหน่าย", "โอน"];
+                        var yValues = [{{ $totals->total_found ?? 0 }}, {{ $totals->total_not_found ?? 0 }},
+                            {{ $totals->total_broken ?? 0 }},
+                            {{ $totals->total_disposal ?? 0 }}, {{ $totals->total_transfer ?? 0 }}
+                        ];
+                        var barColors = [
+                            "#28a745",
+                            "#dc3545",
+                            "#ffc107",
+                            "#6c757d",
+                            "#17a2b8"
+                        ];
 
-            // pie chart
-            (function() {
-                var xValues = ["พบ", "ไม่พบ", "ชำรุด", "จำหน่าย", "โอน"];
-                var yValues = [{{ $totals->total_found ?? 0 }}, {{ $totals->total_not_found ?? 0 }},
-                    {{ $totals->total_broken ?? 0 }},
-                    {{ $totals->total_disposal ?? 0 }}, {{ $totals->total_transfer ?? 0 }}
-                ];
-                var barColors = [
-                    "#28a745",
-                    "#dc3545",
-                    "#ffc107",
-                    "#6c757d",
-                    "#17a2b8"
-                ];
-
-                new Chart("myChart", {
-                    type: "pie",
-                    data: {
-                        labels: xValues,
-                        datasets: [{
-                            backgroundColor: barColors,
-                            data: yValues
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true, // ทำให้สัดส่วนไม่เพี้ยน
-                        aspectRatio: 1, // 1:1 สำหรับ pie/donut chart
-                        layout: {
-                            padding: 0 // กำหนด padding รอบกราฟเป็น 0
-                        },
-                        legend: {
-                            display: true,
-                            position: "right",
-                            labels: {
-                                fontSize: 20, // << ขนาดตัวอักษร
-                                boxWidth: 30, // << ขนาดสี่เหลี่ยมสีด้านหน้า
-                                padding: 30
-                            }
-                        },
-                        title: {
-                            display: false
-                        },
-                        plugins: {
-                            datalabels: {
-                                color: "#fff", // สีตัวอักษรบนกราฟ
-                                font: {
-                                    weight: "bold",
-                                    size: 14
+                        new Chart("myChart", {
+                            type: "pie",
+                            data: {
+                                labels: xValues,
+                                datasets: [{
+                                    backgroundColor: barColors,
+                                    data: yValues
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true, // ทำให้สัดส่วนไม่เพี้ยน
+                                aspectRatio: 1, // 1:1 สำหรับ pie/donut chart
+                                layout: {
+                                    padding: 0 // กำหนด padding รอบกราฟเป็น 0
                                 },
-                                formatter: (value, ctx) => {
-                                    let sum = 0;
-                                    let dataArr = ctx.chart.data.datasets[0].data;
-                                    dataArr.map(data => {
-                                        sum += data;
-                                    });
-                                    let percentage = (value * 100 / sum).toFixed(1);
-
-                                    // 👇 ถ้าเปอร์เซ็นต์น้อยกว่า 5% จะไม่แสดง
-                                    if (percentage < 5) {
-                                        return null;
+                                legend: {
+                                    display: true,
+                                    position: "right",
+                                    labels: {
+                                        fontSize: 20, // << ขนาดตัวอักษร
+                                        boxWidth: 30, // << ขนาดสี่เหลี่ยมสีด้านหน้า
+                                        padding: 30
                                     }
-                                    return percentage + "%";
+                                },
+                                title: {
+                                    display: false
+                                },
+                                plugins: {
+                                    datalabels: {
+                                        color: "#fff", // สีตัวอักษรบนกราฟ
+                                        font: {
+                                            weight: "bold",
+                                            size: 14
+                                        },
+                                        formatter: (value, ctx) => {
+                                            let sum = 0;
+                                            let dataArr = ctx.chart.data.datasets[0].data;
+                                            dataArr.map(data => {
+                                                sum += data;
+                                            });
+                                            let percentage = (value * 100 / sum).toFixed(1);
+
+                                            // 👇 ถ้าเปอร์เซ็นต์น้อยกว่า 5% จะไม่แสดง
+                                            if (percentage < 5) {
+                                                return null;
+                                            }
+                                            return percentage + "%";
+                                        }
+                                    }
+                                }
+
+                            },
+                            plugins: [ChartDataLabels] // เปิดใช้งาน plugin
+                        });
+                    })();
+
+                    //bar chart
+                    (function() {
+                        console.log("dataset1", {{ $totalsByYear[$twoYearsAgo]->total_disposal_request ?? 0 }});
+                        console.log("dataset1", @json($totalsByYear[$twoYearsAgo]->total_disposal_request ?? 0));
+                        // ดึงปีปัจจุบันเป็น ค.ศ.
+                        let currentYearAD = new Date().getFullYear();
+                        // แปลงเป็น พ.ศ.
+                        let currentYearBE = currentYearAD + 543;
+
+                        const xValues = [currentYearBE - 2, currentYearBE - 1, currentYearBE]; // 3 แท่งในแต่ละชุด
+
+                        // ข้อมูล 5 ชุด
+                        const dataset1 = [
+                            {{ $totalsByYear[$twoYearsAgo]->total_disposal_request ?? 0 }},
+                            {{ $totalsByYear[$lastYear]->total_disposal_request ?? 0 }},
+                            {{ $totalsByYear[$currentYear]->total_disposal_request ?? 0 }}
+                        ];
+                        const dataset2 = [
+                            {{ $totalsByYear[$twoYearsAgo]->total_not_found ?? 0 }},
+                            {{ $totalsByYear[$lastYear]->total_not_found ?? 0 }},
+                            {{ $totalsByYear[$currentYear]->total_not_found ?? 0 }}
+                        ];
+                        const dataset3 = [
+                            {{ $totalsByYear[$twoYearsAgo]->total_broken ?? 0 }},
+                            {{ $totalsByYear[$lastYear]->total_broken ?? 0 }},
+                            {{ $totalsByYear[$currentYear]->total_broken ?? 0 }}
+                        ];
+                        const dataset4 = [
+                            {{ $totalsByYear[$twoYearsAgo]->total_disposal ?? 0 }},
+                            {{ $totalsByYear[$lastYear]->total_disposal ?? 0 }},
+                            {{ $totalsByYear[$currentYear]->total_disposal ?? 0 }}
+                        ];
+                        const dataset5 = [
+                            {{ $totalsByYear[$twoYearsAgo]->total_transfer ?? 0 }},
+                            {{ $totalsByYear[$lastYear]->total_transfer ?? 0 }},
+                            {{ $totalsByYear[$currentYear]->total_transfer ?? 0 }}
+                        ];
+
+                        // สีของแต่ละชุด
+                        const colors = [
+                            "#28a745",
+                            "#dc3545",
+                            "#ffc107",
+                            "#6c757d",
+                            "#17a2b8"
+                        ];
+
+                        const ctx = document.getElementById("myChart2").getContext("2d");
+                        new Chart(ctx, {
+                            type: "bar",
+                            data: {
+                                labels: xValues,
+                                datasets: [{
+                                        label: "ยื่นแทงจำหน่าย",
+                                        backgroundColor: colors[0],
+                                        data: dataset1
+                                    },
+                                    {
+                                        label: "ไม่พบ",
+                                        backgroundColor: colors[1],
+                                        data: dataset2
+                                    },
+                                    {
+                                        label: "ชำรุด",
+                                        backgroundColor: colors[2],
+                                        data: dataset3
+                                    },
+                                    {
+                                        label: "แทงจำหน่าย",
+                                        backgroundColor: colors[3],
+                                        data: dataset4
+                                    },
+                                    {
+                                        label: "โอน",
+                                        backgroundColor: colors[4],
+                                        data: dataset5
+                                    }
+                                ]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: true
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: "Bar Chart 5 Sets x 3 Bars"
+                                    },
+                                    datalabels: {
+                                        color: '#fff'
+                                    }
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: true
+                                        }
+                                    }]
                                 }
                             }
-                        }
-
-                    },
-                    plugins: [ChartDataLabels] // เปิดใช้งาน plugin
-                });
-            })();
-
-            (function() {
-                // Chart ที่สอง
-                const xValues2 = ["Italy", "France", "Spain", "USA", "Argentina"];
-                const yValues2 = [55, 49, 44, 24, 15];
-                const barColors2 = ["red", "green", "blue", "orange", "brown"];
-
-                const ctx2 = document.getElementById("myChart2").getContext("2d");
-                new Chart(ctx2, {
-                    type: "bar",
-                    data: {
-                        labels: xValues2,
-                        datasets: [{
-                            backgroundColor: barColors2,
-                            data: yValues2
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            title: {
-                                display: true,
-                                text: "World Wine Production 2018"
-                            }
-                        }
-                    }
-                });
-            })();
+                        });
+                    })();
+                
+            });
         </script>
     </div>
 </x-layouts.app>
