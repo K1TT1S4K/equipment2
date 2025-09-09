@@ -86,4 +86,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Equipment_log::class);
     }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->prefix->name} {$this->firstname} {$this->lastname}";
+    }
 }

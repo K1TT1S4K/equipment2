@@ -81,12 +81,6 @@
         </div>
     </main>
 </body>
-{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-</script> --}}
-{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> --}}
-{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> --}}
-{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
@@ -107,7 +101,7 @@
 </script>
 
 {{-- ไปที่ถังขยะ --}}
-<script>
+{{-- <script>
     function goToBinMode() {
         const urlParams = new URLSearchParams(window.location.search);
         const currentBinMode = urlParams.get('bin_mode');
@@ -123,86 +117,7 @@
         // เปลี่ยน URL และรีเฟรชหน้า
         window.location.search = urlParams.toString();
     }
-</script>
-
-{{-- เช็คบ็อกเลือกข้อมูล --}}
-<script>
-    document.getElementById('select-all').addEventListener('change', function() {
-        document.querySelectorAll('.checkbox-item').forEach(cb => cb.checked = this.checked);
-    });
-
-    document.getElementById('moveToTrashBtn').addEventListener('click', function() {
-        const selectedIds = Array.from(document.querySelectorAll('.checkbox-item:checked'))
-            .map(cb => cb.value);
-
-        if (selectedIds.length === 0) {
-            alert('กรุณาเลือกรายการที่ต้องการย้ายไปถังขยะ');
-            return;
-        }
-
-        if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการย้ายรายการที่เลือกไปยังถังขยะ?')) {
-            return;
-        }
-
-        fetch("{{ route('equipment.moveToTrash') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    ids: selectedIds
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert(data.message);
-                window.location.reload(); // รีโหลดหน้าเพื่อดูผลลัพธ์
-            })
-            .catch(err => {
-                console.error(err);
-                alert('เกิดข้อผิดพลาดในการย้ายข้อมูลไปถังขยะ');
-            });
-    });
-
-    const restoreBtn = document.getElementById('restoreFromTrashBtn');
-    if (restoreBtn) {
-        restoreBtn.addEventListener('click', function() {
-            const selectedIds = Array.from(document.querySelectorAll('.checkbox-item:checked'))
-                .map(cb => cb.value);
-
-            if (selectedIds.length === 0) {
-                alert('กรุณาเลือกรายการที่ต้องการย้ายออกจากถังขยะ');
-                return;
-            }
-
-            if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการย้ายรายการที่เลือกออกจากถังขยะ?')) {
-                return;
-            }
-
-            fetch("{{ route('equipment.restoreFromTrash') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        ids: selectedIds
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.message);
-                    window.location.reload();
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('เกิดข้อผิดพลาดในการย้ายข้อมูลออกจากถังขยะ');
-                });
-        });
-    }
-</script>
-
+</script> --}}
 
 {{-- ค้นหา --}}
 <script>

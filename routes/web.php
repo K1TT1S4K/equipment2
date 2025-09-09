@@ -10,11 +10,13 @@ use App\Http\Controllers\EquipmentUnitController;
 use App\Http\Controllers\TitleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EquipmentDocumentController;
+use App\Http\Controllers\ActivityController;
 use App\Models\Equipment;
 use App\Models\Equipment_document;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use Spatie\Activitylog\Contracts\Activity;
 
 Route::get('/', function () {
     return view('welcome');
@@ -58,25 +60,25 @@ Route::middleware(['auth', 'can:admin-or-branch'])->group(function () {
     Route::get('equipment/create', [EquipmentController::class, 'create'])->name('equipment.create');
     Route::post('equipment', [EquipmentController::class, 'store'])->name('equipment.store');
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
-    Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
+    // Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
     // Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::get('/equipment/trash', [EquipmentController::class, 'trash'])->name('equipment.trash');
     Route::get('equipments/search', [EquipmentController::class, 'search'])->name('equipment.search');
     Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
     Route::get('/get-equipment-types/{title_id}', [EquipmentController::class, 'getEquipmentTypes']);
-    Route::post('/equipment/move-to-trash', [EquipmentController::class, 'moveToTrash'])->name('equipment.moveToTrash');
-    Route::post('/equipment/restore-from-trash', [EquipmentController::class, 'restoreFromTrash'])->name('equipment.restoreFromTrash');
+    // Route::post('/equipment/move-to-trash', [EquipmentController::class, 'moveToTrash'])->name('equipment.moveToTrash');
+    // Route::post('/equipment/restore-from-trash', [EquipmentController::class, 'restoreFromTrash'])->name('equipment.restoreFromTrash');
     Route::delete('/equipments/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.delete');
     Route::post('equipment/force-delete-multiple', [EquipmentController::class, 'forceDeleteMultiple'])->name('equipment.forceDeleteMultiple');
     Route::delete('equipments/delete-all', [EquipmentController::class, 'deleteAll'])->name('equipment.deleteAll');
     Route::post('/equipments/delete-selected', [EquipmentController::class, 'deleteSelected'])->name('equipment.deleteSelected');
     Route::delete('equipments/delete-selected-all', [EquipmentController::class, 'deleteSelectedAll'])->name('equipment.deleteSelectedAll');
-    Route::post('equipments/restore/{id}', [EquipmentController::class, 'restore'])->name('equipment.restore');
     Route::post('equipments/restore-multiple', [EquipmentController::class, 'restoreMultiple'])->name('equipment.restoreMultiple');
-    Route::post('equipments/restore-all', [EquipmentController::class, 'restoreAllEquipments'])->name('equipment.restoreAll');
 });
 
 Route::middleware(['auth', 'can:admin'])->group(function () {
+    Route::get('activity', [ActivityController::class, 'index'])->name('activity.index');
+    Route::get('activity/search', [ActivityController::class, 'search'])->name('activity.search');
     Route::get('user', [UserController::class, 'index'])->name('user');
     Route::get('user/add', [UserController::class, 'create'])->name('user.create');
     Route::get('user/search', [UserController::class, 'search'])->name('user.search');

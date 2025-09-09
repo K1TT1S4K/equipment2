@@ -25,4 +25,9 @@ class Title extends Model
     {
         return $this->hasMany(Equipment::class);
     }
+
+    public function getGroupNameAttribute()
+    {
+        return "{$this->group} - {$this->name}";
+    }
 }

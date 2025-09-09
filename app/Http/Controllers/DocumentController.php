@@ -7,6 +7,7 @@ use App\Models\Equipment;
 use App\Models\Equipment_document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Facades\LogBatch;
 
 class DocumentController extends Controller
 {
@@ -72,10 +73,23 @@ class DocumentController extends Controller
 
         ]);
 
+        $document = Document::latest('id')->first();
+
+        activity()
+            ->tap(function ($activity) {
+                $activity->menu = 'เพิ่มข้อมูลเอกสาร';
+            })
+            ->useLog(auth()->user()->full_name)
+            ->performedOn($document)
+            ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
+            ->log('เพิ่มข้อมูล');
+
+
         return redirect($request->input('redirect_to', route('document.index')))->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
     }
 
-    public function edit($id) // แสดงฟอร์มสำหรับแก้ไขเอกสาร
+    // แสดงฟอร์มสำหรับแก้ไขเอกสาร
+    public function edit($id)
     {
         $document = Document::findOrFail($id); // ค้นหาเอกสารตาม ID ที่ส่งมา
         $equipments_documents = Equipment_document::where('document_id', $document->id)->orderByDesc('created_at')->paginate(10);
@@ -87,7 +101,7 @@ class DocumentController extends Controller
         return view('page.documents.edit', compact('document', 'equipments_documents', 'equipments')); // ส่งเอกสารไปยัง view
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id) // แก้ไขข้อมูลเอกสาร
     {
         $request->validate([
             'document_type' => 'required|string',
@@ -96,6 +110,8 @@ class DocumentController extends Controller
         ]);
 
         $document = Document::findOrFail($id);
+
+        $oldValues = $document->toArray();
 
         if ($request->hasFile('newFile')) {
             // ลบไฟล์เก่าออก
@@ -123,6 +139,20 @@ class DocumentController extends Controller
             'path' => $document->path, // เผื่อไม่ได้อัปโหลดไฟล์ใหม่ จะใช้ path เดิม
         ]);
 
+        $newValues = $document->toArray();
+
+        activity()
+            ->tap(function ($activity) {
+                $activity->menu = 'แก้ไขข้อมูลเอกสาร';
+            })
+            ->useLog(auth()->user()->full_name)
+            ->performedOn($document)
+            ->withProperties([
+                'ข้อมูลก่อนแก้' => $oldValues->only(['original_name', 'stored_name', 'document_type', 'date']),
+                'ข้อมูลหลังแก้' => $newValues->only(['original_name', 'stored_name', 'document_type', 'date'])
+            ])
+            ->log('แก้ไขข้อมูล');
+
         return redirect($request->input('redirect_to', route('document.index')))->with('success', 'อัปเดตเอกสารเรียบร้อยแล้ว');
     }
 
@@ -142,19 +172,39 @@ class DocumentController extends Controller
     public function restore($id) // กู้คืนเอกสารที่ถูกลบ
     {
         $document = Document::onlyTrashed()->findOrFail($id); // ค้นหาเอกสารที่ถูกลบตาม ID ที่ส่งมา
+
+        activity()
+            ->tap(function ($activity) {
+                $activity->menu = 'กู้คืนข้อมูลเอกสาร';
+            })
+            ->useLog(auth()->user()->full_name)
+            ->performedOn($document)
+            ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
+            ->log('กู้คืนข้อมูล');
+
         $document->restore(); // กู้คืนเอกสาร
         return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารเรียบร้อยแล้ว');
-    }
-    public function restoreAll()
-    {
-        Document::onlyTrashed()->restore(); // กู้คืนเอกสารทั้งหมด
-        return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารทั้งหมดเรียบร้อยแล้ว');
     }
 
     public function restoreMultiple(Request $request)
     {
         $ids = explode(',', $request->input('selected_documents', ''));
         // dd($ids);
+        $documents = Document::onlyTrashed()->whereIn('id', $ids)->get();
+
+        LogBatch::startBatch();
+        foreach ($documents as $document) {
+            activity()
+                ->tap(function ($activity) {
+                    $activity->menu = 'กู้คืนข้อมูลเอกสาร';
+                })
+                ->useLog(auth()->user()->full_name)
+                ->performedOn($document)
+                ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
+                ->log('กู้คืนข้อมูล');
+        }
+        LogBatch::endBatch();
+
         Document::onlyTrashed()->whereIn('id', $ids)->restore();
         return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารที่เลือกเรียบร้อยแล้ว');
     }
@@ -164,6 +214,21 @@ class DocumentController extends Controller
         $documentIds = $request->input('selected_documents');
 
         if ($documentIds) {
+            $documents = Document::whereIn('id', $documentIds)->get();
+
+            LogBatch::startBatch();
+            foreach ($documents as $document) {
+                activity()
+                    ->tap(function ($activity) {
+                        $activity->menu = 'ลบข้อมูลเอกสารแบบซอฟต์';
+                    })
+                    ->useLog(auth()->user()->full_name)
+                    ->performedOn($document)
+                    ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
+                    ->log('ลบข้อมูลแบบซอฟต์');
+            }
+            LogBatch::endBatch();
+
             Document::whereIn('id', $documentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
             return redirect()->route('document.index')->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
         }
@@ -173,7 +238,22 @@ class DocumentController extends Controller
 
     public function forceDeleteSelected(Request $request)
     {
-       $ids = explode(',', $request->input('selected_documents', ''));
+        $ids = explode(',', $request->input('selected_documents', ''));
+
+        $documents = Document::onlyTrashed()->whereIn('id', $ids)->get();
+
+        LogBatch::startBatch();
+        foreach ($documents as $document) {
+            activity()
+                ->tap(function ($activity) {
+                    $activity->menu = 'ลบข้อมูลเอกสารถาวร';
+                })
+                ->useLog(auth()->user()->full_name)
+                ->performedOn($document)
+                ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
+                ->log('ลบข้อมูลถาวร');
+        }
+        LogBatch::endBatch();
 
         Document::onlyTrashed()->whereIn('id', $ids)->forceDelete();
         return redirect()->route('document.trash')->with('success', 'ลบถาวรเรียบร้อยแล้ว');

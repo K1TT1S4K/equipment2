@@ -12,6 +12,8 @@ class Logout
      */
     public function __invoke()
     {
+        activity()->useLog(auth()->user()->full_name)->log('ออกจากระบบ');
+
         Auth::guard('web')->logout();
 
         Session::invalidate();

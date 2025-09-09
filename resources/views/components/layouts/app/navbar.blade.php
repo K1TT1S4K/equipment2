@@ -25,8 +25,7 @@
             <div class="collapse navbar-collapse" id="navbarMenu">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active"
-                            href="{{ route('dashboard.index') }}">
+                        <a class="nav-link active" href="{{ route('dashboard.index') }}">
                             แดชบอร์ด
                         </a>
                     </li>
@@ -54,13 +53,21 @@
                             โปรไฟล์
                         </a>
                     </li>
+                    @can('admin')
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{route('activity.index')}}">
+                                บันทึกกิจกรรม
+                            </a>
+                        </li>
+                    @endcan
                 </ul>
 
                 {{-- ปุ่มด้านขวา --}}
                 <div class="d-flex align-items-center gap-3">
                     {{-- แสดงสถานะผู้ใช้ --}}
                     <div class="text-white text-center">
-                        <strong>{{ Auth::user()->prefix->name}} {{ Auth::user()->firstname}} {{Auth::user()->lastname}}</strong><br>
+                        <strong>{{ Auth::user()->prefix->name }} {{ Auth::user()->firstname }}
+                            {{ Auth::user()->lastname }}</strong><br>
                         {{ Auth::user()->user_type }}
                     </div>
                     {{-- กู้คืนข้อมูล --}}
@@ -71,7 +78,9 @@
                                 กู้คืนข้อมูล
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
-                                <li><a class="dropdown-item" href="{{ route('equipment.trash') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">กู้คืนครุภัณฑ์</a></li>
+                                <li><a class="dropdown-item"
+                                        href="{{ route('equipment.trash') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">กู้คืนครุภัณฑ์</a>
+                                </li>
                                 <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
                                 <li><a class="dropdown-item" href="{{ route('user.trashed') }}">กู้คืนบุคลากร</a></li>
                             </ul>

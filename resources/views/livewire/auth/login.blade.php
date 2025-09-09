@@ -11,6 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
+
 new #[Layout('components.layouts.auth')] class extends Component {
     #[Validate('required|string')]
     public string $username = '';
@@ -45,8 +46,8 @@ new #[Layout('components.layouts.auth')] class extends Component {
         Auth::user()->update([
             'last_login_at' => now(),
         ]);
-
-        // location.reload();
+        
+        activity()->useLog(auth()->user()->full_name)->log('เข้าสู่ระบบ');
     }
 
     /**
