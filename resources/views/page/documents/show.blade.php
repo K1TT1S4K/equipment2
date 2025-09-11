@@ -5,7 +5,7 @@
 
             {{-- <label for="query" class="form-label">ค้นหา</label> --}}
             <input type="text" id="query" name="query" class="form-control shadow-lg p-2 mb-3 rounded"
-                placeholder="ค้นหาเอกสาร" value="{{ request('query') }}">
+                placeholder="ค้นหาจากข้อมูลเอกสาร" value="{{ request('query') }}">
             {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
             <select id="document_type" name="document_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
                 <option value="">-- เลือกประเภทเอกสาร --</option>

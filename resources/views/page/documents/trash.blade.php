@@ -4,7 +4,7 @@
         <div class="d-flex">
 
             {{-- <label for="query" class="form-label">ค้นหา</label> --}}
-            <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded" placeholder="ค้นหาเอกสาร"
+            <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded" placeholder="ค้นหาจากข้อมูลเอกสาร"
                 value="{{ request('search') }}">
             {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
             <select id="document_type" name="document_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">

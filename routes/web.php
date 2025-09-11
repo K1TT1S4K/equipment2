@@ -65,14 +65,14 @@ Route::middleware(['auth', 'can:admin-or-branch'])->group(function () {
     Route::get('/equipment/trash', [EquipmentController::class, 'trash'])->name('equipment.trash');
     Route::get('equipments/search', [EquipmentController::class, 'search'])->name('equipment.search');
     Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
-    Route::get('/get-equipment-types/{title_id}', [EquipmentController::class, 'getEquipmentTypes']);
+    // Route::get('/get-equipment-types/{title_id}', [EquipmentController::class, 'getEquipmentTypes']);
     // Route::post('/equipment/move-to-trash', [EquipmentController::class, 'moveToTrash'])->name('equipment.moveToTrash');
     // Route::post('/equipment/restore-from-trash', [EquipmentController::class, 'restoreFromTrash'])->name('equipment.restoreFromTrash');
     Route::delete('/equipments/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.delete');
     Route::post('equipment/force-delete-multiple', [EquipmentController::class, 'forceDeleteMultiple'])->name('equipment.forceDeleteMultiple');
-    Route::delete('equipments/delete-all', [EquipmentController::class, 'deleteAll'])->name('equipment.deleteAll');
+    // Route::delete('equipments/delete-all', [EquipmentController::class, 'deleteAll'])->name('equipment.deleteAll');
     Route::post('/equipments/delete-selected', [EquipmentController::class, 'deleteSelected'])->name('equipment.deleteSelected');
-    Route::delete('equipments/delete-selected-all', [EquipmentController::class, 'deleteSelectedAll'])->name('equipment.deleteSelectedAll');
+    // Route::delete('equipments/delete-selected-all', [EquipmentController::class, 'deleteSelectedAll'])->name('equipment.deleteSelectedAll');
     Route::post('equipments/restore-multiple', [EquipmentController::class, 'restoreMultiple'])->name('equipment.restoreMultiple');
 });
 

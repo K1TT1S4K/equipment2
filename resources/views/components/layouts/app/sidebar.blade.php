@@ -101,11 +101,6 @@
         </div>
     </nav>
 
-    {{-- <!-- Main Content -->
-    <main class="container my-4 p-4 bg-white text-dark shadow-lg p-3 mb-5 bg-body rounded border border-secondary-subtle">
-        {{ $slot }}
-    </main> --}}
-
     <!-- Bootstrap Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

@@ -8,7 +8,7 @@
                 {{-- @php
     dd(url()->previous());
 @endphp --}}
-{{-- {{url()->previous()}} --}}
+                {{-- {{url()->previous()}} --}}
                 <div class="row">
                     <div class="mb-3 col">
                         <label class="form-label">หมายเลขครุภัณฑ์ <span class="text-danger">*</span></label>
@@ -19,11 +19,12 @@
                         <input type="text" name="name" class="form-control" required>
                     </div>
                     <div class="mb-3 col">
-                        <label for="equipment_unit_id" class="form-label">หน่วยนับ <span class="text-danger">*</span><button type="button"
-                                class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
-                                data-bs-target="#unitModal">
+                        <label for="equipment_unit_id" class="form-label">หน่วยนับ <span class="text-danger">*</span>
+                            <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
+                                data-bs-toggle="modal" data-bs-target="#unitModal">
                                 <i class="bi bi-gear"></i>
-                            </button></label>
+                            </button>
+                        </label>
                         <select name="equipment_unit_id" class="form-control" required>
                             {{-- <option value="1" {{request('equipment_unit_id') == 1 ? 'selected' : '' }}>-- เลือกหน่วยนับ --</option> --}}
                             <option value="">-- เลือกหน่วยนับ --</option>
@@ -57,7 +58,8 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col"> <label for="title_id" class="form-label">หัวข้อ <span class="text-danger">*</span><button type="button"
+                    <div class="col"> <label for="title_id" class="form-label">หัวข้อ <span
+                                class="text-danger">*</span><button type="button"
                                 class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
                                 data-bs-target="#titleModal">
                                 <i class="bi bi-gear"></i>
@@ -69,9 +71,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท<button type="button"
-                                class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
-                                data-bs-target="#typeModal">
+                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท<button
+                                type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
+                                data-bs-toggle="modal" data-bs-target="#typeModal">
                                 <i class="bi bi-gear"></i>
                             </button></label>
                         <select name="equipment_type_id" id="equipmentTypeSelect" class="form-control">

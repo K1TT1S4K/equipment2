@@ -4,7 +4,7 @@
     <form method="GET" action="{{ route('user.trashsearch') }}" class="mb-3">
         <div class="d-flex">
             <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded"
-                placeholder="ค้นหาบัญชีผู้ใช้..." value="{{ request()->get('search') }}">
+                placeholder="ค้นหาจากข้อมูลบัญชีผู้ใช้" value="{{ request()->get('search') }}">
             <select name="user_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
                 <option value="">-- เลือกระดับผู้ใช้ --</option>
                 <option value="ผู้ดูแลระบบ" {{ request()->get('user_type') == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>

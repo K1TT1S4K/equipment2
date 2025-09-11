@@ -49,13 +49,6 @@
                                     value="{{ $equipment->name }}">
                             </div>
                             <div class="mb-3 col">
-                                {{-- <label for="equipment_unit_id" class="form-label">หน่วยนับ@can('admin-or-branch')
-                                <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
-                                    data-bs-toggle="modal" data-bs-target="#unitModal">
-                                    <i class="bi bi-gear"></i>
-                                </button>
-                            @endcan
-                        </label> --}}
                                 <label for="equipment_unit_id" class="form-label">หน่วยนับ <span
                                         class="text-danger">*</span>
                                     <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
@@ -292,7 +285,7 @@
     </div>
 
     @can('admin-or-branch')
-        {{-- <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">
+        <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content border-dark">
                     <div class="modal-header">
@@ -315,7 +308,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
         <div class="modal fade" id="titleModal" tabindex="-1" aria-labelledby="titleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">

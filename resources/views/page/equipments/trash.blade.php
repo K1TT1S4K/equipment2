@@ -67,7 +67,7 @@
         </div>
         <div class="d-flex">
             <input type="text" id="query" name="query" class="form-control shadow-lg p-2 mb-3 rounded"
-                placeholder="ค้นหาครุภัณฑ์" value="{{ request('query') }}">
+                placeholder="ค้นหาจากข้อมูลครุภัณฑ์" value="{{ request('query') }}">
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
 
         </div>

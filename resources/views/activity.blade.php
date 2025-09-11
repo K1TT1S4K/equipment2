@@ -31,7 +31,7 @@
                     <th class="align-middle">ลำดับ</th>
                     <th class="align-middle">ผู้ดำเนินการ</th>
                     <th class="align-middle">กิจกรรม</th>
-                    <th class="align-middle">รายละเอียด</th>
+                    <th class="align-middle" style="width: 35%;">รายละเอียด</th>
                     <th class="align-middle">วันที่แก้ไข</th>
                     <th class="align-middle">วันที่สร้าง</th>
                 </tr>
@@ -42,9 +42,74 @@
                         <td>{{ $loop->iteration + ($logs->currentPage() - 1) * $logs->perPage() }}</td>
                         <td>{{ $log->log_name }}</td>
                         <td class="text-center">{{ $log->menu }}</td>
-                        <td class="text-start">
-                            <pre>{{ json_encode($log->properties, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) }}</pre>
-                        </td>
+                        {{-- <td class="text-start"> --}}
+                            {{-- <pre>{{ json_encode($log->properties, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) }}</pre> --}}
+                            @php
+                                if (!empty($log->properties)) {
+                                    $newProperties = json_decode($log->properties, true);
+                                    if (array_key_exists('ข้อมูลก่อนแก้ไข', $newProperties)) {
+                                    }elseif ($log->properties == '[]') {
+                                            echo '<td class="text-center">'.'-'.'</td>';
+                                    } else {
+                                        $myArray = [];
+                                        foreach ($log->properties as $key => $value) {
+                                            if ($key != 'id') {
+                                                if ($key == 'name') {
+                                                    $key = 'ชื่อ';
+                                                }
+                                                elseif ($key == 'type') {
+                                                    $key = 'ประเภท';
+                                                }
+                                                elseif ($key == 'description') {
+                                                    $key = 'คำอธิบาย';
+                                                }
+                                                elseif ($key == 'unit') {
+                                                    $key = 'หน่วยนับ';
+                                                }
+                                                elseif ($key == 'price') {
+                                                    $key = 'ราคา';
+                                                }
+                                                elseif ($key == 'title') {
+                                                    $key = 'หัวข้อ';
+                                                }
+                                                elseif ($key == 'user') {
+                                                    $key = 'ผู้ดูแล';
+                                                }
+                                                elseif ($key == 'amount') {
+                                                    $key = 'จำนวนทั้งหมด';
+                                                }
+                                                elseif ($key == 'number') {
+                                                    $key = 'หมายเลขครุภัณฑ์';
+                                                }
+                                                elseif ($key == 'location') {
+                                                    $key = 'ที่อยู่';
+                                                }
+                                                elseif ($key == 'status_found') {
+                                                    $key = 'พบ';
+                                                }
+                                                elseif ($key == 'status_not_found') {
+                                                    $key = 'ไม่พบ';
+                                                }
+                                                elseif ($key == 'status_broken') {
+                                                    $key = 'ชำรุด';
+                                                }
+                                                elseif ($key == 'status_disposal') {
+                                                    $key = 'จำหน่าย';
+                                                }
+                                                elseif ($key == 'status_transfer') {
+                                                    $key = 'โอน';
+                                                }
+                                                elseif ($key == 'total_price') {
+                                                    $key = 'ราคารวม';
+                                                }
+                                                $myArray[] = $key . ': ' . $value;
+                                            }
+                                        }
+                                        echo '<td class="text-start">'.implode(', ', $myArray).'</td>';
+                                    }
+                                }
+                            @endphp
+                        {{-- </td> --}}
                         @php
                             $updated = \Carbon\Carbon::parse($log->updated_at)->locale('th');
                             $created = \Carbon\Carbon::parse($log->created_at)->locale('th');

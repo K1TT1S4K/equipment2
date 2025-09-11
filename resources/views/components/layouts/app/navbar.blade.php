@@ -48,18 +48,18 @@
                             </a>
                         </li>
                     @endcan
+                    @can('admin')
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ route('activity.index') }}">
+                                บันทึกกิจกรรม
+                            </a>
+                        </li>
+                    @endcan
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ route('profile') }}">
                             โปรไฟล์
                         </a>
                     </li>
-                    @can('admin')
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{{route('activity.index')}}">
-                                บันทึกกิจกรรม
-                            </a>
-                        </li>
-                    @endcan
                 </ul>
 
                 {{-- ปุ่มด้านขวา --}}
