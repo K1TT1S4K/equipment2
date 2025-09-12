@@ -28,12 +28,13 @@
         <table class="table table-hover w-full">
             <thead class="text-center table-dark align-middle">
                 <tr class="text-center">
-                    <th class="align-middle">ลำดับ</th>
-                    <th class="align-middle">ผู้ดำเนินการ</th>
-                    <th class="align-middle">กิจกรรม</th>
-                    <th class="align-middle" style="width: 35%;">รายละเอียด</th>
-                    <th class="align-middle">วันที่แก้ไข</th>
-                    <th class="align-middle">วันที่สร้าง</th>
+                    <th class="align-middle" style="width: 3%">ลำดับ</th>
+                    <th class="align-middle" style="width: 20%">ผู้ดำเนินการ</th>
+                    <th class="align-middle" style="width: 10%;">กิจกรรม</th>
+                    <th class="align-middle" style="width: 10%;">ประเภทข้อมูล</th>
+                    <th class="align-middle" style="width: 31%;">รายละเอียด</th>
+                    <th class="align-middle" style="width: 13%;">วันที่แก้ไข</th>
+                    <th class="align-middle" style="width: 13%;">วันที่สร้าง</th>
                 </tr>
             </thead>
             <tbody class="align-middle p-3">
@@ -41,75 +42,91 @@
                     <tr class="text-center" style="cursor: pointer;">
                         <td>{{ $loop->iteration + ($logs->currentPage() - 1) * $logs->perPage() }}</td>
                         <td>{{ $log->log_name }}</td>
-                        <td class="text-center">{{ $log->menu }}</td>
-                        {{-- <td class="text-start"> --}}
-                            {{-- <pre>{{ json_encode($log->properties, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) }}</pre> --}}
-                            @php
-                                if (!empty($log->properties)) {
-                                    $newProperties = json_decode($log->properties, true);
-                                    if (array_key_exists('ข้อมูลก่อนแก้ไข', $newProperties)) {
-                                    }elseif ($log->properties == '[]') {
-                                            echo '<td class="text-center">'.'-'.'</td>';
-                                    } else {
-                                        $myArray = [];
-                                        foreach ($log->properties as $key => $value) {
-                                            if ($key != 'id') {
-                                                if ($key == 'name') {
-                                                    $key = 'ชื่อ';
-                                                }
-                                                elseif ($key == 'type') {
-                                                    $key = 'ประเภท';
-                                                }
-                                                elseif ($key == 'description') {
-                                                    $key = 'คำอธิบาย';
-                                                }
-                                                elseif ($key == 'unit') {
-                                                    $key = 'หน่วยนับ';
-                                                }
-                                                elseif ($key == 'price') {
-                                                    $key = 'ราคา';
-                                                }
-                                                elseif ($key == 'title') {
-                                                    $key = 'หัวข้อ';
-                                                }
-                                                elseif ($key == 'user') {
-                                                    $key = 'ผู้ดูแล';
-                                                }
-                                                elseif ($key == 'amount') {
-                                                    $key = 'จำนวนทั้งหมด';
-                                                }
-                                                elseif ($key == 'number') {
-                                                    $key = 'หมายเลขครุภัณฑ์';
-                                                }
-                                                elseif ($key == 'location') {
-                                                    $key = 'ที่อยู่';
-                                                }
-                                                elseif ($key == 'status_found') {
-                                                    $key = 'พบ';
-                                                }
-                                                elseif ($key == 'status_not_found') {
-                                                    $key = 'ไม่พบ';
-                                                }
-                                                elseif ($key == 'status_broken') {
-                                                    $key = 'ชำรุด';
-                                                }
-                                                elseif ($key == 'status_disposal') {
-                                                    $key = 'จำหน่าย';
-                                                }
-                                                elseif ($key == 'status_transfer') {
-                                                    $key = 'โอน';
-                                                }
-                                                elseif ($key == 'total_price') {
-                                                    $key = 'ราคารวม';
-                                                }
-                                                $myArray[] = $key . ': ' . $value;
-                                            }
-                                        }
-                                        echo '<td class="text-start">'.implode(', ', $myArray).'</td>';
-                                    }
+                        <td>{{ $log->menu }}</td>
+                        <td>{{ $log->description ?? '-' }}</td>
+                        @php
+                            $map = [
+                                //equipment
+                                'name' => '<strong>ชื่อ</strong>',
+                                'type' => '<strong>ประเภท</strong>',
+                                'description' => '<strong>คำอธิบาย</strong>',
+                                'unit' => '<strong>หน่วยนับ</strong>',
+                                'price' => '<strong>ราคา</strong>',
+                                'title' => '<strong>หัวข้อ</strong>',
+                                'user' => '<strong>ผู้ดูแล</strong>',
+                                'amount' => '<strong>จำนวนทั้งหมด</strong>',
+                                'number' => '<strong>หมายเลขครุภัณฑ์</strong>',
+                                'location' => '<strong>ที่อยู่</strong>',
+                                'status_found' => '<strong>พบ</strong>',
+                                'status_not_found' => '<strong>ไม่พบ</strong>',
+                                'status_broken' => '<strong>ชำรุด</strong>',
+                                'status_disposal' => '<strong>จำหน่าย</strong>',
+                                'status_transfer' => '<strong>โอน</strong>',
+                                'total_price' => '<strong>ราคารวม</strong>',
+
+                                //document
+                                'original_name' => '<strong>ชื่อเอกสาร</strong>',
+                                'stored_name' => '<strong>ชื่อเอกสารที่ใช้เก็บในระบบ</strong>',
+                                'document_type' => '<strong>ประเภทเอกสาร</strong>',
+                                'date' => '<strong>วันที่ดำเนินการ</strong>',
+
+                                // user
+                                'username' => '<strong>ชื่อผู้ใช้</strong>',
+                                'firstname' => '<strong>ชื่อจริง</strong>',
+                                'lastname' => '<strong>นามสกุล</strong>',
+                                'user_type' => '<strong>ระดับผู้ใช้</strong>',
+                                'prefix' => '<strong>คำนำหน้าชื่อ</strong>',
+                                'email' => '<strong>อีเมล</strong>',
+                            ];
+                            if (!empty($log->properties)) {
+                                if ($log->description == 'บุคลากร') {
+                                    $ordered = $log->orderUserProperties();
+                                } elseif ($log->description == 'เอกสาร') {
+                                    $ordered = $log->orderDocumentProperties();
+                                } elseif ($log->description == 'ครุภัณฑ์') {
+                                    $ordered = $log->orderEquipmentProperties();
+                                } else {
+                                    $ordered = $log->properties;
                                 }
-                            @endphp
-                        {{-- </td> --}}
+                                // true หมายถึงแปลง json เป็น php array แทนที่จะแปลงเป็น object
+                                $newProperties = json_decode($log->properties, true);
+                                if (array_key_exists('ข้อมูลก่อนแก้ไข', $newProperties)) {
+                                    $oldValues = [];
+                                    $newValues = [];
+                                    foreach ($ordered['ข้อมูลก่อนแก้ไข'] as $key => $value) {
+                                        $key = $map[$key] ?? $key; // ถ้าไม่เจอ key ก็ใช้ค่าดั้งเดิม
+
+                                        $oldValues[] = $key . ': ' . $value;
+                                    }
+                                    foreach ($ordered['ข้อมูลหลังแก้ไข'] as $key => $value) {
+                                        $key = $map[$key] ?? $key; // ถ้าไม่เจอ key ก็ใช้ค่าดั้งเดิม
+
+                                        $newValues[] = $key . ': ' . $value;
+                                    }
+
+                                    echo '<td class="text-start">' .
+                                        '<strong>ข้อมูลก่อนแก้ไข</strong><br>' .
+                                        implode(', ', $oldValues) .
+                                        '<br>' .
+                                        '<strong>ข้อมุลหลังแก้ไข</strong><br>' .
+                                        implode(', ', $newValues) .
+                                        '</td>';
+                                } elseif ($log->properties == '[]') {
+                                    echo '<td class="text-center">' . '-' . '</td>';
+                                } else {
+                                    $myArray = [];
+                                    foreach ($ordered as $key => $value) {
+                                        // dd($key, $map[$key]);
+
+                                        $key = $map[$key] ?? $key; // ถ้าไม่เจอ key ก็ใช้ค่าดั้งเดิม
+
+                                        $myArray[] = $key . ': ' . $value;
+                                    }
+
+                                    echo '<td class="text-start">' . implode(', ', $myArray) . '</td>';
+                                }
+                            }
+                        @endphp
                         @php
                             $updated = \Carbon\Carbon::parse($log->updated_at)->locale('th');
                             $created = \Carbon\Carbon::parse($log->created_at)->locale('th');

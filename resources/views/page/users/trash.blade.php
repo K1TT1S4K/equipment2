@@ -29,34 +29,84 @@
             {{-- <div class="col-4 text-center">
                 <p class="text-muted" id="selected-count-info" style="font-size: 0.9rem;"></p>
             </div> --}}
+            {{-- <div class="col-8 d-flex justify-content-end gap-2">
+                <div id="bulk-restore-all" style="display: none;">
+                    <button type="submit" form="bulk-restore-form" class="btn btn-warning"
+                        onclick="return confirm('คุณต้องการกู้คืนผู้ใช้ทั้งหมดที่เลือกใช่หรือไม่?')">
+                        กู้คืนทั้งหมด
+                    </button>
+                </div>
+
+                <div id="bulk-restore-selected" style="display: none;">
+                    <button type="submit" form="bulk-restore-selected-form" class="btn btn-warning"
+                        onclick="return confirm('คุณต้องการกู้คืนผู้ใช้ที่เลือกใช่หรือไม่?')">
+                        กู้คืนที่เลือก
+                    </button>
+                </div>
+
+                <div id="bulk-delete-all" style="display: none;">
+                    <button type="submit" form="bulk-delete-all-form" class="btn btn-danger"
+                        onclick="return confirm('คุณต้องการลบถาวรผู้ใช้ทั้งหมดที่เลือกใช่หรือไม่?')">
+                        ลบถาวรทั้งหมด
+                    </button>
+                </div>
+
+                <div id="bulk-delete-selected" style="display: none;">
+                    <button type="submit" form="bulk-delete-selected-form" class="btn btn-danger"
+                        onclick="return confirm('คุณต้องการลบถาวรผู้ใช้ที่เลือกใช่หรือไม่?')">
+                        ลบถาวรที่เลือก
+                    </button>
+                </div>
+            </div> --}}
+
             <div class="col-8 d-flex justify-content-end gap-2">
-                    <div id="bulk-restore-all" style="display: none;">
-                        <button type="submit" form="bulk-restore-form" class="btn btn-warning"
-                            onclick="return confirm('คุณต้องการกู้คืนผู้ใช้ทั้งหมดที่เลือกใช่หรือไม่?')">
+                <!-- ปุ่ม Bulk Actions (กู้คืน, ลบถาวร) ซ่อนไว้ก่อน -->
+                <div id="bulk-restore-all" style="display: none;">
+                    <form id="bulk-restore-form" action="{{ route('user.restoreSelected') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="selected_users" id="selected_users_json_restore">
+                        <button type="submit" class="btn btn-warning"
+                            onclick="return confirm('คุณต้องการกู้คืนเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
                             กู้คืนทั้งหมด
                         </button>
-                    </div>
+                    </form>
+                </div>
 
-                    <div id="bulk-restore-selected" style="display: none;">
-                        <button type="submit" form="bulk-restore-selected-form" class="btn btn-warning"
-                            onclick="return confirm('คุณต้องการกู้คืนผู้ใช้ที่เลือกใช่หรือไม่?')">
+                <div id="bulk-restore-selected" style="display: none;">
+                    <form id="bulk-restore-selected-form" action="{{ route('user.restoreSelected') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="selected_users" id="selected_users_json_restore_selected">
+                        <button type="submit" class="btn btn-warning"
+                            onclick="return confirm('คุณต้องการกู้คืนเอกสารที่เลือกใช่หรือไม่?')">
                             กู้คืนที่เลือก
                         </button>
-                    </div>
+                    </form>
+                </div>
 
-                    <div id="bulk-delete-all" style="display: none;">
-                        <button type="submit" form="bulk-delete-all-form" class="btn btn-danger"
-                            onclick="return confirm('คุณต้องการลบถาวรผู้ใช้ทั้งหมดที่เลือกใช่หรือไม่?')">
+                <div id="bulk-delete-all" style="display: none;">
+                    <form id="bulk-delete-all-form" action="{{ route('user.forceDeleteSelected') }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="selected_users" id="selected_users_json_delete_all">
+                        <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('คุณต้องการลบถาวรเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
                             ลบถาวรทั้งหมด
                         </button>
-                    </div>
+                    </form>
+                </div>
 
-                    <div id="bulk-delete-selected" style="display: none;">
-                        <button type="submit" form="bulk-delete-selected-form" class="btn btn-danger"
-                            onclick="return confirm('คุณต้องการลบถาวรผู้ใช้ที่เลือกใช่หรือไม่?')">
+                <div id="bulk-delete-selected" style="display: none;">
+                    <form id="bulk-delete-selected-form" action="{{ route('user.forceDeleteSelected') }}"
+                        method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <input type="hidden" name="selected_users" id="selected_users_json_delete_selected">
+                        <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('คุณต้องการลบถาวรเอกสารที่เลือกใช่หรือไม่?')">
                             ลบถาวรที่เลือก
                         </button>
-                    </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -76,7 +126,10 @@
                 <tbody class="align-middle text-center">
                     @forelse ($users as $user)
                         <tr>
-                            <td><input type="checkbox" class="user-checkbox" value="{{ $user->id }}"></td>
+                            <td onclick="event.stopPropagation();">
+                                <input type="checkbox" class="document-checkbox" name="selected_users[]"
+                                    value="{{ $user->id }}">
+                            </td>
                             <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
                             </td>
                             <td>{{ $user->username }}</td>
@@ -86,7 +139,8 @@
                             @php
                                 $deleted = \Carbon\Carbon::parse($user->deleted_at)->locale('th');
                             @endphp
-                            <td>{{ $deleted->isoFormat('D MMM') }} {{ $deleted->year + 543}} {{$deleted->format('H:i:s')}}</td>
+                            <td>{{ $deleted->isoFormat('D MMM') }} {{ $deleted->year + 543 }}
+                                {{ $deleted->format('H:i:s') }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -98,24 +152,12 @@
         </div>
     </div>
 
-    {{ $users->links() }}
-
-    <!-- Hidden Forms -->
-    <form id="bulk-restore-form" action="{{ route('user.restoreAll') }}" method="POST">@csrf
-        <input type="hidden" name="selected_users" id="selected_users_json_restore">
-    </form>
-    <form id="bulk-restore-selected-form" action="{{ route('user.restoreSelected') }}" method="POST">@csrf
-        <input type="hidden" name="selected_users" id="selected_users_json_restore_selected">
-    </form>
-    <form id="bulk-delete-all-form" action="{{ route('user.deleteSelected') }}" method="POST">@csrf
-        <input type="hidden" name="selected_users" id="selected_users_json_delete_all">
-    </form>
-    <form id="bulk-delete-selected-form" action="{{ route('user.deleteSelected') }}" method="POST">@csrf
-        <input type="hidden" name="selected_users" id="selected_users_json_delete_selected">
-    </form>
+    <div class="d-flex justify-content-center">
+        {{ $users->links() }}
+    </div>
 </x-layouts.app>
 
-<script>
+{{-- <script>
     document.getElementById('select-all').addEventListener('click', function(event) {
         let checkboxes = document.querySelectorAll('.user-checkbox');
         checkboxes.forEach(checkbox => {
@@ -127,16 +169,6 @@
     document.querySelectorAll('.user-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', toggleActionButtons);
     });
-
-    // function getSelectedUserIds() {
-    //     return Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value);
-    // }
-
-    // function updateSelectedCount() {
-    //     const selectedCount = getSelectedUserIds().length;
-    //     const info = document.getElementById('selected-count-info');
-    //     info.textContent = selectedCount > 0 ? `เลือกผู้ใช้แล้ว ${selectedCount} รายการ` : '';
-    // }
 
     function updateHiddenInputs() {
         const selected = getSelectedUserIds();
@@ -170,4 +202,65 @@
                 updateHiddenInputs();
             });
         });
+</script> --}}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('input[name="selected_users[]"]');
+        const selectAll = document.getElementById('select-all');
+
+        selectAll.addEventListener('click', function(event) {
+            checkboxes.forEach(cb => cb.checked = event.target.checked);
+            toggleButtons();
+        });
+
+        checkboxes.forEach(cb => cb.addEventListener('change', toggleButtons));
+
+        function toggleButtons() {
+            const selected = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+            const restoreAll = document.getElementById('bulk-restore-all');
+            const restoreSelected = document.getElementById('bulk-restore-selected');
+            const deleteAll = document.getElementById('bulk-delete-all');
+            const deleteSelected = document.getElementById('bulk-delete-selected');
+
+            if (selected === checkboxes.length && selected > 0) {
+                restoreAll.style.display = 'block';
+                restoreSelected.style.display = 'none';
+                deleteAll.style.display = 'block';
+                deleteSelected.style.display = 'none';
+            } else if (selected > 0) {
+                restoreAll.style.display = 'none';
+                restoreSelected.style.display = 'block';
+                deleteAll.style.display = 'none';
+                deleteSelected.style.display = 'block';
+            } else {
+                restoreAll.style.display = 'none';
+                restoreSelected.style.display = 'none';
+                deleteAll.style.display = 'none';
+                deleteSelected.style.display = 'none';
+            }
+        }
+
+        function bindFormSubmission(formId, hiddenInputId) {
+            const form = document.getElementById(formId);
+            const hiddenInput = document.getElementById(hiddenInputId);
+            form.addEventListener('submit', function(e) {
+                const selectedIds = Array.from(document.querySelectorAll('.document-checkbox:checked'))
+                    .map(cb => cb.value);
+                //  console.log("Selected IDs:", selectedIds); // ✅ debug
+                if (selectedIds.length === 0) {
+                    e.preventDefault();
+                    alert('กรุณาเลือกเอกสารที่ต้องการ');
+                    return false;
+                }
+                hiddenInput.value = selectedIds.join(',');
+            });
+        }
+
+        bindFormSubmission('bulk-restore-form', 'selected_users_json_restore');
+        bindFormSubmission('bulk-restore-selected-form', 'selected_users_json_restore_selected');
+        bindFormSubmission('bulk-delete-all-form', 'selected_users_json_delete_all');
+        bindFormSubmission('bulk-delete-selected-form', 'selected_users_json_delete_selected');
+    });
 </script>

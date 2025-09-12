@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use Spatie\Activitylog\Models\Activity;
 
 class ActivityController extends Controller
@@ -10,13 +11,15 @@ class ActivityController extends Controller
     // แสดง log ทั้งหมด
     public function index()
     {
+        $users = User::all();
         $logs = Activity::orderBy('created_at', 'desc')->paginate(10); // ดึง log ล่าสุดก่อน
 
-        return view('activity', compact('logs'));
+        return view('activity', compact('logs', 'users'));
     }
 
-        public function search(Request $request)
+    public function search(Request $request)
     {
+        $users = User::all();
         $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
         $model = $request->input('model'); // ค้นหาจากประเภทเอกสาร
 
@@ -31,13 +34,13 @@ class ActivityController extends Controller
         })
             ->when($model, function ($query, $model) {
 
-                if($model == 'ครุภัณฑ์'){
+                if ($model == 'ครุภัณฑ์') {
                     return $query->where('subject_type', 'App\Models\Equipment');
-                }elseif($model == 'ส่งออกข้อมูล'){
+                } elseif ($model == 'ส่งออกข้อมูล') {
                     return $query->where('subject_type', 'App\Models\Title');
-                }elseif($model == 'ผู้ใช้'){
+                } elseif ($model == 'ผู้ใช้') {
                     return $query->where('subject_type', 'App\Models\User');
-                }elseif($model == 'เอกสาร'){
+                } elseif ($model == 'เอกสาร') {
                     return $query->where('subject_type', 'App\Models\Document');
                 }
 
@@ -49,6 +52,6 @@ class ActivityController extends Controller
         // สำคัญ: เก็บ query string เอาไว้
         $logs->appends($request->all());
 
-        return view('activity', compact('logs')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
+        return view('activity', compact('logs','users')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
     }
 }

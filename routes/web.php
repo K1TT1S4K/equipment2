@@ -27,29 +27,9 @@ Route::get('/run-seed', function () {
     return 'Seeder has been run.';
 });
 
-// ตัวอย่าง Route พื้นฐาน
-// Route::get('/greeting', function () {
-//     return 'Hello World';
-// });
-
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified'])
-//     ->name('dashboard');
-
-// Route::middleware(['auth'])->group(function (){
-// Route::get('dashboard/', [EquipmentController::class, 'dashboard'])->name('equipemnt.dashboard');
-// Route::get('dashboard/', [DashboardController::class, 'index'])->name('dashboard.index');
-// });
-
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('documents', [DocumentController::class, 'index'])->name('document.index');
-//     Route::get('equipments', [EquipmentController::class, 'index'])->name('equipment.index');
-// });
-
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
-    // Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.index');
     Route::get('/export/{titleId}', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
     Route::post('equipments_documents',[EquipmentDocumentController::class, 'store'])->name('equipments_documents.store');
@@ -60,19 +40,12 @@ Route::middleware(['auth', 'can:admin-or-branch'])->group(function () {
     Route::get('equipment/create', [EquipmentController::class, 'create'])->name('equipment.create');
     Route::post('equipment', [EquipmentController::class, 'store'])->name('equipment.store');
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
-    // Route::delete('equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
-    // Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::get('/equipment/trash', [EquipmentController::class, 'trash'])->name('equipment.trash');
     Route::get('equipments/search', [EquipmentController::class, 'search'])->name('equipment.search');
     Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
-    // Route::get('/get-equipment-types/{title_id}', [EquipmentController::class, 'getEquipmentTypes']);
-    // Route::post('/equipment/move-to-trash', [EquipmentController::class, 'moveToTrash'])->name('equipment.moveToTrash');
-    // Route::post('/equipment/restore-from-trash', [EquipmentController::class, 'restoreFromTrash'])->name('equipment.restoreFromTrash');
     Route::delete('/equipments/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.delete');
     Route::post('equipment/force-delete-multiple', [EquipmentController::class, 'forceDeleteMultiple'])->name('equipment.forceDeleteMultiple');
-    // Route::delete('equipments/delete-all', [EquipmentController::class, 'deleteAll'])->name('equipment.deleteAll');
     Route::post('/equipments/delete-selected', [EquipmentController::class, 'deleteSelected'])->name('equipment.deleteSelected');
-    // Route::delete('equipments/delete-selected-all', [EquipmentController::class, 'deleteSelectedAll'])->name('equipment.deleteSelectedAll');
     Route::post('equipments/restore-multiple', [EquipmentController::class, 'restoreMultiple'])->name('equipment.restoreMultiple');
 });
 
@@ -86,18 +59,12 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::get('/users/{user}', [UserController::class, 'show'])->name('user.show');
     Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
     Route::put('user/update/{id}', [UserController::class, 'update'])->name('user.update');
-    Route::delete('/users/delete', [UserController::class, 'destroy'])->name('user.delete');
     Route::get('user/trashed', [UserController::class, 'trashed'])->name('user.trashed');
     Route::get('user/trash/search', [UserController::class, 'searchTrash'])->name('user.trashsearch');
-    Route::post('user/restore/{id}', [UserController::class, 'restore'])->name('user.restore'); // กู้คืนผู้ใช้
     Route::post('user/restore-selected', [UserController::class, 'restoreSelected'])->name('user.restoreSelected');
-    Route::post('user/restore-all', [UserController::class, 'restoreAll'])->name('user.restoreAll'); // กู้คืนทั้งหมด
-    Route::delete('user/force-delete/{id}', [UserController::class, 'forceDelete'])->name('user.forceDelete');
+    Route::delete('user/force-delete-selected', [UserController::class, 'forceDeleteSelected'])->name('user.forceDeleteSelected');
     Route::post('user/delete-selected', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
-    Route::delete('user/delete-all', [UserController::class, 'deleteAll'])->name('user.deleteAll');
     Route::delete('user/delete-selected', [UserController::class, 'deleteSelected'])->name('user.deleteSelected'); // ลบที่เลือก
-    // Route::delete('user/delete-all', [UserController::class, 'deleteAll'])->name('user.deleteAll'); // ลบทั้งหมด
-    Route::delete('user/delete-selected-all', [UserController::class, 'deleteSelectedAll'])->name('user.deleteSelectedAll'); // ลบที่เลือกทั้งหมด
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -110,11 +77,9 @@ Route::middleware(['auth', 'can:admin-or-branch-or-officer'])->group(function ()
     Route::get('/documents/create', [DocumentController::class, 'create'])->name('document.create');
     Route::post('/documents', [DocumentController::class, 'store'])->name('document.store');
     Route::put('/documents/{id}', [DocumentController::class, 'update'])->name('document.update');
-    Route::get('/documents/{id}', [DocumentController::class, 'show'])->name('document.show');
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('document.delete');
     Route::get('/document/trash', [DocumentController::class, 'trash'])->name('document.trash');
     Route::get('/trash/search', [DocumentController::class, 'searchTrash'])->name('trash.search');
-    Route::post('/restore/{id}', [DocumentController::class, 'restore'])->name('document.restore');
     Route::post('/restore-multiple', [DocumentController::class, 'restoreMultiple'])->name('document.restoreMultiple');
     Route::delete('/delete-selected', [DocumentController::class, 'deleteSelected'])->name('document.deleteSelected');
         Route::delete('/force-delete-selected', [DocumentController::class, 'forceDeleteSelected'])->name('document.forceDeleteSelected');

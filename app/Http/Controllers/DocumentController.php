@@ -11,13 +11,40 @@ use Spatie\Activitylog\Facades\LogBatch;
 
 class DocumentController extends Controller
 {
+    // หน้าแสดงข้อมูลเอกสาร
     public function index()
     {
-        // $documents = Document::all();
         $documents = Document::orderBy('created_at', 'desc')->paginate(10); // แสดงเอกสารทั้งหมดในหน้าแรก โดยแบ่งหน้า 10 รายการต่อหน้า
         return view('page.documents.show', compact('documents'));
     }
 
+    // หน้าเพิ่มข้อมูลเอกสาร
+    public function create()
+    {
+        return view('page.documents.add');
+    }
+
+    // หน้าแก้ไขเอกสาร
+    public function edit($id)
+    {
+        $document = Document::findOrFail($id); // ค้นหาเอกสารตาม ID ที่ส่งมา
+        $equipments_documents = Equipment_document::where('document_id', $document->id)->orderByDesc('created_at')->paginate(10);
+        $equipment_ids = $equipments_documents->pluck('equipment_id');
+        $equipments = Equipment::all();
+
+        // dd($document->id, $equipments_documents, $equipments);
+
+        return view('page.documents.edit', compact('document', 'equipments_documents', 'equipments')); // ส่งเอกสารไปยัง view
+    }
+
+    // หน้ากู้ข้อมูลเอกสาร
+    public function trash()
+    {
+        $documents = Document::onlyTrashed()->paginate(10); // ค้นหาเอกสารที่ถูกลบ
+        return view('page.documents.trash', compact('documents')); // ส่งเอกสารที่ถูกลบไปยัง view
+    }
+
+    // ฟังก์ชันค้นหาเอกสาร
     public function search(Request $request)
     {
         $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
@@ -43,12 +70,8 @@ class DocumentController extends Controller
         return view('page.documents.show', compact('documents')); // ส่งผลลัพธ์ที่ค้นพบไปยัง view
     }
 
-    public function create() // แสดงฟอร์มสำหรับเพิ่มเอกสาร
-    {
-        return view('page.documents.add');
-    }
-
-    public function store(Request $request) // บันทึกเอกสารใหม่
+    // ฟังก์ชันเพิ่มข้อมูลเอกสาร
+    public function store(Request $request)
     {
         $request->validate([ // ตรวจสอบความถูกต้องของข้อมูล
             'document_type' => 'required|string', // ประเภทเอกสาร
@@ -88,20 +111,8 @@ class DocumentController extends Controller
         return redirect($request->input('redirect_to', route('document.index')))->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
     }
 
-    // แสดงฟอร์มสำหรับแก้ไขเอกสาร
-    public function edit($id)
-    {
-        $document = Document::findOrFail($id); // ค้นหาเอกสารตาม ID ที่ส่งมา
-        $equipments_documents = Equipment_document::where('document_id', $document->id)->orderByDesc('created_at')->paginate(10);
-        $equipment_ids = $equipments_documents->pluck('equipment_id');
-        $equipments = Equipment::all();
-
-        // dd($document->id, $equipments_documents, $equipments);
-
-        return view('page.documents.edit', compact('document', 'equipments_documents', 'equipments')); // ส่งเอกสารไปยัง view
-    }
-
-    public function update(Request $request, $id) // แก้ไขข้อมูลเอกสาร
+    // ฟังก์ชันแก้ไขเอกสาร
+    public function update(Request $request, $id)
     {
         $request->validate([
             'document_type' => 'required|string',
@@ -156,36 +167,7 @@ class DocumentController extends Controller
         return redirect($request->input('redirect_to', route('document.index')))->with('success', 'อัปเดตเอกสารเรียบร้อยแล้ว');
     }
 
-
-    public function show($id) // แสดงรายละเอียดเอกสาร
-    {
-        $document = Document::findOrFail($id); // ค้นหาเอกสารตาม ID ที่ส่งมา
-        return view('page.documents.show', compact('document')); // ส่งเอกสารไปยัง view
-    }
-
-    public function trash() // แสดงเอกสารที่ถูกลบ
-    {
-        $documents = Document::onlyTrashed()->paginate(10); // ค้นหาเอกสารที่ถูกลบ
-        return view('page.documents.trash', compact('documents')); // ส่งเอกสารที่ถูกลบไปยัง view
-    }
-
-    public function restore($id) // กู้คืนเอกสารที่ถูกลบ
-    {
-        $document = Document::onlyTrashed()->findOrFail($id); // ค้นหาเอกสารที่ถูกลบตาม ID ที่ส่งมา
-
-        activity()
-            ->tap(function ($activity) {
-                $activity->menu = 'กู้คืนข้อมูลเอกสาร';
-            })
-            ->useLog(auth()->user()->full_name)
-            ->performedOn($document)
-            ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
-            ->log('กู้คืนข้อมูล');
-
-        $document->restore(); // กู้คืนเอกสาร
-        return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารเรียบร้อยแล้ว');
-    }
-
+    // ฟังก์ชันกู้คืนข้อมูลเอกสาร
     public function restoreMultiple(Request $request)
     {
         $ids = explode(',', $request->input('selected_documents', ''));
@@ -209,6 +191,7 @@ class DocumentController extends Controller
         return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารที่เลือกเรียบร้อยแล้ว');
     }
 
+    // ฟังก์ชันลบข้อมูลเอกสารแบบซอฟต์
     public function deleteSelected(Request $request)
     {
         $documentIds = $request->input('selected_documents');
@@ -236,6 +219,7 @@ class DocumentController extends Controller
         return redirect()->route('document.index')->with('error', 'กรุณาเลือกเอกสาร');
     }
 
+    // ฟังก์ชันลบข้อมูลเอกสารถาวร
     public function forceDeleteSelected(Request $request)
     {
         $ids = explode(',', $request->input('selected_documents', ''));
@@ -259,6 +243,7 @@ class DocumentController extends Controller
         return redirect()->route('document.trash')->with('success', 'ลบถาวรเรียบร้อยแล้ว');
     }
 
+    // ฟังก์ชันค้าหาข้อมูลเอกสารที่ถูกลบแบบซอฟต์
     public function searchTrash(Request $request)
     {
         $query = Document::onlyTrashed();

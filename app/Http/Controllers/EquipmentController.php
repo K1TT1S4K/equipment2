@@ -136,6 +136,23 @@ class EquipmentController extends Controller
         return view('page.equipments.add', compact('equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
     }
 
+    // หน้าแก้ไขข้อมูล
+    public function edit($id)
+    {
+        $equipment = Equipment::findOrFail($id);
+        $users = User::all();
+        $equipment_units = Equipment_unit::all();
+        $equipment_types = Equipment_type::all();
+        $equipments = Equipment::all();
+        $locations = Location::all();
+        $titles = Title::all();
+        $logs = Equipment_log::all();
+        $equipment_documents = Equipment_document::all();
+        $documents = ModelsDocument::all();
+
+        return view('page.equipments.edit', compact('equipments', 'equipment_documents', 'equipment', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs')) . $id;
+    }
+
     // ฟังก์ชันสร้างข้อมูล
     public function store(Request $request)
     {
@@ -182,7 +199,7 @@ class EquipmentController extends Controller
 
         activity()
             ->tap(function ($activity) {
-                $activity->menu = 'เพิ่มข้อมูลครุภัณฑ์';
+                $activity->menu = 'เพิ่มข้อมูล';
             })
             ->useLog(auth()->user()->full_name)
             ->performedOn($equipment)
@@ -205,26 +222,9 @@ class EquipmentController extends Controller
                 'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
                 'user' => optional($equipment->user)->full_name
             ]))
-            ->log('เพิ่มข้อมูล');
+            ->log('ครุภัณฑ์');
 
         return redirect($request->input('redirect_to', route('equipment.index')))->with('success', 'เพิ่มครุภัณฑ์สำเร็จ');
-    }
-
-    // หน้าแก้ไขข้อมูล
-    public function edit($id)
-    {
-        $equipment = Equipment::findOrFail($id);
-        $users = User::all();
-        $equipment_units = Equipment_unit::all();
-        $equipment_types = Equipment_type::all();
-        $equipments = Equipment::all();
-        $locations = Location::all();
-        $titles = Title::all();
-        $logs = Equipment_log::all();
-        $equipment_documents = Equipment_document::all();
-        $documents = ModelsDocument::all();
-
-        return view('page.equipments.edit', compact('equipments', 'equipment_documents', 'equipment', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs')) . $id;
     }
 
     // ฟังก์ชันแก้ไขข้อมุล
@@ -351,7 +351,7 @@ class EquipmentController extends Controller
 
         activity()
             ->tap(function ($activity) {
-                $activity->menu = 'แก้ไขข้อมูลครุภัณฑ์';
+                $activity->menu = 'แก้ไขข้อมูล';
             })
             ->useLog(auth()->user()->full_name)
             ->performedOn($equipment)
@@ -374,7 +374,7 @@ class EquipmentController extends Controller
                         'unit' => optional($equipment->equipmentUnit)->name,
                         'location' => optional($equipment->location)->name,
                         'type' => optional($equipment->equipmentType)->name,
-                        'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->name,
+                        'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
                         'user' => optional($equipment->user)->full_name
                     ]
                 ),
@@ -393,15 +393,15 @@ class EquipmentController extends Controller
                         'description'
                     ]),
                     [
-                        'unit' => optional($equipment->unit)->name,
+                        'unit' => optional($equipment->equipmentUnit)->name,
                         'location' => optional($equipment->location)->name,
                         'type' => optional($equipment->equipmentType)->name,
-                        'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->name,
+                        'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
                         'user' => optional($equipment->user)->full_name
                     ]
                 )
             ])
-            ->log('แก้ไขข้อมูล');
+            ->log('ครุภัณฑ์');
 
         // ตัวอย่าง: log หรือแสดงใน view ก็ได้
         if (count($changes) > 0) {
@@ -415,6 +415,134 @@ class EquipmentController extends Controller
             ]);
         }
         return redirect($request->input('redirect_to', route('equipment.index')))->with('success', 'แก้ไขข้อมูลสำเร็จ');
+    }
+
+    /// ฟังก์ชัน softdelete ข้อมูลครุภัณฑ์
+    public function deleteSelected(Request $request)
+    {
+        $equipmentIds = $request->input('selected_equipments');
+        if ($equipmentIds) {
+            $equipments = Equipment::whereIn('id', $equipmentIds)->get();
+
+            LogBatch::startBatch();
+            foreach ($equipments as $equipment) {
+                activity()
+                    ->tap(function ($activity) {
+                        $activity->menu = 'ลบข้อมูลแบบซอฟต์';
+                    })
+                    ->useLog(auth()->user()->full_name)
+                    ->performedOn($equipment)
+                    ->withProperties(array_merge($equipment->only([
+                        'number',
+                        'name',
+                        'amount',
+                        'price',
+                        'total_price',
+                        'status_found',
+                        'status_not_found',
+                        'status_broken',
+                        'status_disposal',
+                        'status_transfer',
+                        'description'
+                    ]), [
+                        'unit' => optional($equipment->equipmentUnit)->name,
+                        'location' => optional($equipment->location)->name,
+                        'type' => optional($equipment->equipmentType)->name,
+                        'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
+                        'user' => optional($equipment->user)->full_name
+                    ]))
+                    ->log('ครุภัณฑ์');
+            }
+            LogBatch::endBatch();
+
+            Equipment::whereIn('id', $equipmentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
+            return redirect($request->input('redirect_to', route('equipment.index')))->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
+        }
+        return redirect($request->input('redirect_to', route('equipment.index')))->with('error', 'กรุณาเลือกเอกสาร');
+    }
+
+    /// ฟังก์ชันกู้ข้อมูลครุภัณฑ์
+    public function restoreMultiple(Request $request)
+    {
+        $ids = explode(',', $request->input('selected_equipments', ''));
+
+        $equipments = Equipment::onlyTrashed()->whereIn('id', $ids)->get();
+
+        LogBatch::startBatch();
+        foreach ($equipments as $equipment) {
+            activity()
+                ->tap(function ($activity) {
+                    $activity->menu = 'กู้คืนข้อมูล';
+                })
+                ->useLog(auth()->user()->full_name)
+                ->performedOn($equipment)
+                ->withProperties(array_merge($equipment->only([
+                    'number',
+                    'name',
+                    'amount',
+                    'price',
+                    'total_price',
+                    'status_found',
+                    'status_not_found',
+                    'status_broken',
+                    'status_disposal',
+                    'status_transfer',
+                    'description'
+                ]), [
+                    'unit' => optional($equipment->equipmentUnit)->name,
+                    'location' => optional($equipment->location)->name,
+                    'type' => optional($equipment->equipmentType)->name,
+                    'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
+                    'user' => optional($equipment->user)->full_name
+                ]))
+                ->log('ครุภัณฑ์');
+        }
+        LogBatch::endBatch();
+
+        Equipment::onlyTrashed()->whereIn('id', $ids)->restore();
+        return redirect($request->input('redirect_to', route('equipment.trash')))->with('success', 'กู้คืนครุภัณฑ์ที่เลือกเรียบร้อยแล้ว');
+    }
+
+    // ฟังก์ชันลบข้อมูลครุภัณฑ์ถาวร
+    public function forceDeleteMultiple(Request $request)
+    {
+        $ids = explode(',', $request->input('selected_equipments', ''));
+
+        $equipments = Equipment::onlyTrashed()->whereIn('id', $ids)->get();
+
+        LogBatch::startBatch();
+        foreach ($equipments as $equipment) {
+            activity()
+                ->tap(function ($activity) {
+                    $activity->menu = 'ลบข้อมูลถาวร';
+                })
+                ->useLog(auth()->user()->full_name)
+                ->performedOn($equipment)
+                ->withProperties(array_merge($equipment->only([
+                    'number',
+                    'name',
+                    'amount',
+                    'price',
+                    'total_price',
+                    'status_found',
+                    'status_not_found',
+                    'status_broken',
+                    'status_disposal',
+                    'status_transfer',
+                    'description'
+                ]), [
+                    'unit' => optional($equipment->equipmentUnit)->name,
+                    'location' => optional($equipment->location)->name,
+                    'type' => optional($equipment->equipmentType)->name,
+                    'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
+                    'user' => optional($equipment->user)->full_name
+                ]))
+                ->log('ครุภัณฑ์');
+        }
+        LogBatch::endBatch();
+
+        Equipment::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+        return redirect($request->input('redirect_to', route('equipment.trash')))->with('success', 'ลบครุภัณฑ์ถาวรเรียบร้อยแล้ว');
     }
 
     // ฟังก์ชันสร้างข้อมูลหน่วยนับ
@@ -433,12 +561,6 @@ class EquipmentController extends Controller
         return redirect()->route('equipment.add')->with('success', 'หน่วยนับใหม่ถูกเพิ่มแล้ว');
     }
 
-    // public function getEquipmentTypes($title_id)
-    // {
-    //     $types = Equipment_Type::where('title_id', $title_id)->get();
-    //     return response()->json($types);
-    // }
-
     // ส่งออกข้อมูลครุภัณฑ์
     public function export($titleId)
     {
@@ -451,257 +573,8 @@ class EquipmentController extends Controller
             ->useLog(auth()->user()->full_name)
             ->performedOn($title)
             ->withProperties($title->only(['name', 'group']))
-            ->log('ส่งออกข้อมูล');
+            ->log('ครุภัณฑ์');
 
         return Excel::download(new EquipmentsExport($title), 'equipments.xlsx');
-    }
-
-    /// ฟังก์ชัน delete ก้อปมาจากคุณกิต
-    // public function deleteAll()
-    // {
-    //     $equipments = Equipment::onlyTrashed()->get();
-
-    //     LogBatch::startBatch();
-    //     foreach ($equipments as $equipment) {
-    //         activity()
-    //             ->tap(function ($activity) {
-    //                 $activity->menu = 'ลบข้อมูลครุภัณฑ์ถาวร';
-    //             })
-    //             ->useLog(auth()->user()->full_name)
-    //             ->performedOn($equipment)
-    //             ->withProperties(array_merge($equipment->only([
-    //                 'number',
-    //                 'name',
-    //                 'amount',
-    //                 'price',
-    //                 'total_price',
-    //                 'status_found',
-    //                 'status_not_found',
-    //                 'status_broken',
-    //                 'status_disposal',
-    //                 'status_transfer',
-    //                 'description'
-    //             ]), [
-    //                 'unit' => optional($equipment->unit)->name,
-    //                 'location' => optional($equipment->location)->name,
-    //                 'type' => optional($equipment->equipmentType)->name,
-    //                 'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
-    //                 'user' => optional($equipment->user)->full_name
-    //             ]))
-    //             ->log('ลบข้อมูลถาวร');
-    //     }
-    //     LogBatch::endBatch();
-
-    //     Equipment::onlyTrashed()->forceDelete(); // ลบครุภัณฑ์ทั้งหมดถาวร
-    //     return redirect()->route('equipment.trash')->with('success', 'ลบเอกสารทั้งหมดเรียบร้อยแล้ว');
-    // }
-
-    /// ฟังก์ชัน delete ก้อปมาจากคุณกิต
-    // public function deleteSelectedAll(Request $request)
-    // {
-    //     $ids = $request->input('selected_equipments', []); // รับ ID ของครุภัณฑ์ที่เลือก
-
-    //     $equipments = Equipment::whereIn('id', $ids)->get();
-
-    //     LogBatch::startBatch();
-    //     foreach ($equipments as $equipment) {
-    //         activity()
-    //             ->tap(function ($activity) {
-    //                 $activity->menu = 'ลบข้อมูลครุภัณฑ์ถาวร';
-    //             })
-    //             ->useLog(auth()->user()->full_name)
-    //             ->performedOn($equipment)
-    //             ->withProperties(array_merge($equipment->only([
-    //                 'number',
-    //                 'name',
-    //                 'amount',
-    //                 'price',
-    //                 'total_price',
-    //                 'status_found',
-    //                 'status_not_found',
-    //                 'status_broken',
-    //                 'status_disposal',
-    //                 'status_transfer',
-    //                 'description'
-    //             ]), [
-    //                 'unit' => optional($equipment->unit)->name,
-    //                 'location' => optional($equipment->location)->name,
-    //                 'type' => optional($equipment->equipmentType)->name,
-    //                 'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
-    //                 'user' => optional($equipment->user)->full_name
-    //             ]))
-    //             ->log('ลบข้อมูลถาวร');
-    //     }
-    //     LogBatch::endBatch();
-
-    //     Equipment::whereIn('id', $ids)->forceDelete(); // ลบครุภัณฑ์ที่เลือกถาวร
-
-    //     return redirect()->route('equipment.trash')->with('success', 'ลบเอกสารที่เลือกเรียบร้อยแล้ว');
-    // }
-    /// ฟังก์ชัน delete ก้อปมาจากคุณกิต
-    public function deleteSelected(Request $request)
-    {
-        $equipmentIds = $request->input('selected_equipments');
-        if ($equipmentIds) {
-            $equipments = Equipment::whereIn('id', $equipmentIds)->get();
-
-            LogBatch::startBatch();
-            foreach ($equipments as $equipment) {
-                activity()
-                    ->tap(function ($activity) {
-                        $activity->menu = 'ลบข้อมูลครุภัณฑ์แบบซอฟต์';
-                    })
-                    ->useLog(auth()->user()->full_name)
-                    ->performedOn($equipment)
-                    ->withProperties(array_merge($equipment->only([
-                        'number',
-                        'name',
-                        'amount',
-                        'price',
-                        'total_price',
-                        'status_found',
-                        'status_not_found',
-                        'status_broken',
-                        'status_disposal',
-                        'status_transfer',
-                        'description'
-                    ]), [
-                        'unit' => optional($equipment->unit)->name,
-                        'location' => optional($equipment->location)->name,
-                        'type' => optional($equipment->equipmentType)->name,
-                        'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
-                        'user' => optional($equipment->user)->full_name
-                    ]))
-                    ->log('ลบข้อมูลแบบซอฟต์');
-            }
-            LogBatch::endBatch();
-
-            Equipment::whereIn('id', $equipmentIds)->delete(); // <-- ใช้ SoftDelete ถ้าเปิดใช้งาน
-            return redirect($request->input('redirect_to', route('equipment.index')))->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
-        }
-        return redirect($request->input('redirect_to', route('equipment.index')))->with('error', 'กรุณาเลือกเอกสาร');
-    }
-
-    /// ฟังก์ชัน restore ก้อปมาจากคุณกิต
-    // public function restoreAll()
-    // {
-    //     $equipments = Equipment::onlyTrashed()->get();
-
-    //     LogBatch::startBatch();
-    //     foreach ($equipments as $equipment) {
-    //         activity()
-    //             ->tap(function ($activity) {
-    //                 $activity->menu = 'กู้คืนข้อมูลครุภัณฑ์';
-    //             })
-    //             ->useLog(auth()->user()->full_name)
-    //             ->performedOn($equipment)
-    //             ->withProperties(array_merge($equipment->only([
-    //                 'number',
-    //                 'name',
-    //                 'amount',
-    //                 'price',
-    //                 'total_price',
-    //                 'status_found',
-    //                 'status_not_found',
-    //                 'status_broken',
-    //                 'status_disposal',
-    //                 'status_transfer',
-    //                 'description'
-    //             ]), [
-    //                 'unit' => optional($equipment->unit)->name,
-    //                 'location' => optional($equipment->location)->name,
-    //                 'type' => optional($equipment->equipmentType)->name,
-    //                 'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
-    //                 'user' => optional($equipment->user)->full_name
-    //             ]))
-    //             ->log('กู้คืนข้อมูล');
-    //     }
-    //     LogBatch::endBatch();
-
-    //     Equipment::onlyTrashed()->restore(); // กู้คืนครุภัณฑ์ทั้งหมด
-    //     return redirect()->route('equipment.trash')->with('success', 'กู้คืนครุภัณฑ์ทั้งหมดเรียบร้อยแล้ว');
-    // }
-
-    /// ฟังก์ชัน restore ก้อปมาจากคุณกิต
-    public function restoreMultiple(Request $request)
-    {
-        $ids = explode(',', $request->input('selected_equipments', ''));
-
-        $equipments = Equipment::onlyTrashed()->whereIn('id', $ids)->get();
-
-        LogBatch::startBatch();
-        foreach ($equipments as $equipment) {
-            activity()
-                ->tap(function ($activity) {
-                    $activity->menu = 'กู้คืนข้อมูลครุภัณฑ์';
-                })
-                ->useLog(auth()->user()->full_name)
-                ->performedOn($equipment)
-                ->withProperties(array_merge($equipment->only([
-                    'number',
-                    'name',
-                    'amount',
-                    'price',
-                    'total_price',
-                    'status_found',
-                    'status_not_found',
-                    'status_broken',
-                    'status_disposal',
-                    'status_transfer',
-                    'description'
-                ]), [
-                    'unit' => optional($equipment->unit)->name,
-                    'location' => optional($equipment->location)->name,
-                    'type' => optional($equipment->equipmentType)->name,
-                    'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
-                    'user' => optional($equipment->user)->full_name
-                ]))
-                ->log('กู้คืนข้อมูล');
-        }
-        LogBatch::endBatch();
-
-        Equipment::onlyTrashed()->whereIn('id', $ids)->restore();
-        return redirect($request->input('redirect_to', route('equipment.trash')))->with('success', 'กู้คืนครุภัณฑ์ที่เลือกเรียบร้อยแล้ว');
-    }
-
-    public function forceDeleteMultiple(Request $request) // ลบครุภัณฑ์ถาวร
-    {
-        $ids = explode(',', $request->input('selected_equipments', ''));
-
-        $equipments = Equipment::onlyTrashed()->whereIn('id', $ids)->get();
-
-        LogBatch::startBatch();
-        foreach ($equipments as $equipment) {
-            activity()
-                ->tap(function ($activity) {
-                    $activity->menu = 'ลบข้อมูลครุภัณฑ์ถาวร';
-                })
-                ->useLog(auth()->user()->full_name)
-                ->performedOn($equipment)
-                ->withProperties(array_merge($equipment->only([
-                    'number',
-                    'name',
-                    'amount',
-                    'price',
-                    'total_price',
-                    'status_found',
-                    'status_not_found',
-                    'status_broken',
-                    'status_disposal',
-                    'status_transfer',
-                    'description'
-                ]), [
-                    'unit' => optional($equipment->unit)->name,
-                    'location' => optional($equipment->location)->name,
-                    'type' => optional($equipment->equipmentType)->name,
-                    'title' => optional($equipment->title)->group . ' - ' . optional($equipment->title)->group,
-                    'user' => optional($equipment->user)->full_name
-                ]))
-                ->log('ลบข้อมูลถาวร');
-        }
-        LogBatch::endBatch();
-
-        Equipment::onlyTrashed()->whereIn('id', $ids)->forceDelete();
-        return redirect($request->input('redirect_to', route('equipment.trash')))->with('success', 'ลบครุภัณฑ์ถาวรเรียบร้อยแล้ว');
     }
 }

@@ -8,16 +8,18 @@ use App\Models\Prefix;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Facades\LogBatch;
+use Illuminate\Support\Arr;
+
 
 class UserController extends Controller
 {
-    // แสดงรายการบุคลากร
+    // หน้าแสดงข้อมูลผู้ใช้
     public function index()
     {
         $users = User::with('prefix')->orderBy('created_at', 'desc')->paginate(10); // ดึงข้อมูลบุคลากรพร้อมคำนำหน้า
         return view('page.users.show', compact('users'));
     }
-    // ค้นหาบุคลากร
+    // ฟังก์ชันค้นหาผู้ใช้
     public function search(Request $request)
     {
         // รับค่าค้นหาจาก request
@@ -43,20 +45,14 @@ class UserController extends Controller
 
         return view('page.users.show', compact('users'));
     }
-    // แสดงฟอร์มเพิ่มบุคลากร
+    // หน้าเพิ่มผู้ใช้
     public function create()
     {
         $prefixes = Prefix::all(); // ดึงคำนำหน้าทั้งหมดจากฐานข้อมูล
         return view('page.users.add', compact('prefixes'));
     }
-    // แสดงข้อมูลบุคลากร
-    public function show($id)
-    {
-        $user = User::findOrFail($id); // ดึงข้อมูลบุคลากรตาม ID
-        return view('page.users.show', compact('user'));
-    }
 
-    // บันทึกข้อมูลบุคลากรใหม่
+    // ฟังก์ชันเพิ่มผู้ใช้
     public function store(Request $request)
     {
         // dd($request->all()); // ตรวจสอบค่าที่ถูกส่งมาจากฟอร์ม
@@ -95,17 +91,17 @@ class UserController extends Controller
 
         activity()
             ->tap(function ($activity) {
-                $activity->menu = 'เพิ่มข้อมูลผู้ใช้';
+                $activity->menu = 'เพิ่มข้อมูล';
             })
             ->useLog(auth()->user()->full_name)
             ->performedOn($user)
-            ->withProperties($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']))
-            ->log('เพิ่มข้อมูล');
+            ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]))
+            ->log('บุคลากร');
 
         return redirect($request->input('redirect_to', route('user')))->with('success', 'เพิ่มบุคลากรเรียบร้อยแล้ว');
     }
 
-    // แสดงฟอร์มแก้ไขบุคลากร
+    // หน้าแก้ไขข้อมูลผู้ัใช้
     public function edit($id)
     {
         $user = User::findOrFail($id);
@@ -113,7 +109,7 @@ class UserController extends Controller
         return view('page.users.edit', compact('user', 'prefixes'));
     }
 
-    // อัปเดตข้อมูลบุคลากร
+    // ฟังก์ชันแก้ไขข้อมูลผู้ใช้
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -151,50 +147,34 @@ class UserController extends Controller
 
         activity()
             ->tap(function ($activity) {
-                $activity->menu = 'แก้ไขข้อมูลผู้ใช้';
+                $activity->menu = 'แก้ไขข้อมูล';
             })
             ->useLog(auth()->user()->full_name)
             ->performedOn($user)
             ->withProperties([
-                'ข้อมูลก่อนแก้ไข' => $oldValues->only(['username', 'firstname', 'lastname', 'user_type', 'email']),
-                'ข้อมูลหลังแก้ไข' => $newValues->only(['username', 'firstname', 'lastname', 'user_type', 'email'])
+
+                // Arr::only($oldValues, [
+                //         'number',
+                //         'name',
+                //         'amount',
+                //         'price',
+                //         'total_price',
+                //         'status_found',
+                //         'status_not_found',
+                //         'status_broken',
+                //         'status_disposal',
+                //         'status_transfer',
+                //         'description'
+                //     ]),
+                'ข้อมูลก่อนแก้ไข' => array_merge(Arr::only($oldValues,['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
+                'ข้อมูลหลังแก้ไข' => array_merge(Arr::only($newValues,['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
             ])
-            ->log('แก้ไขข้อมูล');
+            ->log('บุคลากร');
 
         return redirect($request->input('redirect_to', route('user')))->with('success', 'แก้ไขข้อมูลเรียบร้อยแล้ว');
     }
-    // ลบบุคลากร
-    public function destroy(Request $request)
-    {
-        // รับค่าที่ส่งมาจาก checkbox
-        $selectedUsers = $request->input('selected_users', []);
 
-        if (empty($selectedUsers)) {
-            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
-        }
-
-        $users = User::whereIn('id', $selectedUsers)->get();
-
-        LogBatch::startBatch();
-        foreach ($users as $user) {
-            activity()
-                ->tap(function ($activity) {
-                    $activity->menu = 'ลบข้อมูลผู้ใช้แบบซอฟต์';
-                })
-                ->useLog(auth()->user()->full_name)
-                ->performedOn($user)
-                ->withProperties($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']))
-                ->log('ลบข้อมูลแบบซอฟต์');
-        }
-        LogBatch::endBatch();
-
-        // ลบผู้ใช้ตาม ID ที่เลือก
-        User::whereIn('id', $selectedUsers)->delete();
-
-        return redirect()->route('user.index')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
-    }
-
-
+    // หน้าแก้ไขข้อมูลตนเอง
     public function profile()
     {
         $user = auth()->user(); // ดึงข้อมูลผู้ใช้ที่ล็อกอิน
@@ -202,7 +182,7 @@ class UserController extends Controller
         return view('profile', compact('user', 'prefixes'));
     }
 
-
+    // ฟังก์ชันแก้ไขข้อมูลตนเอง
     public function updateProfile(Request $request)
     {
         $user = auth()->user();
@@ -259,30 +239,30 @@ class UserController extends Controller
             LogBatch::startBatch();
             activity()
                 ->tap(function ($activity) {
-                    $activity->menu = 'แก้ไขโปรไฟล์';
+                    $activity->menu = 'แก้ไขข้อมูลตนเอง';
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
                 ->withProperties([
-                    'ข้อมูลก่อนแก้ไข' => $oldValues->only(['username', 'firstname', 'lastname', 'user_type', 'email']),
-                    'ข้อมูลหลังแก้ไข' => $newValues->only(['username', 'firstname', 'lastname', 'user_type', 'email'])
+                    'ข้อมูลก่อนแก้ไข' => array_merge($oldValues->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
+                    'ข้อมูลหลังแก้ไข' => array_merge($newValues->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
                 ])
-                ->log('แก้ไขข้อมูล');
+                ->log('บุคลากร');
 
             activity()
                 ->tap(function ($activity) {
-                    $activity->menu = 'แก้ไขโปรไฟล์';
+                    $activity->menu = 'แก้ไขข้อมูลรหัสผ่านตนเอง';
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
-                ->log('แก้ไขรหัสผ่าน');
+                ->log('บุคลากร');
             LogBatch::endBatch();
 
             return redirect()->route('profile')->with('success', 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว');
         } else {
             activity()
                 ->tap(function ($activity) {
-                    $activity->menu = 'แก้ไขโปรไฟล์';
+                    $activity->menu = 'แก้ไขข้อมูลตนเอง';
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
@@ -290,54 +270,48 @@ class UserController extends Controller
                     'ข้อมูลก่อนแก้ไข' => $oldValues->only(['username', 'firstname', 'lastname', 'user_type', 'email']),
                     'ข้อมูลหลังแก้ไข' => $newValues->only(['username', 'firstname', 'lastname', 'user_type', 'email'])
                 ])
-                ->log('แก้ไขข้อมูล');
+                ->log('บุคลากร');
 
             return redirect()->route('profile')->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
         }
     }
 
+    // หน้ากู้ข้อมูลผู้ใช้
     public function trashed()
     {
         $users = User::onlyTrashed()->paginate(10);
         return view('page.users.trash', compact('users'));
     }
 
-    public function restore($id)
+    // ฟัง์ชันลบข้อมูลผู้ใช้ถาวร
+    public function forceDeleteSelected(Request $request)
     {
-        $user = User::onlyTrashed()->findOrFail($id)->get();
+        // รับข้อมูล ID ของผู้ใช้ที่เลือก
+        $ids = explode(',', $request->input('selected_users', ''));
 
-        activity()
-            ->tap(function ($activity) {
-                $activity->menu = 'กู้คื้นข้อมูลผู้ใช้';
-            })
-            ->useLog(auth()->user()->full_name)
-            ->performedOn($user)
-            ->withProperties($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']))
-            ->log('กู้คืนข้อมูล');
+        $users = User::onlyTrashed()->whereIn('id', $ids)->get();
+        LogBatch::startBatch();
+        foreach ($users as $user) {
+            activity()
+                ->tap(function ($activity) {
+                    $activity->menu = 'ลบข้อมูลถาวร';
+                })
+                ->useLog(auth()->user()->full_name)
+                ->performedOn($user)
+                ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]))
+                ->log('บุคลากร');
+        }
+        LogBatch::endBatch();
 
-        $user->restore();
 
-        return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้เรียบร้อยแล้ว');
+        // ลบถาวรผู้ใช้ที่เลือก
+        User::onlyTrashed()->whereIn('id', $ids)->forceDelete();
+
+        // กลับไปที่หน้าผู้ใช้ที่ถูกลบพร้อมข้อความ success
+        return redirect()->route('user.trashed')->with('success', 'ลบข้อมูลถาวรผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
 
-    public function forceDelete($id)
-    {
-        $user = User::onlyTrashed()->findOrFail($id);
-
-        activity()
-            ->tap(function ($activity) {
-                $activity->menu = 'ลบข้อมูลผู้ใช้ถาวร';
-            })
-            ->useLog(auth()->user()->full_name)
-            ->performedOn($user)
-            ->withProperties($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']))
-            ->log('ลบข้อมูลถาวร');
-
-        $user->forceDelete();
-
-        return redirect()->route('user.trashed')->with('success', 'ลบบัญชีผู้ใช้ถาวรเรียบร้อยแล้ว');
-    }
-
+    // ฟังก์ชันลบข้อมูลผู้ใช้แบบซอฟต์
     public function deleteSelected(Request $request)
     {
         $selectedUsers = $request->input('selected_users', []);
@@ -352,12 +326,12 @@ class UserController extends Controller
         foreach ($users as $user) {
             activity()
                 ->tap(function ($activity) {
-                    $activity->menu = 'ลบข้อมูลผู้ใช้แบบซอฟต์';
+                    $activity->menu = 'ลบข้อมูลแบบซอฟต์';
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
-                ->withProperties($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']))
-                ->log('ลบข้อมูลแบบซอฟต์');
+                ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]))
+                ->log('บุคลากร');
         }
         LogBatch::endBatch();
 
@@ -366,52 +340,11 @@ class UserController extends Controller
         return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
 
-    public function deleteAll(Request $request)
-    {
-        $selectedUsers = $request->input('selected_users', []);
-
-        if (empty($selectedUsers)) {
-            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
-        }
-
-        $users = User::onlyTrashed()->whereIn('id', $selectedUsers)->get();
-
-        LogBatch::startBatch();
-        foreach ($users as $user) {
-            activity()
-                ->tap(function ($activity) {
-                    $activity->menu = 'ลบข้อมูลผู้ใช้ถาวร';
-                })
-                ->useLog(auth()->user()->full_name)
-                ->performedOn($user)
-                ->withProperties($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']))
-                ->log('ลบข้อมูลถาวร');
-        }
-        LogBatch::endBatch();
-
-        User::onlyTrashed()->whereIn('id', $selectedUsers)->forceDelete();
-
-        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
-    }
-
+    // ฟังก์ชันกู้คืนข้อมูลผู้ใช้
     public function restoreSelected(Request $request)
     {
         // รับข้อมูล ID ของผู้ใช้ที่เลือก
-        $ids = $request->input('selected_users', []);
-
-        // dd($ids);
-        // $ids = explode(',', $request->input('selected_users', []));
-        // $selected = explode(',', $request->input('selected_documents'));
-
-        // ถ้ามันเป็น JSON string เช่น '["8","9"]'
-        if (is_string($ids)) {
-            $ids = json_decode($ids, true);
-        }
-
-        // ถ้าเป็น int หรือ string เดี่ยว เช่น "8"
-        if (!is_array($ids)) {
-            $ids = [$ids];
-        }
+        $ids = explode(',', $request->input('selected_users', ''));
 
         $users = User::onlyTrashed()->whereIn('id', $ids)->get();
 
@@ -419,12 +352,12 @@ class UserController extends Controller
         foreach ($users as $user) {
             activity()
                 ->tap(function ($activity) {
-                    $activity->menu = 'กู้คืนข้อมูลผู้ใช้';
+                    $activity->menu = 'กู้คืนข้อมูล';
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
-                ->withProperties($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']))
-                ->log('กู้คืนข้อมูล');
+                ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]))
+                ->log('บุคลากร');
         }
         LogBatch::endBatch();
 
@@ -436,54 +369,7 @@ class UserController extends Controller
         return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
 
-    public function restoreAll()
-    {
-        $users = User::onlyTrashed()->get();
-
-        LogBatch::startBatch();
-        foreach ($users as $user) {
-            activity()
-                ->tap(function ($activity) {
-                    $activity->menu = 'กู้คืนข้อมูลผู้ใช้';
-                })
-                ->useLog(auth()->user()->full_name)
-                ->performedOn($user)
-                ->withProperties($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']))
-                ->log('กู้คืนข้อมูล');
-        }
-        LogBatch::endBatch();
-
-        User::onlyTrashed()->restore(); // กู้คืนผู้ใช้ทั้งหมด
-        return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ทั้งหมดเรียบร้อยแล้ว'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
-    }
-    public function deleteSelectedAll(Request $request)
-    {
-        $selectedUsers = $request->input('selected_users', []);
-
-        if (empty($selectedUsers)) {
-            return redirect()->back()->with('warning', 'กรุณาเลือกผู้ใช้ที่ต้องการลบ');
-        }
-
-        $users = User::onlyTrashed()->whereIn('id', $selectedUsers) - get();
-
-        LogBatch::startBatch();
-        foreach ($users as $user) {
-            activity()
-                ->tap(function ($activity) {
-                    $activity->menu = 'ลบข้อมูลผู้ใช้ถาวร';
-                })
-                ->useLog(auth()->user()->full_name)
-                ->performedOn($user)
-                ->withProperties($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']))
-                ->log('ลบข้อมูลถาวร');
-        }
-        LogBatch::endBatch();
-
-        User::onlyTrashed()->whereIn('id', $selectedUsers)->forceDelete();
-
-        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
-    }
-
+    // ฟังก์ชันค้นหาข้อมูลผู้ใช้ในหน้ากู้ข้อมูล
     public function searchTrash(Request $request)
     {
         $query = User::onlyTrashed();
