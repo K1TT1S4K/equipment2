@@ -19,9 +19,11 @@ class ActivityController extends Controller
 
     public function search(Request $request)
     {
+        // dd($request->input('menu'));
         $users = User::all();
         $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
         $model = $request->input('model'); // ค้นหาจากประเภทเอกสาร
+        $menu = $request->input('menu');
 
         $logs = Activity::when($search, function ($query, $search) {
             return $query->where('log_name', 'like', "%{$search}%")
@@ -33,18 +35,31 @@ class ActivityController extends Controller
                 ->orWhere('updated_at', 'like', "%{$search}%");
         })
             ->when($model, function ($query, $model) {
-
                 if ($model == 'ครุภัณฑ์') {
-                    return $query->where('subject_type', 'App\Models\Equipment');
-                } elseif ($model == 'ส่งออกข้อมูล') {
-                    return $query->where('subject_type', 'App\Models\Title');
-                } elseif ($model == 'ผู้ใช้') {
-                    return $query->where('subject_type', 'App\Models\User');
+                    return $query->where('description', 'ครุภัณฑ์');
+                } elseif ($model == 'บุคลากร') {
+                    return $query->where('description', 'บุคลากร');
                 } elseif ($model == 'เอกสาร') {
-                    return $query->where('subject_type', 'App\Models\Document');
+                    return $query->where('description', 'เอกสาร');
                 }
-
                 return $query->where('subject_type', $model);
+            })
+            ->when($menu, function ($query, $menu){
+                if($menu == 'เพิ่มข้อมูล'){
+                    return $query->where('menu', 'เพิ่มข้อมูล');
+                }elseif($menu == 'แก้ไขข้อมูล'){
+                    return $query->where('menu', 'แก้ไขข้อมูล');
+                }elseif($menu == 'ลบข้อมูลแบบซอฟต์'){
+                    return $query->where('menu', 'ลบข้อมูลแบบซอฟต์');
+                }elseif($menu == 'ลบข้อมูลถาวร'){
+                    return $query->where('menu', 'ลบข้อมูลถาวร');
+                }elseif($menu == 'ส่งออกข้อมูล'){
+                    return $query->where('menu', 'ส่งออกข้อมูล');
+                }elseif($menu == 'เข้าสู่ระบบ'){
+                    return $query->where('menu', 'เข้าสู่ระบบ');
+                }elseif($menu == 'ออกจากระบบ'){
+                    return $query->where('menu', 'ออกจากระบบ');
+                }
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);

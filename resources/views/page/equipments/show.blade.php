@@ -69,7 +69,8 @@
             <input type="text" id="query" name="query" class="form-control shadow-lg p-2 mb-3 rounded"
                 placeholder="ค้นหาจากข้อมูลครุภัณฑ์" value="{{ request('query') }}">
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
-
+            <button type="button" class="btn btn-danger ms-2 shadow-lg p-2 mb-3 rounded"
+                onclick="window.location='{{ route('equipment.index') }}'" style="width: 10%">ล้างการค้นหา</button>
         </div>
     </form>
 
@@ -97,7 +98,7 @@
                 <div class="p-2">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <div>
-                            <a href="{{ route('equipment.export', request('title_filter')) }}" class="btn btn-primary mb-3">
+                            <a href="{{ route('equipment.export', request()->query()) }}" class="btn btn-primary mb-3">
                                 ส่งออกข้อมูล
                             </a>
                         </div>
@@ -154,101 +155,52 @@
                 </thead>
                 <tbody class="align-middle p-3">
                     @php
-                        //                         $titleId = request()->query('title_filter');
-                        //                         $unitId = request()->query('unit_filter');
-                        //                         $locationId = request()->query('location_filter');
-                        //                         $userId = request()->query('user_filter');
-                        //                         $sFound = request()->query('status_found');
-                        //                         $sNotFound = request()->query('status_not_found');
-                        //                         $sBroken = request()->query('status_broken');
-                        //                         $sDisposal = request()->query('status_disposal');
-                        //                         $sTransfer = request()->query('status_transfer');
-
-                        //                         function filterBySelected(
-                        //                             $equipments,
-                        //                             $titleId,
-                        //                             $unitId,
-                        //                             $locationId,
-                        //                             $userId,
-                        //                             $sFound,
-                        //                             $sNotFound,
-                        //                             $sBroken,
-                        //                             $sDisposal,
-                        //                             $sTransfer,
-                        //                         ) {
-                        //                             $filtered = $equipments->where('title_id', $titleId);
-                        // dd($filtered);
-                        //                             if ($unitId !== 'all') {
-                        //                                 $filtered = $filtered->where('equipment_unit_id', $unitId);
-                        //                             }
-
-                        //                             if ($locationId !== 'all') {
-                        //                                 $filtered = $filtered->where('location_id', $locationId);
-                        //                             }
-
-                        //                             if ($userId !== 'all') {
-                        //                                 $filtered = $filtered->where('user_id', $userId);
-                        //                             }
-
-                        //                             if ($sFound !== 'all' && $sFound !== null) {
-                        //                                 $filtered = $filtered->where('status_found', '>=', $sFound);
-                        //                             }
-
-                        //                             if ($sNotFound !== 'all' && $sNotFound !== null) {
-                        //                                 $filtered = $filtered->where('status_not_found', '>=', $sNotFound);
-                        //                             }
-
-                        //                             if ($sBroken !== 'all' && $sBroken !== null) {
-                        //                                 $filtered = $filtered->where('status_broken', '>=', $sBroken);
-                        //                             }
-
-                        //                             if ($sDisposal !== 'all' && $sDisposal !== null) {
-                        //                                 $filtered = $filtered->where('status_disposal', '>=', $sDisposal);
-                        //                             }
-
-                        //                             if ($sTransfer !== 'all' && $sTransfer !== null) {
-                        //                                 $filtered = $filtered->where('status_transfer', '>=', $sTransfer);
-                        //                             }
-                        // // dd($filtered);
-                        //                             return $filtered;
-                        //                         }
-
-                        //                         // $eqs = Equipment::withTrashed()->find($id);
-                        //                         // dd($equipment_trash);
-
-                        //                         $eqs = $equipments;
-
-                        //                         $binMode = request()->query('bin_mode');
-                        //                         if ($binMode == 1) {
-                        //                             $eqs = $equipment_trash;
-                        //                         }
-                        //                         $filterEquipments = filterBySelected(
-                        //                             $eqs,
-                        //                             $titleId,
-                        //                             $unitId,
-                        //                             $locationId,
-                        //                             $userId,
-                        //                             $sFound,
-                        //                             $sNotFound,
-                        //                             $sBroken,
-                        //                             $sDisposal,
-                        //                             $sTransfer,
-                        //                         );
-
                         $displayedTypes = [];
                     @endphp
                     @forelse ($equipments as $key => $equipment)
                         @php
                             $type = $equipment->equipment_type_id;
                         @endphp
-                        @if ($type !== null)
-                            @if (in_array($type, $displayedTypes))
-                                @php
-                                    continue;
-                                @endphp
-                            @endif
+                        @if (in_array($type, $displayedTypes))
+                            @php
+                                continue;
+                            @endphp
+                        @endif
 
+                        @if ($type == null)
                             <tr class="text-center" style="cursor: pointer;">
+                                <td colspan="3" class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                    ไม่มีประเภท
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                            </tr>
+                        @else
+                        <tr class="text-center" style="cursor: pointer;">
                                 <td colspan="3" class="bg-secondary text-white">
                                 </td>
                                 <td class="bg-secondary text-white">
@@ -294,195 +246,105 @@
 
                                 </td>
                             </tr>
-
-                            @forelse ($equipments as $key => $equipment)
-                                @if ($equipment->equipment_type_id === $type)
-                                    <tr class="text-center" style="cursor: pointer;">
-                                        <td class="soft-grey">
-                                            {{-- <div class="form-check d-flex justify-content-center align-items-center"
-                                                style="height: 100%;">
-                                                <input class="form-check-input checkbox-item"
-                                                    value="{{ $equipment->id }}" type="checkbox"
-                                                    style="transform: scale(1.5);">
-                                            </div> --}}
-
-                                            <input type="checkbox" class="equipment-checkbox"
-                                                name="selected_equipments[]" value="{{ $equipment->id }}">
-
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ ++$count }}<br>
-                                            {{-- {{ $loop->iteration + ($equipments->currentPage() - 1) * $equipments->perPage() }} --}}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->number }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->name }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->equipmentUnit->name }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->amount }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->price }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->total_price }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->status_found }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->status_not_found }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->status_broken }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->status_disposal }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{ $equipment->status_transfer }}
-                                        </td>
-                                        <td class="text-start soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            <p><span class="text-muted">ผู้ดูแล:</span>
-                                                {{-- {{ $equipment->user?->prefix?->name }} {{ $equipment->user?->firstname }} --}}
-                                                {{ $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' }}
-                                            </p>
-                                            <hr>
-                                            <p><span class="text-muted">ที่อยู่:
-                                                </span>{{ $equipment->location?->name ?? '-' }}</p>
-                                            <hr>
-                                            <p class="mb-0"><span class="text-muted">คำอธิบาย:
-                                                </span>{{ $equipment->description ?? '-' }}
-                                            </p>
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{-- {{ $equipment->updated_at }} --}}
-                                            {{ $equipment->updated_at->format('j') }}
-                                            {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
-                                            {{ $equipment->updated_at->year + 543 }}
-                                            {{ $equipment->updated_at->format('H:i:s') }}
-                                        </td>
-                                        <td class="soft-grey"
-                                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                            {{-- {{ $equipment->created_at }} --}}
-                                            {{ $equipment->created_at->format('j') }}
-                                            {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
-                                            {{ $equipment->created_at->year + 543 }}
-                                            {{ $equipment->created_at->format('H:i:s') }}
-                                        </td>
-                                    </tr>
-                                @endif
-
-                            @empty
-                                <tr>
-                                    <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
-                                </tr>
-                            @endforelse
-
-                            @php
-                                $displayedTypes[] = $type;
-                            @endphp
-                        @else
-                            <tr class="text-center">
-                                <td>
-                                    {{-- <div class="form-check d-flex justify-content-center align-items-center"
-                                        style="height: 100%;">
-                                        <input class="form-check-input checkbox-item" value="{{ $equipment->id }}"
-                                            type="checkbox" style="transform: scale(1.5);">
-                                    </div> --}}
-                                    <input type="checkbox" class="equipment-checkbox" name="selected_equipments[]"
-                                        value="{{ $equipment->id }}">
-
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ ++$count }}<br>
-                                    {{-- {{ $loop->iteration + ($equipments->currentPage() - 1) * $equipments->perPage() }} --}}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ $equipment->number }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ $equipment->name }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ $equipment->equipmentUnit->name }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ number_format($equipment->amount) }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ number_format($equipment->price, 2) }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ number_format($equipment->total_price, 2) }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ number_format($equipment->status_found) }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ number_format($equipment->status_not_found) }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ number_format($equipment->status_broken) }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ number_format($equipment->status_disposal) }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{ number_format($equipment->status_transfer) }}
-                                </td>
-                                <td class="text-start"
-                                    onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    <p><span class="text-muted">ผู้ดูแล:</span>
-                                        {{ $equipment->user?->id }}
-                                        {{-- {{ $equipment->user?->prefix?->name }} {{ $equipment->user?->firstname }} --}}
-                                        {{ $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' }}
-                                    </p>
-                                    <hr>
-                                    <p><span class="text-muted">ที่อยู่:
-                                        </span>{{ $equipment->location?->name ?? '-' }}
-                                    </p>
-                                    <hr>
-                                    <p class="mb-0"><span class="text-muted">คำอธิบาย:
-                                        </span>{{ $equipment->description ?? '-' }}
-                                    </p>
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{-- {{ $equipment->updated_at }} --}}
-                                    {{ $equipment->updated_at->format('j') }}
-                                    {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
-                                    {{ $equipment->updated_at->year + 543 }}
-                                    {{ $equipment->updated_at->format('H:i:s') }}
-                                </td>
-                                <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                    {{-- {{ $equipment->created_at }} --}}
-                                    {{ $equipment->created_at->format('j') }}
-                                    {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
-                                    {{ $equipment->created_at->year + 543 }}
-                                    {{ $equipment->created_at->format('H:i:s') }}
-                                </td>
-                            </tr>
                         @endif
-                    @empty
+
+                        @forelse ($equipments as $key => $equipment)
+                            @if ($equipment->equipment_type_id === $type)
+                                <tr class="text-center" style="cursor: pointer;">
+                                    <td>
+                                        <input type="checkbox" class="equipment-checkbox"
+                                            name="selected_equipments[]" value="{{ $equipment->id }}">
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ ++$count }}<br>
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->number }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->name }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->equipmentUnit->name }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->amount }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->price }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->total_price }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->status_found }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->status_not_found }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->status_broken }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->status_disposal }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->status_transfer }}
+                                    </td>
+                                    <td class="text-start"
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        <p><span class="text-muted">ผู้ดูแล:</span>
+                                            {{-- {{ $equipment->user?->prefix?->name }} {{ $equipment->user?->firstname }} --}}
+                                            {{ $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' }}
+                                        </p>
+                                        <hr>
+                                        <p><span class="text-muted">ที่อยู่:
+                                            </span>{{ $equipment->location?->name ?? '-' }}</p>
+                                        <hr>
+                                        <p class="mb-0"><span class="text-muted">คำอธิบาย:
+                                            </span>{{ $equipment->description ?? '-' }}
+                                        </p>
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{-- {{ $equipment->updated_at }} --}}
+                                        {{ $equipment->updated_at->format('j') }}
+                                        {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
+                                        {{ $equipment->updated_at->year + 543 }}
+                                        {{ $equipment->updated_at->format('H:i:s') }}
+                                    </td>
+                                    <td
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{-- {{ $equipment->created_at }} --}}
+                                        {{ $equipment->created_at->format('j') }}
+                                        {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
+                                        {{ $equipment->created_at->year + 543 }}
+                                        {{ $equipment->created_at->format('H:i:s') }}
+                                    </td>
+                                </tr>
+                            @endif
+                        @empty
+                            <tr>
+                                <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
+                            </tr>
+                        @endforelse
+
+                        @php
+                            $displayedTypes[] = $type;
+                        @endphp
+                        @empty
                         <tr>
                             <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
                         </tr>
@@ -493,11 +355,6 @@
 
         {{-- ตัวแบ่งหน้า --}}
         <div class="d-flex justify-content-center">
-            {{-- ไว้ดูค่าเพื่อ debug --}}
-            {{-- <pre>
-                    {{ print_r(request()->all(), true) }}
-    {{ $equipments->url(2) }}
-</pre> --}}
             {{ $equipments->links() }}
         </div>
     </div>

@@ -69,7 +69,8 @@
             <input type="text" id="query" name="query" class="form-control shadow-lg p-2 mb-3 rounded"
                 placeholder="ค้นหาจากข้อมูลครุภัณฑ์" value="{{ request('query') }}">
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
-
+            <button type="button" class="btn btn-danger ms-2 shadow-lg p-2 mb-3 rounded"
+                onclick="window.location='{{ route('equipment.trash') }}'" style="width: 10%">ล้างการค้นหา</button>   
         </div>
     </form>
 

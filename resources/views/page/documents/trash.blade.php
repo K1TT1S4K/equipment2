@@ -21,8 +21,8 @@
 
 
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
-            {{-- <a href="{{ route('document.search') }}" class="btn btn-danger ms-2">ล้างการค้นหา</a> --}}
-
+            <button type="button" class="btn btn-danger ms-2 shadow-lg p-2 mb-3 rounded"
+                onclick="window.location='{{ route('trash.search') }}'" style="width: 18%">ล้างการค้นหา</button>
         </div>
     </form>
     {{-- <div class="card shadow-lg p-3 mb-4 bg-body">

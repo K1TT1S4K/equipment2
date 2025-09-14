@@ -8,12 +8,11 @@
         <title>Laravel</title>
 
         <!-- Bootstrap CSS -->
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link rel="stylesheet" href="{{ asset('css/instrument-sans.css') }}">
     </head>
     <body class="bg-secondary text-dark d-flex align-items-center justify-content-center min-vh-100">
         <div class="container">

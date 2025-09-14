@@ -47,8 +47,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
         ]);
 
         activity()
+            ->tap(function ($activity) {
+                $activity->menu = 'เข้าสู่ระบบ';
+            })
             ->useLog(auth()->user()->full_name)
-            ->log('เข้าสู่ระบบ');
+            ->log('บุคลากร');
     }
 
     /**

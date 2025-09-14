@@ -11,7 +11,7 @@
     <!-- Bootstrap CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('bootstrap-icons\font\bootstrap-icons.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 </head>

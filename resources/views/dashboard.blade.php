@@ -4,11 +4,11 @@
             <div class="container">
                 <div class="d-flex mb-2" style="max-height: 500px">
                     <div class="left row mb-0 pb-0 d-flex justify-content-start">
-                        <h2>ครภัณฑ์ที่ดำเนินการ</h2>
+                        <h2 class="text-center">ครุภัณฑ์ที่ดำเนินการ</h2>
                         <canvas id="myChart2" style="max-width:800px; max-height:500px;"></canvas>
                     </div>
                     <div class="left row mb-0 pb-0 d-flex justify-content-center">
-                        <h2>ครุภัณฑ์ทั้งหมด</h2>
+                        <h2 class="text-center">ครุภัณฑ์ทั้งหมด</h2>
                         <canvas id="myChart" style="max-width:500px; max-height:500px;"></canvas>
                     </div>
                 </div>
@@ -28,7 +28,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($equipments as $item)
+                                @php
+                                    $items = $equipments->where('user_id', auth()->user()->id);
+                                @endphp
+                                @can('admin-or-branch-or-officer')
+                                    @php
+                                        $items = $equipments;
+                                    @endphp
+                                @endcan
+                                @foreach ($items as $item)
                                     @php
                                         if ($item->status_not_found < 1) {
                                             continue;
@@ -63,8 +71,16 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $items = $equipments->where('user_id', auth()->user()->id);
+                                @endphp
+                                @can('admin-or-branch-or-officer')
+                                    @php
+                                        $items = $equipments;
+                                    @endphp
+                                @endcan
                                 <tr>
-                                    @foreach ($equipments as $item)
+                                    @foreach ($items as $item)
                                         @php
                                             if ($item->status_broken < 1) {
                                                 continue;

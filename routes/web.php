@@ -30,7 +30,7 @@ Route::get('/run-seed', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
-    Route::get('/export/{titleId}', [EquipmentController::class, 'export'])->name('equipment.export');
+    Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
     Route::post('equipments_documents',[EquipmentDocumentController::class, 'store'])->name('equipments_documents.store');
     Route::delete('equipments_documents/delete-selected', [EquipmentDocumentController::class, 'deleteSelected'])->name('equipments_documents.deleteSelected');

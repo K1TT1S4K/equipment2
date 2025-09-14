@@ -236,10 +236,9 @@ class UserController extends Controller
 
         // แสดงข้อความสำเร็จ
         if ($passwordChanged) {
-            LogBatch::startBatch();
             activity()
                 ->tap(function ($activity) {
-                    $activity->menu = 'แก้ไขข้อมูลตนเอง';
+                    $activity->menu = 'แก้ไขข้อมูล';
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
@@ -249,20 +248,11 @@ class UserController extends Controller
                 ])
                 ->log('บุคลากร');
 
-            activity()
-                ->tap(function ($activity) {
-                    $activity->menu = 'แก้ไขข้อมูลรหัสผ่านตนเอง';
-                })
-                ->useLog(auth()->user()->full_name)
-                ->performedOn($user)
-                ->log('บุคลากร');
-            LogBatch::endBatch();
-
             return redirect()->route('profile')->with('success', 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว');
         } else {
             activity()
                 ->tap(function ($activity) {
-                    $activity->menu = 'แก้ไขข้อมูลตนเอง';
+                    $activity->menu = 'แก้ไขข้อมูล';
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)

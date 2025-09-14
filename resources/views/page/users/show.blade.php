@@ -18,6 +18,8 @@
                 </option>
             </select>
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
+            <button type="button" class="btn btn-danger ms-2 shadow-lg p-2 mb-3 rounded"
+                onclick="window.location='{{ route('user.search') }}'" style="width: 18%">ล้างการค้นหา</button>
         </div>
     </form>
 
@@ -79,7 +81,9 @@
                             <td>{{ $user->user_type }}</td>
                             {{-- <td>{{ $user->email }}</td> --}}
                             @php
-                                $last_login = $user->last_login_at ? \Carbon\Carbon::parse($user->last_login_at)->locale('th') : null;
+                                $last_login = $user->last_login_at
+                                    ? \Carbon\Carbon::parse($user->last_login_at)->locale('th')
+                                    : null;
                             @endphp
                             <td class="text-center">
                                 {{ $last_login

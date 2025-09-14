@@ -18,6 +18,8 @@
                 </option>
             </select>
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
+            <button type="button" class="btn btn-danger ms-2 shadow-lg p-2 mb-3 rounded"
+                onclick="window.location='{{ route('user.trashsearch') }}'" style="width: 18%">ล้างการค้นหา</button>
         </div>
     </form>
 

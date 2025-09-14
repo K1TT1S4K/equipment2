@@ -2,23 +2,40 @@
     <h3 class="text-dark mb-4">สืบค้นกิจกรรม</h3>
     <form action="{{ route('activity.search') }}" method="GET" class="mb-3">
         <div class="d-flex">
-
-            <input type="text" id="query" name="query" class="form-control shadow-lg p-2 mb-3 rounded"
-                placeholder="ค้นหากิจกรรม" value="{{ request('query') }}">
-            <select id="model" name="model" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
-                <option value="">-- เลือกประเภทกิจกรรม --</option>
-                <option value="ครุภัณฑ์" {{ request('model') == 'ครุภัณฑ์' ? 'selected' : '' }}>
-                    ครุภัณฑ์</option>
-                <option value="เอกสาร" {{ request('model') == 'เอกสาร' ? 'selected' : '' }}>
-                    เอกสาร</option>
-                <option value="ผู้ใช้" {{ request('model') == 'ผู้ใช้' ? 'selected' : '' }}>
-                    ผู้ใช้</option>
-                <option value="ส่งออกข้อมูล" {{ request('model') == 'ส่งออกข้อมูล' ? 'selected' : '' }}>
-                    ส่งออกข้อมูล</option>
-            </select>
-
-
-            <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
+            <div class="flex-grow-1"><input type="text" id="query" name="query"
+                    class="form-control shadow-lg p-2 mb-3 rounded" placeholder="ค้นหาจากข้อมูลกิจกรรม"
+                    value="{{ request('query') }}"></div>
+            <div class="ms-2"><select id="model" name="model" class="form-control shadow-lg p-2 mb-3 rounded">
+                    <option value="">-- เลือกประเภทข้อมูล --</option>
+                    <option value="ครุภัณฑ์" {{ request('model') == 'ครุภัณฑ์' ? 'selected' : '' }}>
+                        ครุภัณฑ์</option>
+                    <option value="เอกสาร" {{ request('model') == 'เอกสาร' ? 'selected' : '' }}>
+                        เอกสาร</option>
+                    <option value="บุคลากร" {{ request('model') == 'บุคลากร' ? 'selected' : '' }}>
+                        บุคลากร</option>
+                </select></div>
+            <div class="ms-2"><select id="menu" name="menu" class="form-control shadow-lg p-2 mb-3 rounded">
+                    <option value="">-- เลือกประเภทกิจกรรม --</option>
+                    <option value="เพิ่มข้อมูล" {{ request('menu') == 'เพิ่มข้อมูล' ? 'selected' : '' }}>
+                        เพิ่มข้อมูล</option>
+                    <option value="แก้ไขข้อมูล" {{ request('menu') == 'แก้ไขข้อมูล' ? 'selected' : '' }}>
+                        แก้ไขข้อมูล</option>
+                    <option value="ลบข้อมูลแบบซอฟต์" {{ request('menu') == 'ลบข้อมูลแบบซอฟต์' ? 'selected' : '' }}>
+                        ลบข้อมูลแบบซอฟต์</option>
+                    <option value="ลบข้อมูลถาวร" {{ request('menu') == 'ลบข้อมูลถาวร' ? 'selected' : '' }}>
+                        ลบข้อมูลถาวร</option>
+                    <option value="ส่งออกข้อมูล" {{ request('menu') == 'ส่งออกข้อมูล' ? 'selected' : '' }}>
+                        ส่งออกข้อมูล</option>
+                    <option value="เข้าสู่ระบบ" {{ request('menu') == 'เข้าสู่ระบบ' ? 'selected' : '' }}>
+                        เข้าสู่ระบบ</option>
+                    <option value="ออกจากระบบ" {{ request('menu') == 'ออกจากระบบ' ? 'selected' : '' }}>
+                        ออกจากระบบ</option>
+                </select></div>
+            <div class="ms-2"><button type="submit" class="btn btn-primary shadow-lg p-2 mb-3 rounded">ค้นหา</button>
+            </div>
+            <div class="ms-2"> <button type="button" class="btn btn-danger shadow-lg p-2 mb-3 rounded"
+                    onclick="window.location='{{ route('activity.search') }}'" style="width: 100%">ล้างการค้นหา</button>
+            </div>
         </div>
     </form>
 
@@ -47,42 +64,54 @@
                         @php
                             $map = [
                                 //equipment
-                                'name' => '<strong>ชื่อ</strong>',
-                                'type' => '<strong>ประเภท</strong>',
-                                'description' => '<strong>คำอธิบาย</strong>',
-                                'unit' => '<strong>หน่วยนับ</strong>',
-                                'price' => '<strong>ราคา</strong>',
-                                'title' => '<strong>หัวข้อ</strong>',
-                                'user' => '<strong>ผู้ดูแล</strong>',
-                                'amount' => '<strong>จำนวนทั้งหมด</strong>',
-                                'number' => '<strong>หมายเลขครุภัณฑ์</strong>',
-                                'location' => '<strong>ที่อยู่</strong>',
-                                'status_found' => '<strong>พบ</strong>',
-                                'status_not_found' => '<strong>ไม่พบ</strong>',
-                                'status_broken' => '<strong>ชำรุด</strong>',
-                                'status_disposal' => '<strong>จำหน่าย</strong>',
-                                'status_transfer' => '<strong>โอน</strong>',
-                                'total_price' => '<strong>ราคารวม</strong>',
+                                'name' => 'ชื่อ',
+                                'type' => 'ประเภท',
+                                'description' => 'คำอธิบาย',
+                                'unit' => 'หน่วยนับ',
+                                'price' => 'ราคา',
+                                'title' => 'หัวข้อ',
+                                'user' => 'ผู้ดูแล',
+                                'amount' => 'จำนวนทั้งหมด',
+                                'number' => 'หมายเลขครุภัณฑ์',
+                                'location' => 'ที่อยู่',
+                                'status_found' => 'พบ',
+                                'status_not_found' => 'ไม่พบ',
+                                'status_broken' => 'ชำรุด',
+                                'status_disposal' => 'จำหน่าย',
+                                'status_transfer' => 'โอน',
+                                'total_price' => 'ราคารวม',
+
+                                // export
+                                'unit_filter' => 'หน่วยนับ',
+                                'title_filter' => 'หัวข้อ',
+                                'user_filter' => 'ผู้ดูแล',
+                                'location_filter' => 'ที่อยู่',
+                                'query' => 'คำค้นหา',
 
                                 //document
-                                'original_name' => '<strong>ชื่อเอกสาร</strong>',
-                                'stored_name' => '<strong>ชื่อเอกสารที่ใช้เก็บในระบบ</strong>',
-                                'document_type' => '<strong>ประเภทเอกสาร</strong>',
-                                'date' => '<strong>วันที่ดำเนินการ</strong>',
+                                'original_name' => 'ชื่อเอกสาร',
+                                'stored_name' => 'ชื่อเอกสารที่ใช้เก็บในระบบ',
+                                'document_type' => 'ประเภทเอกสาร',
+                                'date' => 'วันที่ดำเนินการ',
 
                                 // user
-                                'username' => '<strong>ชื่อผู้ใช้</strong>',
-                                'firstname' => '<strong>ชื่อจริง</strong>',
-                                'lastname' => '<strong>นามสกุล</strong>',
-                                'user_type' => '<strong>ระดับผู้ใช้</strong>',
-                                'prefix' => '<strong>คำนำหน้าชื่อ</strong>',
-                                'email' => '<strong>อีเมล</strong>',
+                                'username' => 'ชื่อผู้ใช้',
+                                'firstname' => 'ชื่อจริง',
+                                'lastname' => 'นามสกุล',
+                                'user_type' => 'ระดับผู้ใช้',
+                                'prefix' => 'คำนำหน้าชื่อ',
+                                'email' => 'อีเมล',
                             ];
                             if (!empty($log->properties)) {
-                                if ($log->description == 'บุคลากร') {
+                                if (
+                                    $log->description == 'บุคลากร' &&
+                                    !($log->menu == 'เข้าสู่ระบบ' || $log->menu == 'ออกจากระบบ')
+                                ) {
                                     $ordered = $log->orderUserProperties();
                                 } elseif ($log->description == 'เอกสาร') {
                                     $ordered = $log->orderDocumentProperties();
+                                } elseif ($log->description == 'ครุภัณฑ์' && $log->menu == 'ส่งออกข้อมูล') {
+                                    $ordered = $log->orderExportProperties();
                                 } elseif ($log->description == 'ครุภัณฑ์') {
                                     $ordered = $log->orderEquipmentProperties();
                                 } else {

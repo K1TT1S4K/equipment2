@@ -34,23 +34,27 @@ class EquipmentController extends Controller
         $logs = Equipment_log::all();
         $equipment_trash = Equipment::onlyTrashed()->get();
 
-        $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
+        $search = null;
+        if (!empty($request['query'])) $search = $request->input('query');
         $title = $request->input('title_filter'); // ค้นหาจากประเภทหัวข้อ
         $unit = $request->input('unit_filter'); //ค้นหาจากประเภทหน่วยนับ
         $location = $request->input('location_filter');
         $user = $request->input('user_filter');
         $equipments = Equipment::when($search, function ($query, $search) {
-            return $query->where('number', 'like', "%{$search}%")
-                ->orWhere('name', 'like', "%{$search}%")
-                ->orWhere('price', 'like', "%{$search}%")
-                ->orWhere('total_price', 'like', "%{$search}%")
-                ->orWhere('status_found', 'like', "%{$search}%")
-                ->orWhere('status_not_found', 'like', "%{$search}%")
-                ->orWhere('status_broken', 'like', "%{$search}%")
-                ->orWhere('status_disposal', 'like', "%{$search}%")
-                ->orWhere('status_transfer', 'like', "%{$search}%")
-                ->orWhere('created_at', 'like', "%{$search}%")
-                ->orWhere('updated_at', 'like', "%{$search}%");
+            if ($search != 'all')
+                $query->where(function ($q) use ($search) {
+                    $q->where('number', 'like', "%{$search}%")
+                        ->orWhere('name', 'like', "%{$search}%")
+                        ->orWhere('price', 'like', "%{$search}%")
+                        ->orWhere('total_price', 'like', "%{$search}%")
+                        ->orWhere('status_found', 'like', "%{$search}%")
+                        ->orWhere('status_not_found', 'like', "%{$search}%")
+                        ->orWhere('status_broken', 'like', "%{$search}%")
+                        ->orWhere('status_disposal', 'like', "%{$search}%")
+                        ->orWhere('status_transfer', 'like', "%{$search}%")
+                        ->orWhere('created_at', 'like', "%{$search}%")
+                        ->orWhere('updated_at', 'like', "%{$search}%");
+                });
         })
             ->when($title, function ($query, $title) {
                 $query->where('title_id', $title); // กรองตามหัวข้อ
@@ -66,7 +70,6 @@ class EquipmentController extends Controller
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-
         $equipments->appends($request->all());
 
         return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
@@ -562,17 +565,31 @@ class EquipmentController extends Controller
     }
 
     // ส่งออกข้อมูลครุภัณฑ์
-    public function export($titleId)
+    public function export()
     {
-        $title = Title::findOrFail($titleId); // ดึง title ตาม ID
-
+        $request = request()->query();
+        $title = Title::findOrFail($request['title_filter']);
+        $request['title_filter'] = $title->group . ' - ' . $title->name;
+        if ($request['unit_filter'] != 'all') {
+            $unit = Equipment_unit::findOrFail($request['unit_filter']);
+            $request['unit_filter'] = $unit->name;
+        }else $request['unit_filter'] = 'ทั้งหมด';
+        if ($request['location_filter'] != 'all') {
+            $location = Location::findOrFail($request['location_filter']);
+            $request['location_filter'] = $location->name;
+        }else $request['location_filter'] = 'ทั้งหมด';
+        if ($request['user_filter'] != 'all') {
+            $user = User::findOrFail($request['user_filter']);
+            $request['user_filter'] = $user->full_name;
+        }else $request['user_filter'] = 'ทั้งหมด';
         activity()
             ->tap(function ($activity) {
                 $activity->menu = 'ส่งออกข้อมูล';
             })
             ->useLog(auth()->user()->full_name)
+            // 'unit' => optional($equipment->equipmentUnit)->name,
             ->performedOn($title)
-            ->withProperties($title->only(['name', 'group']))
+            ->withProperties($request)
             ->log('ครุภัณฑ์');
 
         return Excel::download(new EquipmentsExport($title), 'equipments.xlsx');

@@ -13,8 +13,11 @@ class Logout
     public function __invoke()
     {
         activity()
+            ->tap(function ($activity) {
+                $activity->menu = 'ออกจากระบบ';
+            })
             ->useLog(auth()->user()->full_name)
-            ->log('ออกจากระบบ');
+            ->log('บุคลากร');
 
         Auth::guard('web')->logout();
 

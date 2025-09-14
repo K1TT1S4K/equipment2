@@ -100,12 +100,12 @@ class DocumentController extends Controller
 
         activity()
             ->tap(function ($activity) {
-                $activity->menu = 'เพิ่มข้อมูลเอกสาร';
+                $activity->menu = 'เพิ่มข้อมูล';
             })
             ->useLog(auth()->user()->full_name)
             ->performedOn($document)
             ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
-            ->log('เพิ่มข้อมูล');
+            ->log('เอกสาร');
 
 
         return redirect($request->input('redirect_to', route('document.index')))->with('success', 'เพิ่มเอกสารสำเร็จ'); // ส่งข้อความสำเร็จไปยังหน้าเอกสาร
@@ -154,7 +154,7 @@ class DocumentController extends Controller
 
         activity()
             ->tap(function ($activity) {
-                $activity->menu = 'แก้ไขข้อมูลเอกสาร';
+                $activity->menu = 'แก้ไขข้อมูล';
             })
             ->useLog(auth()->user()->full_name)
             ->performedOn($document)
@@ -162,7 +162,7 @@ class DocumentController extends Controller
                 'ข้อมูลก่อนแก้' => $oldValues->only(['original_name', 'stored_name', 'document_type', 'date']),
                 'ข้อมูลหลังแก้' => $newValues->only(['original_name', 'stored_name', 'document_type', 'date'])
             ])
-            ->log('แก้ไขข้อมูล');
+            ->log('เอกสาร');
 
         return redirect($request->input('redirect_to', route('document.index')))->with('success', 'อัปเดตเอกสารเรียบร้อยแล้ว');
     }
@@ -178,12 +178,12 @@ class DocumentController extends Controller
         foreach ($documents as $document) {
             activity()
                 ->tap(function ($activity) {
-                    $activity->menu = 'กู้คืนข้อมูลเอกสาร';
+                    $activity->menu = 'กู้คืนข้อมูล';
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($document)
                 ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
-                ->log('กู้คืนข้อมูล');
+                ->log('เอกสาร');
         }
         LogBatch::endBatch();
 
@@ -203,12 +203,12 @@ class DocumentController extends Controller
             foreach ($documents as $document) {
                 activity()
                     ->tap(function ($activity) {
-                        $activity->menu = 'ลบข้อมูลเอกสารแบบซอฟต์';
+                        $activity->menu = 'ลบข้อมูลแบบซอฟต์';
                     })
                     ->useLog(auth()->user()->full_name)
                     ->performedOn($document)
                     ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
-                    ->log('ลบข้อมูลแบบซอฟต์');
+                    ->log('เอกสาร');
             }
             LogBatch::endBatch();
 
@@ -230,12 +230,12 @@ class DocumentController extends Controller
         foreach ($documents as $document) {
             activity()
                 ->tap(function ($activity) {
-                    $activity->menu = 'ลบข้อมูลเอกสารถาวร';
+                    $activity->menu = 'ลบข้อมูลถาวร';
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($document)
                 ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
-                ->log('ลบข้อมูลถาวร');
+                ->log('เอกสาร');
         }
         LogBatch::endBatch();
 
