@@ -103,7 +103,7 @@ class EquipmentController extends Controller
                                 ->whereRaw("CONCAT(prefixes.name, ' ', users.firstname) LIKE ?", ["%{$search}%"]);
                         })
                     ;
-                });
+            });
         })
             ->when($title, function ($query, $title) {
                 $query->where('title_id', $title); // กรองตามหัวข้อ

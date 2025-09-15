@@ -66,6 +66,7 @@
                 <div id="bulk-restore-all" style="display: none;">
                     <form id="bulk-restore-form" action="{{ route('user.restoreSelected') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                         <input type="hidden" name="selected_users" id="selected_users_json_restore">
                         <button type="submit" class="btn btn-warning"
                             onclick="return confirm('คุณต้องการกู้คืนเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
@@ -78,6 +79,7 @@
                     <form id="bulk-restore-selected-form" action="{{ route('user.restoreSelected') }}" method="POST">
                         @csrf
                         <input type="hidden" name="selected_users" id="selected_users_json_restore_selected">
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                         <button type="submit" class="btn btn-warning"
                             onclick="return confirm('คุณต้องการกู้คืนเอกสารที่เลือกใช่หรือไม่?')">
                             กู้คืนที่เลือก
@@ -89,6 +91,7 @@
                     <form id="bulk-delete-all-form" action="{{ route('user.forceDeleteSelected') }}" method="POST">
                         @csrf
                         @method('DELETE')
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                         <input type="hidden" name="selected_users" id="selected_users_json_delete_all">
                         <button type="submit" class="btn btn-danger"
                             onclick="return confirm('คุณต้องการลบถาวรเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
@@ -102,6 +105,7 @@
                         method="POST">
                         @csrf
                         @method('DELETE')
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                         <input type="hidden" name="selected_users" id="selected_users_json_delete_selected">
                         <button type="submit" class="btn btn-danger"
                             onclick="return confirm('คุณต้องการลบถาวรเอกสารที่เลือกใช่หรือไม่?')">

@@ -30,7 +30,7 @@
         <form action="{{ route('user.deleteSelected') }}" method="POST" id="delete-form">
             @csrf
             @method('DELETE')
-
+            <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
             <div class="row">
                 <div class="col-4">
                     <div>

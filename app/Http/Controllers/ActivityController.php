@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Spatie\Activitylog\Models\Activity;
+use App\Models\Custom_activity;
 
 class ActivityController extends Controller
 {
@@ -12,7 +12,7 @@ class ActivityController extends Controller
     public function index()
     {
         $users = User::all();
-        $logs = Activity::orderBy('created_at', 'desc')->paginate(10); // ดึง log ล่าสุดก่อน
+        $logs = Custom_activity::orderBy('created_at', 'desc')->paginate(10); // ดึง log ล่าสุดก่อน
 
         return view('activity', compact('logs', 'users'));
     }
@@ -25,7 +25,7 @@ class ActivityController extends Controller
         $model = $request->input('model'); // ค้นหาจากประเภทเอกสาร
         $menu = $request->input('menu');
 
-        $logs = Activity::when($search, function ($query, $search) {
+        $logs = Custom_activity::when($search, function ($query, $search) {
             return $query->where('log_name', 'like', "%{$search}%")
                 ->orWhere('menu', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%")

@@ -28,13 +28,15 @@ class UserController extends Controller
 
         // ค้นหาผู้ใช้โดยกรองข้อมูล
         $users = User::when($search, function ($query, $search) {
-            return $query->where('username', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%")
-                ->orWhere('user_type', 'like', "%{$search}%")
-                ->orWhereHas('prefix', function ($q2) use ($search) {
-                    $q2->whereRaw("CONCAT(prefixes.name, ' ', users.firstname, ' ', users.lastname) LIKE ?", ["%{$search}%"]);
-                })
-                                ->orWhereRaw("
+            if ($search)
+                $query->where(function ($q) use ($search) {
+                    $q->where('username', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('user_type', 'like', "%{$search}%")
+                        ->orWhereHas('prefix', function ($q2) use ($search) {
+                            $q2->whereRaw("CONCAT(prefixes.name, ' ', users.firstname, ' ', users.lastname) LIKE ?", ["%{$search}%"]);
+                        })
+                        ->orWhereRaw("
                     CONCAT(DAY(last_login_at), ' ', 
                         CASE MONTH(last_login_at)
                             WHEN 1 THEN 'ม.ค.'
@@ -55,7 +57,8 @@ class UserController extends Controller
                         ' ',
                         DATE_FORMAT(last_login_at, '%H:%i:%s')
                     ) LIKE ?", ["%{$search}%"])
-                ;
+                    ;
+                });
         })
             ->when($userType, function ($query, $userType) {
                 return $query->where('user_type', $userType); // กรองตามระดับผู้ใช้
@@ -318,7 +321,7 @@ class UserController extends Controller
         User::onlyTrashed()->whereIn('id', $ids)->forceDelete();
 
         // กลับไปที่หน้าผู้ใช้ที่ถูกลบพร้อมข้อความ success
-        return redirect()->route('user.trashed')->with('success', 'ลบข้อมูลถาวรผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+        return redirect($request->input('redirect_to', route('user.trashed')))->with('success', 'ลบข้อมูลถาวรผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
 
     // ฟังก์ชันลบข้อมูลผู้ใช้แบบซอฟต์
@@ -346,8 +349,7 @@ class UserController extends Controller
         LogBatch::endBatch();
 
         User::whereIn('id', $selectedUsers)->delete();
-
-        return redirect()->route('user.trashed')->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+        return redirect($request->input('redirect_to', route('user')))->with('success', 'ลบผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
 
     // ฟังก์ชันกู้คืนข้อมูลผู้ใช้
@@ -376,29 +378,55 @@ class UserController extends Controller
         User::onlyTrashed()->whereIn('id', $ids)->restore();
 
         // กลับไปที่หน้าผู้ใช้ที่ถูกลบพร้อมข้อความ success
-        return redirect()->route('user.trashed')->with('success', 'กู้คืนผู้ใช้ที่เลือกเรียบร้อยแล้ว');
+        return redirect($request->input('redirect_to', route('user.trashed')))->with('success', 'กู้คืนผู้ใช้ที่เลือกเรียบร้อยแล้ว');
     }
 
     // ฟังก์ชันค้นหาข้อมูลผู้ใช้ในหน้ากู้ข้อมูล
     public function searchTrash(Request $request)
     {
-        $query = User::onlyTrashed();
+                // รับค่าค้นหาจาก request
+        $search = $request->get('search');
+        $userType = $request->get('user_type');  // รับค่าระดับผู้ใช้
 
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('username', 'like', "%{$search}%")
-                    // ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('firstname', 'like', "%{$search}%")
-                    ->orWhere('lastname', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('user_type')) {
-            $query->where('user_type', $request->input('user_type'));
-        }
-
-        $users = $query->orderByDesc('deleted_at')->paginate(10);
+        // ค้นหาผู้ใช้โดยกรองข้อมูล
+        $users = User::onlyTrashed()->when($search, function ($query, $search) {
+            if ($search)
+                $query->where(function ($q) use ($search) {
+                    $q->where('username', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('user_type', 'like', "%{$search}%")
+                        ->orWhereHas('prefix', function ($q2) use ($search) {
+                            $q2->whereRaw("CONCAT(prefixes.name, ' ', users.firstname, ' ', users.lastname) LIKE ?", ["%{$search}%"]);
+                        })
+                        ->orWhereRaw("
+                    CONCAT(DAY(deleted_at), ' ', 
+                        CASE MONTH(deleted_at)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                        END,
+                        ' ',
+                        YEAR(deleted_at) + 543,
+                        ' ',
+                        DATE_FORMAT(deleted_at, '%H:%i:%s')
+                    ) LIKE ?", ["%{$search}%"])
+                    ;
+                });
+        })
+            ->when($userType, function ($query, $userType) {
+                return $query->where('user_type', $userType); // กรองตามระดับผู้ใช้
+            })
+            ->orderBy('deleted_at', 'desc')
+            ->paginate(10); // ใช้การแบ่งหน้าหากข้อมูลมีจำนวนมาก
 
         return view('page.users.trash', compact('users'));
     }
