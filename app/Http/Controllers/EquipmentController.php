@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Equipment;
 use App\Models\Equipment_unit;
 use App\Models\Equipment_type;
-use App\Models\Equipment_log;
 use App\Models\Location;
 use App\Models\Prefix;
 use App\Models\Title;
@@ -31,7 +30,6 @@ class EquipmentController extends Controller
         $equipment_types = Equipment_type::all();
         $locations = Location::all();
         $titles = Title::all();
-        $logs = Equipment_log::all();
         $equipment_trash = Equipment::onlyTrashed()->get();
 
         $search = null;
@@ -52,8 +50,59 @@ class EquipmentController extends Controller
                         ->orWhere('status_broken', 'like', "%{$search}%")
                         ->orWhere('status_disposal', 'like', "%{$search}%")
                         ->orWhere('status_transfer', 'like', "%{$search}%")
-                        ->orWhere('created_at', 'like', "%{$search}%")
-                        ->orWhere('updated_at', 'like', "%{$search}%");
+                        ->orWhereRaw("
+                    CONCAT(DAY(created_at), ' ', 
+                        CASE MONTH(created_at)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                        END,
+                        ' ',
+                        YEAR(created_at) + 543,
+                        ' ',
+                        DATE_FORMAT(created_at, '%H:%i:%s')
+                    ) LIKE ?", ["%{$search}%"])
+                        ->orWhereRaw("
+                    CONCAT(DAY(updated_at), ' ', 
+                        CASE MONTH(updated_at)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                        END,
+                        ' ',
+                        YEAR(updated_at) + 543,
+                        ' ',
+                        DATE_FORMAT(updated_at, '%H:%i:%s')
+                    ) LIKE ?", ["%{$search}%"])
+                        ->orWhereHas('equipmentUnit', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('location', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('user', function ($q) use ($search) {
+                            $q->join('prefixes', 'users.prefix_id', '=', 'prefixes.id')
+                                ->whereRaw("CONCAT(prefixes.name, ' ', users.firstname) LIKE ?", ["%{$search}%"]);
+                        })
+                    ;
                 });
         })
             ->when($title, function ($query, $title) {
@@ -72,7 +121,7 @@ class EquipmentController extends Controller
             ->paginate(10);
         $equipments->appends($request->all());
 
-        return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
+        return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
     }
 
     // หน้ากู้คืนข้อมูล
@@ -83,7 +132,6 @@ class EquipmentController extends Controller
         $equipment_types = Equipment_type::all();
         $locations = Location::all();
         $titles = Title::all();
-        $logs = Equipment_log::all();
         $equipment_trash = Equipment::onlyTrashed()->get();
 
         $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
@@ -93,17 +141,71 @@ class EquipmentController extends Controller
         $user = $request->input('user_filter');
 
         $equipments = Equipment::when($search, function ($query, $search) {
-            return $query->where('number', 'like', "%{$search}%")
-                ->orWhere('name', 'like', "%{$search}%")
-                ->orWhere('price', 'like', "%{$search}%")
-                ->orWhere('total_price', 'like', "%{$search}%")
-                ->orWhere('status_found', 'like', "%{$search}%")
-                ->orWhere('status_not_found', 'like', "%{$search}%")
-                ->orWhere('status_broken', 'like', "%{$search}%")
-                ->orWhere('status_disposal', 'like', "%{$search}%")
-                ->orWhere('status_transfer', 'like', "%{$search}%")
-                ->orWhere('created_at', 'like', "%{$search}%")
-                ->orWhere('updated_at', 'like', "%{$search}%");
+            if ($search != 'all')
+                $query->where(function ($q) use ($search) {
+                    $q->where('number', 'like', "%{$search}%")
+                        ->orWhere('name', 'like', "%{$search}%")
+                        ->orWhere('price', 'like', "%{$search}%")
+                        ->orWhere('total_price', 'like', "%{$search}%")
+                        ->orWhere('status_found', 'like', "%{$search}%")
+                        ->orWhere('status_not_found', 'like', "%{$search}%")
+                        ->orWhere('status_broken', 'like', "%{$search}%")
+                        ->orWhere('status_disposal', 'like', "%{$search}%")
+                        ->orWhere('status_transfer', 'like', "%{$search}%")
+                        ->orWhereRaw("
+                    CONCAT(DAY(created_at), ' ', 
+                        CASE MONTH(created_at)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                        END,
+                        ' ',
+                        YEAR(created_at) + 543,
+                        ' ',
+                        DATE_FORMAT(created_at, '%H:%i:%s')
+                    ) LIKE ?", ["%{$search}%"])
+                        ->orWhereRaw("
+                    CONCAT(DAY(updated_at), ' ', 
+                        CASE MONTH(updated_at)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                        END,
+                        ' ',
+                        YEAR(updated_at) + 543,
+                        ' ',
+                        DATE_FORMAT(updated_at, '%H:%i:%s')
+                    ) LIKE ?", ["%{$search}%"])
+                        ->orWhereHas('equipmentUnit', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('location', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('user', function ($q) use ($search) {
+                            $q->join('prefixes', 'users.prefix_id', '=', 'prefixes.id')
+                                ->whereRaw("CONCAT(prefixes.name, ' ', users.firstname) LIKE ?", ["%{$search}%"]);
+                        })
+                    ;
+                });
         })
             ->when($title, function ($query, $title) {
                 $query->where('title_id', $title); // กรองตามหัวข้อ
@@ -123,7 +225,7 @@ class EquipmentController extends Controller
 
         $equipments->appends($request->all());
 
-        return view('page.equipments.trash', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs'));
+        return view('page.equipments.trash', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
     }
 
     // หน้าสร้างข้อมูล
@@ -149,11 +251,10 @@ class EquipmentController extends Controller
         $equipments = Equipment::all();
         $locations = Location::all();
         $titles = Title::all();
-        $logs = Equipment_log::all();
         $equipment_documents = Equipment_document::all();
         $documents = ModelsDocument::all();
 
-        return view('page.equipments.edit', compact('equipments', 'equipment_documents', 'equipment', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles', 'logs')) . $id;
+        return view('page.equipments.edit', compact('equipments', 'equipment_documents', 'equipment', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles')) . $id;
     }
 
     // ฟังก์ชันสร้างข้อมูล
@@ -405,18 +506,6 @@ class EquipmentController extends Controller
                 )
             ])
             ->log('ครุภัณฑ์');
-
-        // ตัวอย่าง: log หรือแสดงใน view ก็ได้
-        if (count($changes) > 0) {
-            $message = implode("\n", $changes);
-
-            // ✳️ บันทึกลง table equipment_logs
-            Equipment_Log::create([
-                'equipment_id' => $equipment->id,
-                'user_id' => auth()->id(), // ผู้ที่ทำการเปลี่ยนแปลง
-                'action' => $message,
-            ]);
-        }
         return redirect($request->input('redirect_to', route('equipment.index')))->with('success', 'แก้ไขข้อมูลสำเร็จ');
     }
 
@@ -573,15 +662,15 @@ class EquipmentController extends Controller
         if ($request['unit_filter'] != 'all') {
             $unit = Equipment_unit::findOrFail($request['unit_filter']);
             $request['unit_filter'] = $unit->name;
-        }else $request['unit_filter'] = 'ทั้งหมด';
+        } else $request['unit_filter'] = 'ทั้งหมด';
         if ($request['location_filter'] != 'all') {
             $location = Location::findOrFail($request['location_filter']);
             $request['location_filter'] = $location->name;
-        }else $request['location_filter'] = 'ทั้งหมด';
+        } else $request['location_filter'] = 'ทั้งหมด';
         if ($request['user_filter'] != 'all') {
             $user = User::findOrFail($request['user_filter']);
             $request['user_filter'] = $user->full_name;
-        }else $request['user_filter'] = 'ทั้งหมด';
+        } else $request['user_filter'] = 'ทั้งหมด';
         activity()
             ->tap(function ($activity) {
                 $activity->menu = 'ส่งออกข้อมูล';

@@ -10,12 +10,17 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(
             [
+                LocationSeeder::class,
                 TitleSeeder::class,
                 PrefixSeeder::class,
+                Disposal_doc_placeholderSeeder::class,
+                Equipment_transfer_doc_placeholderSeeder::class,
                 Equipment_unitSeeder::class,
+                DocumentSeeder::class,
                 Equipment_typeSeeder::class,
                 UserSeeder::class,
                 EquipmentSeeder::class,
+                Equipment_documentSeeder::class
             ]
         );
     }

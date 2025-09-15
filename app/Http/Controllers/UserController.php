@@ -30,12 +30,32 @@ class UserController extends Controller
         $users = User::when($search, function ($query, $search) {
             return $query->where('username', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")
-                ->orWhere('firstname', 'like', "%{$search}%")
-                ->orWhere('lastname', 'like', "%{$search}%")
                 ->orWhere('user_type', 'like', "%{$search}%")
-                ->orWhereHas('prefix', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                });
+                ->orWhereHas('prefix', function ($q2) use ($search) {
+                    $q2->whereRaw("CONCAT(prefixes.name, ' ', users.firstname, ' ', users.lastname) LIKE ?", ["%{$search}%"]);
+                })
+                                ->orWhereRaw("
+                    CONCAT(DAY(last_login_at), ' ', 
+                        CASE MONTH(last_login_at)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                        END,
+                        ' ',
+                        YEAR(last_login_at) + 543,
+                        ' ',
+                        DATE_FORMAT(last_login_at, '%H:%i:%s')
+                    ) LIKE ?", ["%{$search}%"])
+                ;
         })
             ->when($userType, function ($query, $userType) {
                 return $query->where('user_type', $userType); // กรองตามระดับผู้ใช้
@@ -166,8 +186,8 @@ class UserController extends Controller
                 //         'status_transfer',
                 //         'description'
                 //     ]),
-                'ข้อมูลก่อนแก้ไข' => array_merge(Arr::only($oldValues,['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
-                'ข้อมูลหลังแก้ไข' => array_merge(Arr::only($newValues,['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
+                'ข้อมูลก่อนแก้ไข' => array_merge(Arr::only($oldValues, ['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
+                'ข้อมูลหลังแก้ไข' => array_merge(Arr::only($newValues, ['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
             ])
             ->log('บุคลากร');
 

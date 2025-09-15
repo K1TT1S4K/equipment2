@@ -52,12 +52,72 @@ class DocumentController extends Controller
 
         $documents = Document::when($search, function ($query, $search) {
             return $query->where('document_type', 'like', "%{$search}%")
-                ->orWhere('date', 'like', "%{$search}%")
                 ->orWhere('stored_name', 'like', "%{$search}%")
                 ->orWhere('original_name', 'like', "%{$search}%")
-                ->orWhere('created_at', 'like', "%{$search}%")
-                ->orWhere('updated_at', 'like', "%{$search}%");
-        })
+                ->orWhereRaw("
+                    CONCAT(DAY(date), ' ', 
+                        CASE MONTH(date)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                        END,
+                        ' ',
+                        YEAR(date) + 543,
+                        ' ',
+                        DATE_FORMAT(date, '%H:%i:%s')
+                    ) LIKE ?", ["%{$search}%"])
+                ->orWhereRaw("
+                    CONCAT(DAY(created_at), ' ', 
+                        CASE MONTH(created_at)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                   END,
+                   ' ',
+                   YEAR(created_at) + 543,
+                   ' ',
+                   DATE_FORMAT(created_at, '%H:%i:%s')
+                ) LIKE ?", ["%{$search}%"])
+                ->orWhereRaw("
+                    CONCAT(DAY(updated_at), ' ', 
+                    CASE MONTH(updated_at)
+                        WHEN 1 THEN 'ม.ค.'
+                        WHEN 2 THEN 'ก.พ.'
+                        WHEN 3 THEN 'มี.ค.'
+                        WHEN 4 THEN 'เม.ย.'
+                        WHEN 5 THEN 'พ.ค.'
+                        WHEN 6 THEN 'มิ.ย.'
+                        WHEN 7 THEN 'ก.ค.'
+                        WHEN 8 THEN 'ส.ค.'
+                        WHEN 9 THEN 'ก.ย.'
+                        WHEN 10 THEN 'ต.ค.'
+                        WHEN 11 THEN 'พ.ย.'
+                        WHEN 12 THEN 'ธ.ค.'
+                    END,
+                    ' ',
+                    YEAR(updated_at) + 543,
+                    ' ',
+                    DATE_FORMAT(updated_at, '%H:%i:%s')
+                ) LIKE ?", ["%{$search}%"]);
+            })
             ->when($documentType, function ($query, $documentType) {
                 return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
             })
@@ -253,11 +313,71 @@ class DocumentController extends Controller
             // dd($search);
             $query->where(function ($q) use ($search) {
                 $q->where('document_type', 'like', "%{$search}%")
-                    ->orWhere('date', 'like', "%{$search}%")
-                    ->orWhere('stored_name', 'like', "%{$search}%")
-                    ->orWhere('original_name', 'like', "%{$search}%")
-                    ->orWhere('created_at', 'like', "%{$search}%")
-                    ->orWhere('updated_at', 'like', "%{$search}%");
+                ->orWhere('stored_name', 'like', "%{$search}%")
+                ->orWhere('original_name', 'like', "%{$search}%")
+                ->orWhereRaw("
+                    CONCAT(DAY(date), ' ', 
+                        CASE MONTH(date)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                        END,
+                        ' ',
+                        YEAR(date) + 543,
+                        ' ',
+                        DATE_FORMAT(date, '%H:%i:%s')
+                    ) LIKE ?", ["%{$search}%"])
+                ->orWhereRaw("
+                    CONCAT(DAY(created_at), ' ', 
+                        CASE MONTH(created_at)
+                            WHEN 1 THEN 'ม.ค.'
+                            WHEN 2 THEN 'ก.พ.'
+                            WHEN 3 THEN 'มี.ค.'
+                            WHEN 4 THEN 'เม.ย.'
+                            WHEN 5 THEN 'พ.ค.'
+                            WHEN 6 THEN 'มิ.ย.'
+                            WHEN 7 THEN 'ก.ค.'
+                            WHEN 8 THEN 'ส.ค.'
+                            WHEN 9 THEN 'ก.ย.'
+                            WHEN 10 THEN 'ต.ค.'
+                            WHEN 11 THEN 'พ.ย.'
+                            WHEN 12 THEN 'ธ.ค.'
+                   END,
+                   ' ',
+                   YEAR(created_at) + 543,
+                   ' ',
+                   DATE_FORMAT(created_at, '%H:%i:%s')
+                ) LIKE ?", ["%{$search}%"])
+                ->orWhereRaw("
+                    CONCAT(DAY(updated_at), ' ', 
+                    CASE MONTH(updated_at)
+                        WHEN 1 THEN 'ม.ค.'
+                        WHEN 2 THEN 'ก.พ.'
+                        WHEN 3 THEN 'มี.ค.'
+                        WHEN 4 THEN 'เม.ย.'
+                        WHEN 5 THEN 'พ.ค.'
+                        WHEN 6 THEN 'มิ.ย.'
+                        WHEN 7 THEN 'ก.ค.'
+                        WHEN 8 THEN 'ส.ค.'
+                        WHEN 9 THEN 'ก.ย.'
+                        WHEN 10 THEN 'ต.ค.'
+                        WHEN 11 THEN 'พ.ย.'
+                        WHEN 12 THEN 'ธ.ค.'
+                    END,
+                    ' ',
+                    YEAR(updated_at) + 543,
+                    ' ',
+                    DATE_FORMAT(updated_at, '%H:%i:%s')
+                ) LIKE ?", ["%{$search}%"]);
             });
         }
 

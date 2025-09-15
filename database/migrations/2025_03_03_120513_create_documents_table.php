@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->string('path');
+            $table->string('original_name');
+            $table->string('stored_name');
             $table->string('document_type');
             $table->date('date');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้สร้าง

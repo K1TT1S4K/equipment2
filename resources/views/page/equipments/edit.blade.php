@@ -9,12 +9,6 @@
                 แก้ไขข้อมูล
             </button>
         </li>
-        {{-- <li class="nav-item" role="presentation">
-            <button class="nav-link" id="log-tab" data-bs-toggle="tab" data-bs-target="#log" type="button"
-                role="tab" aria-controls="log" aria-selected="false">
-                ประวัติการแก้ไข
-            </button>
-        </li> --}}
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="document-tab" data-bs-toggle="tab" data-bs-target="#document" type="button"
                 role="tab" aria-controls="document" aria-selected="false">
@@ -196,37 +190,6 @@
                             @endcan
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- ประวัติการแก้ไข -->
-        <div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="log-tab">
-            <div class="card shadow-lg p-3 mb-3 bg-body rounded border border-dark">
-                <div class="card-body">
-                    <table class="table mt-3 table-hover w-full">
-                        <thead class="text-center table-dark align-middle">
-                            <tr class="text-center">
-                                <th class="col-4 align-middle">ชื่อ</th>
-                                <th class="col-2 align-middle">เวลา</th>
-                                <th class="col-6 align-middle">การกระทำ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($logs->where('equipment_id', $equipment->id)->sortByDesc('created_at') as $log)
-                                <tr>
-                                    <td>{{ $log->user?->prefix?->name }}{{ $log->user?->firstname }}
-                                        {{ $log->user?->lastname }}</td>
-                                    <td>{{ $log->created_at }}</td>
-                                    <td class="white-space-pre">{{ $log->action }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

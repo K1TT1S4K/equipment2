@@ -87,7 +87,7 @@
                                 $date = \Carbon\Carbon::parse($document->date)->locale('th');
                                 // $buddhistYear = $date->year + 543;
                             @endphp
-                            <td class="text-center">{{ $date->isoFormat('D MMM YYYY') }}</td>
+                            <td class="text-center">{{ $date->isoFormat('D MMM') }} {{ $date->year + 543 }}</td>
                             <td class="text-center" onclick="event.stopPropagation();">
                                 @if ($document->stored_name)
                                     <a href="{{ asset('storage/' . $document->stored_name) }}"
