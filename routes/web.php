@@ -22,11 +22,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/run-seed', function () {
-    Artisan::call('db:seed');
-    return 'Seeder has been run.';
-});
-
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
@@ -42,7 +37,6 @@ Route::middleware(['auth', 'can:admin-or-branch'])->group(function () {
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
     Route::get('/equipment/trash', [EquipmentController::class, 'trash'])->name('equipment.trash');
     Route::get('equipments/search', [EquipmentController::class, 'search'])->name('equipment.search');
-    Route::post('/equipment-units/store', [EquipmentController::class, 'storeUnit'])->name('equipment_units.store');
     Route::delete('/equipments/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.delete');
     Route::post('equipment/force-delete-multiple', [EquipmentController::class, 'forceDeleteMultiple'])->name('equipment.forceDeleteMultiple');
     Route::post('/equipments/delete-selected', [EquipmentController::class, 'deleteSelected'])->name('equipment.deleteSelected');
@@ -63,7 +57,6 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
     Route::get('user/trash/search', [UserController::class, 'searchTrash'])->name('user.trashsearch');
     Route::post('user/restore-selected', [UserController::class, 'restoreSelected'])->name('user.restoreSelected');
     Route::delete('user/force-delete-selected', [UserController::class, 'forceDeleteSelected'])->name('user.forceDeleteSelected');
-    Route::post('user/delete-selected', [UserController::class, 'deleteSelected'])->name('user.deleteSelected');
     Route::delete('user/delete-selected', [UserController::class, 'deleteSelected'])->name('user.deleteSelected'); // ลบที่เลือก
 });
 

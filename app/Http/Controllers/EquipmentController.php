@@ -18,7 +18,7 @@ use App\Models\Document as ModelsDocument;
 use App\Models\Equipment_document;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Arr;
-
+use Laravel\Pail\ValueObjects\Origin\Console;
 
 class EquipmentController extends Controller
 {
@@ -635,22 +635,6 @@ class EquipmentController extends Controller
 
         Equipment::onlyTrashed()->whereIn('id', $ids)->forceDelete();
         return redirect($request->input('redirect_to', route('equipment.trash')))->with('success', 'ลบครุภัณฑ์ถาวรเรียบร้อยแล้ว');
-    }
-
-    // ฟังก์ชันสร้างข้อมูลหน่วยนับ
-    public function storeUnit(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:equipment_units',
-        ]);
-
-        // Create a new Equipment Unit
-        $unit = new Equipment_unit();
-        $unit->name = $request->input('name');
-        $unit->save();
-
-        // Redirect back to the form or page with success message
-        return redirect()->route('equipment.add')->with('success', 'หน่วยนับใหม่ถูกเพิ่มแล้ว');
     }
 
     // ส่งออกข้อมูลครุภัณฑ์
