@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('equipment_documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('equipment_id')->nullable()->constrained('equipment')->onDelete('set null');
-            $table->foreignId('document_id')->nullable()->constrained('documents')->onDelete('set null');
+            $table->foreignId('equipment_id')->nullable()->constrained('equipment')->onDelete('cascade');
+            $table->foreignId('document_id')->nullable()->constrained('documents')->onDelete('cascade');
             $table->integer('amount')->default(0);
-            $table->string('description');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้สร้าง
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้แก้ไขล่าสุด
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้ลบ

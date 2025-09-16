@@ -34,7 +34,8 @@
             <div class="ms-2"><button type="submit" class="btn btn-primary shadow-lg p-2 mb-3 rounded">ค้นหา</button>
             </div>
             <div class="ms-2"> <button type="button" class="btn btn-danger shadow-lg p-2 mb-3 rounded"
-                    onclick="window.location='{{ route('activity.search') }}'" style="width: 100%">ล้างการค้นหา</button>
+                    onclick="window.location='{{ route('activity.search') }}'"
+                    style="width: 100%">ล้างการค้นหา</button>
             </div>
         </div>
     </form>

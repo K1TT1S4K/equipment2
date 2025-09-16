@@ -115,10 +115,10 @@
                     <table class="table table-hover w-full">
                         <thead class="text-center table-dark align-middle">
                             <tr class="text-center">
-                                <th><input type="checkbox" id="select-all"></th>
-                                <th class="align-middle">รหัสครุภัณฑ์</th>
-                                <th class="align-middle">รายการ</th>
-                                <th class="align-middle">จำนวน</th>
+                                <th style="width: 5%;"><input type="checkbox" id="select-all"></th>
+                                <th class="align-middle" style="width:20%;">รหัสครุภัณฑ์</th>
+                                <th class="align-middle" style="width: 70%">รายการ</th>
+                                <th class="align-middle" style="width: 5%;">จำนวน</th>
                             </tr>
                         </thead>
                         <tbody class="align-middle p-3" id="equipment-table-body">
@@ -129,7 +129,7 @@
                                             value="{{ $ed->id }}">
                                     </td>
                                     <td>{{ $ed->equipment->number }}</td>
-                                    <td>{{ $ed->equipment->name }}</td>
+                                    <td class="text-start">{{ $ed->equipment->name }}</td>
                                     <td>{{ $ed->amount }}</td>
                                 </tr>
                             @empty

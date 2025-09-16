@@ -46,20 +46,17 @@ class Custom_activity extends BaseActivity
         if (array_key_exists('ข้อมูลก่อนแก้ไข', $newProperties)) {
             $ordered['ข้อมูลก่อนแก้ไข'] = [
                 'original_name' => $this->properties['ข้อมูลก่อนแก้ไข']['original_name'],
-                'stored_name'   => $this->properties['ข้อมูลก่อนแก้ไข']['stored_name'],
                 'document_type' => $this->properties['ข้อมูลก่อนแก้ไข']['document_type'],
                 'date'          => $this->properties['ข้อมูลก่อนแก้ไข']['date'],
             ];
             $ordered['ข้อมูลหลังแก้ไข'] = [
                 'original_name' => $this->properties['ข้อมูลหลังแก้ไข']['original_name'],
-                'stored_name'   => $this->properties['ข้อมูลหลังแก้ไข']['stored_name'],
                 'document_type' => $this->properties['ข้อมูลหลังแก้ไข']['document_type'],
                 'date'          => $this->properties['ข้อมูลหลังแก้ไข']['date'],
             ];
         } else {
             $ordered = [
                 'original_name' => $this->properties['original_name'],
-                'stored_name'   => $this->properties['stored_name'],
                 'document_type' => $this->properties['document_type'],
                 'date'          => $this->properties['date'],
             ];

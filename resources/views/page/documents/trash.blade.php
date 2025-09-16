@@ -4,8 +4,8 @@
         <div class="d-flex">
 
             {{-- <label for="query" class="form-label">ค้นหา</label> --}}
-            <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded" placeholder="ค้นหาจากข้อมูลเอกสาร"
-                value="{{ request('search') }}">
+            <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded"
+                placeholder="ค้นหาจากข้อมูลเอกสาร" value="{{ request('search') }}">
             {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
             <select id="document_type" name="document_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
                 <option value="">-- เลือกประเภทเอกสาร --</option>
@@ -67,6 +67,7 @@
                 <div id="bulk-restore-all" style="display: none;">
                     <form id="bulk-restore-form" action="{{ route('document.restoreMultiple') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                         <input type="hidden" name="selected_documents" id="selected_documents_json_restore">
                         <button type="submit" class="btn btn-warning"
                             onclick="return confirm('คุณต้องการกู้คืนเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
@@ -79,6 +80,7 @@
                     <form id="bulk-restore-selected-form" action="{{ route('document.restoreMultiple') }}"
                         method="POST">
                         @csrf
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                         <input type="hidden" name="selected_documents" id="selected_documents_json_restore_selected">
                         <button type="submit" class="btn btn-warning"
                             onclick="return confirm('คุณต้องการกู้คืนเอกสารที่เลือกใช่หรือไม่?')">
@@ -88,9 +90,11 @@
                 </div>
 
                 <div id="bulk-delete-all" style="display: none;">
-                    <form id="bulk-delete-all-form" action="{{ route('document.forceDeleteSelected') }}" method="POST">
+                    <form id="bulk-delete-all-form" action="{{ route('document.forceDeleteSelected') }}"
+                        method="POST">
                         @csrf
                         @method('DELETE')
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                         <input type="hidden" name="selected_documents" id="selected_documents_json_delete_all">
                         <button type="submit" class="btn btn-danger"
                             onclick="return confirm('คุณต้องการลบถาวรเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
@@ -100,9 +104,11 @@
                 </div>
 
                 <div id="bulk-delete-selected" style="display: none;">
-                    <form id="bulk-delete-selected-form" action="{{ route('document.forceDeleteSelected') }}" method="POST">
+                    <form id="bulk-delete-selected-form" action="{{ route('document.forceDeleteSelected') }}"
+                        method="POST">
                         @csrf
                         @method('DELETE')
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                         <input type="hidden" name="selected_documents" id="selected_documents_json_delete_selected">
                         <button type="submit" class="btn btn-danger"
                             onclick="return confirm('คุณต้องการลบถาวรเอกสารที่เลือกใช่หรือไม่?')">
@@ -214,7 +220,7 @@
                     form.addEventListener('submit', function(e) {
                         const selectedIds = Array.from(document.querySelectorAll('.document-checkbox:checked'))
                             .map(cb => cb.value);
-                            //  console.log("Selected IDs:", selectedIds); // ✅ debug
+                        //  console.log("Selected IDs:", selectedIds); // ✅ debug
                         if (selectedIds.length === 0) {
                             e.preventDefault();
                             alert('กรุณาเลือกเอกสารที่ต้องการ');

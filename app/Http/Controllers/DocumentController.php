@@ -8,6 +8,7 @@ use App\Models\Equipment_document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Facades\LogBatch;
+use Illuminate\Support\Arr;
 
 class DocumentController extends Controller
 {
@@ -51,10 +52,12 @@ class DocumentController extends Controller
         $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
 
         $documents = Document::when($search, function ($query, $search) {
-            return $query->where('document_type', 'like', "%{$search}%")
-                ->orWhere('stored_name', 'like', "%{$search}%")
-                ->orWhere('original_name', 'like', "%{$search}%")
-                ->orWhereRaw("
+            if ($search)
+                $query->where(function ($q) use ($search) {
+                    $q->where('document_type', 'like', "%{$search}%")
+                        ->orWhere('stored_name', 'like', "%{$search}%")
+                        ->orWhere('original_name', 'like', "%{$search}%")
+                        ->orWhereRaw("
                     CONCAT(DAY(date), ' ', 
                         CASE MONTH(date)
                             WHEN 1 THEN 'ม.ค.'
@@ -75,7 +78,7 @@ class DocumentController extends Controller
                         ' ',
                         DATE_FORMAT(date, '%H:%i:%s')
                     ) LIKE ?", ["%{$search}%"])
-                ->orWhereRaw("
+                        ->orWhereRaw("
                     CONCAT(DAY(created_at), ' ', 
                         CASE MONTH(created_at)
                             WHEN 1 THEN 'ม.ค.'
@@ -96,7 +99,7 @@ class DocumentController extends Controller
                    ' ',
                    DATE_FORMAT(created_at, '%H:%i:%s')
                 ) LIKE ?", ["%{$search}%"])
-                ->orWhereRaw("
+                        ->orWhereRaw("
                     CONCAT(DAY(updated_at), ' ', 
                     CASE MONTH(updated_at)
                         WHEN 1 THEN 'ม.ค.'
@@ -117,7 +120,8 @@ class DocumentController extends Controller
                     ' ',
                     DATE_FORMAT(updated_at, '%H:%i:%s')
                 ) LIKE ?", ["%{$search}%"]);
-            })
+                });
+        })
             ->when($documentType, function ($query, $documentType) {
                 return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
             })
@@ -219,8 +223,8 @@ class DocumentController extends Controller
             ->useLog(auth()->user()->full_name)
             ->performedOn($document)
             ->withProperties([
-                'ข้อมูลก่อนแก้' => $oldValues->only(['original_name', 'stored_name', 'document_type', 'date']),
-                'ข้อมูลหลังแก้' => $newValues->only(['original_name', 'stored_name', 'document_type', 'date'])
+                'ข้อมูลก่อนแก้' => Arr::only($oldValues, ['original_name', 'stored_name', 'document_type', 'date']),
+                'ข้อมูลหลังแก้' => Arr::only($newValues, ['original_name', 'stored_name', 'document_type', 'date'])
             ])
             ->log('เอกสาร');
 
@@ -248,7 +252,7 @@ class DocumentController extends Controller
         LogBatch::endBatch();
 
         Document::onlyTrashed()->whereIn('id', $ids)->restore();
-        return redirect()->route('document.trash')->with('success', 'กู้คืนเอกสารที่เลือกเรียบร้อยแล้ว');
+        return redirect($request->input('redirect_to', route('document.trash')))->with('success', 'กู้คืนเอกสารที่เลือกเรียบร้อยแล้ว');
     }
 
     // ฟังก์ชันลบข้อมูลเอกสารแบบซอฟต์
@@ -276,7 +280,7 @@ class DocumentController extends Controller
             return redirect()->route('document.index')->with('success', 'ลบเอกสารเรียบร้อยแล้ว');
         }
 
-        return redirect()->route('document.index')->with('error', 'กรุณาเลือกเอกสาร');
+        return redirect($request->input('redirect_to'), route('document.index'))->with('error', 'กรุณาเลือกเอกสาร');
     }
 
     // ฟังก์ชันลบข้อมูลเอกสารถาวร
@@ -300,22 +304,22 @@ class DocumentController extends Controller
         LogBatch::endBatch();
 
         Document::onlyTrashed()->whereIn('id', $ids)->forceDelete();
-        return redirect()->route('document.trash')->with('success', 'ลบถาวรเรียบร้อยแล้ว');
+        return redirect($request->input('redirect_to', route('document.trash')))->with('success', 'ลบถาวรเรียบร้อยแล้ว');
     }
 
     // ฟังก์ชันค้าหาข้อมูลเอกสารที่ถูกลบแบบซอฟต์
     public function searchTrash(Request $request)
     {
-        $query = Document::onlyTrashed();
+        $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
+        $documentType = $request->input('document_type'); // ค้นหาจากประเภทเอกสาร
 
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            // dd($search);
-            $query->where(function ($q) use ($search) {
-                $q->where('document_type', 'like', "%{$search}%")
-                ->orWhere('stored_name', 'like', "%{$search}%")
-                ->orWhere('original_name', 'like', "%{$search}%")
-                ->orWhereRaw("
+        $documents = Document::onlyTrashed()->when($search, function ($query, $search) {
+            if ($search)
+                $query->where(function ($q) use ($search) {
+                    $q->where('document_type', 'like', "%{$search}%")
+                        ->orWhere('stored_name', 'like', "%{$search}%")
+                        ->orWhere('original_name', 'like', "%{$search}%")
+                        ->orWhereRaw("
                     CONCAT(DAY(date), ' ', 
                         CASE MONTH(date)
                             WHEN 1 THEN 'ม.ค.'
@@ -336,7 +340,7 @@ class DocumentController extends Controller
                         ' ',
                         DATE_FORMAT(date, '%H:%i:%s')
                     ) LIKE ?", ["%{$search}%"])
-                ->orWhereRaw("
+                        ->orWhereRaw("
                     CONCAT(DAY(created_at), ' ', 
                         CASE MONTH(created_at)
                             WHEN 1 THEN 'ม.ค.'
@@ -357,7 +361,7 @@ class DocumentController extends Controller
                    ' ',
                    DATE_FORMAT(created_at, '%H:%i:%s')
                 ) LIKE ?", ["%{$search}%"])
-                ->orWhereRaw("
+                        ->orWhereRaw("
                     CONCAT(DAY(updated_at), ' ', 
                     CASE MONTH(updated_at)
                         WHEN 1 THEN 'ม.ค.'
@@ -378,14 +382,16 @@ class DocumentController extends Controller
                     ' ',
                     DATE_FORMAT(updated_at, '%H:%i:%s')
                 ) LIKE ?", ["%{$search}%"]);
-            });
-        }
+                });
+        })
+            ->when($documentType, function ($query, $documentType) {
+                return $query->where('document_type', $documentType); // กรองตามประเภทเอกสาร
+            })
+            ->orderBy('deleted_at', 'desc')
+            ->paginate(10);
 
-        if ($request->filled('document_type')) {
-            $query->where('document_type', $request->input('document_type'));
-        }
-
-        $documents = $query->orderByDesc('deleted_at')->paginate(10);
+        // สำคัญ: เก็บ query string เอาไว้
+        $documents->appends($request->all());
 
         return view('page.documents.trash', compact('documents'));
     }
