@@ -2,16 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Equipment_unit; // หรือโมเดลที่คุณใช้
 use App\Models\Equipment_type;
 use App\Models\Title;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Auth\Events\Login;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\URL;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,19 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-        // Gate::define('admin', function (User $user): bool {
-        //     return (bool) $user->is_admin;
-        // });
-
-        // Event::listen(Login::class, function ($event) {
-        //     $event->user->update([
-        //         'last_login_at' => now(),
-        //     ]);
-        // });
+        if (config('app.env') !== 'local') {
+            URL::forceScheme('https');
+        }
 
         Paginator::useBootstrap();
-
 
         View::composer('components.layouts.app', function ($view) {
             $units = Equipment_unit::all(); // ดึงข้อมูลหน่วยอุปกรณ์
