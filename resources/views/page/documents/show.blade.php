@@ -65,7 +65,7 @@
                 <thead class="text-center table-dark align-middle">
                     <tr class="text-center">
                         <th>
-                            @if (!'admin-or-branch-or-officer')
+                            @if ('admin-or-branch-or-officer')
                                 <input type="checkbox" id="select-all">
                             @endif
                         </th>
@@ -82,7 +82,7 @@
                         <tr class="text-center" style="cursor: pointer;"
                             onclick="window.location='{{ route('document.edit', $document->id) }}'">
                             <td onclick="event.stopPropagation();">
-                                @if ('admin-or-branch-or-officer' && 'officer' && $document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                                @if ('officer' && $document->document_type == 'แทงจำหน่ายครุภัณฑ์')
                                     <input type="checkbox" class="document-checkbox" name="selected_documents[]"
                                         value="{{ $document->id }}">
                                 @endif
