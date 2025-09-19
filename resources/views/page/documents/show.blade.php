@@ -85,6 +85,9 @@
                                 @if ('officer' && $document->document_type == 'แทงจำหน่ายครุภัณฑ์')
                                     <input type="checkbox" class="document-checkbox" name="selected_documents[]"
                                         value="{{ $document->id }}">
+                                @elseif('admin-or-branch-or-officer')
+                                <input type="checkbox" class="document-checkbox" name="selected_documents[]"
+                                        value="{{ $document->id }}">
                                 @endif
                             </td>
                             <td>{{ $loop->iteration + ($documents->currentPage() - 1) * $documents->perPage() }}</td>
