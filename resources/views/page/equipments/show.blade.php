@@ -138,8 +138,10 @@
                                     style="height: 100%;"> --}}
                             {{-- <input class="form-check-input" type="checkbox" id="select-all"
                                     style="transform: scale(1.5);"> --}}
-                            <input type="checkbox" id="select-all">
-                            {{-- </div> --}}
+                            @if (!'admin-or-branch-or-officer')
+                                <input type="checkbox" id="select-all">
+                            @endif
+                                {{-- </div> --}}
                         </th>
                         <th class="align-middle" rowspan="2">ลำดับ</th>
                         <th class="align-middle" rowspan="2" style="width: 9%">รหัสครุภัณฑ์</th>
@@ -264,8 +266,10 @@
                             @if ($equipment->equipment_type_id === $type)
                                 <tr class="text-center" style="cursor: pointer;">
                                     <td>
-                                        <input type="checkbox" class="equipment-checkbox"
-                                            name="selected_equipments[]" value="{{ $equipment->id }}">
+                                        @if (!'admin-or-branch-or-officer')
+                                            <input type="checkbox" class="equipment-checkbox"
+                                                name="selected_equipments[]" value="{{ $equipment->id }}">
+                                        @endif
                                     </td>
                                     <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ ++$count }}<br>

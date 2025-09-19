@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="col-4"></div>
-                @can('admin-or-branch')
+                @can('admin-or-branch-or-officer')
                     <div class="col-4">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <div>
@@ -64,7 +64,11 @@
             <table class="table table-hover w-full">
                 <thead class="text-center table-dark align-middle">
                     <tr class="text-center">
-                        <th><input type="checkbox" id="select-all"></th>
+                        <th>
+                            @if (!'admin-or-branch-or-officer')
+                                <input type="checkbox" id="select-all">
+                            @endif
+                        </th>
                         <th class="align-middle">ลำดับ</th>
                         <th class="align-middle">ประเภทเอกสาร</th>
                         <th class="align-middle">วันที่ดำเนินการ</th>
@@ -78,8 +82,10 @@
                         <tr class="text-center" style="cursor: pointer;"
                             onclick="window.location='{{ route('document.edit', $document->id) }}'">
                             <td onclick="event.stopPropagation();">
-                                <input type="checkbox" class="document-checkbox" name="selected_documents[]"
-                                    value="{{ $document->id }}">
+                                @if ('admin-or-branch-or-officer' && 'officer' && $document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                                    <input type="checkbox" class="document-checkbox" name="selected_documents[]"
+                                        value="{{ $document->id }}">
+                                @endif
                             </td>
                             <td>{{ $loop->iteration + ($documents->currentPage() - 1) * $documents->perPage() }}</td>
                             <td>{{ $document->document_type }}</td>

@@ -88,13 +88,15 @@
                     @endcan
 
                     @can('branch')
-                        <div class="dropdown">
+                          <div class="dropdown">
                             <button class="btn btn-warning dropdown-toggle" type="button" id="recoveryDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 กู้คืนข้อมูล
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
-                                {{-- <li><a class="dropdown-item" href="#">กู้คืนครุภัณฑ์</a></li> --}}
+                                <li><a class="dropdown-item"
+                                        href="{{ route('equipment.trash') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">กู้คืนครุภัณฑ์</a>
+                                </li>
                                 <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
                             </ul>
                         </div>

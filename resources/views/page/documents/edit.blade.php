@@ -20,6 +20,7 @@
         </li>
     </ul>
 
+    @can('admin-or-branch')
     <div class="tab-content" id="documentTabContent">
         <div class="tab-pane fade {{ request()->get('page') < 1 ? 'show active' : '' }}" id="edit-document"
             role="tabpanel" aria-labelledby="edit-tab">
@@ -125,8 +126,8 @@
                             @forelse ($equipments_documents as $key => $ed)
                                 <tr class="text-center" style="cursor: pointer;" onclick="window.location=''">
                                     <td onclick="event.stopPropagation();">
-                                        <input type="checkbox" class="equipments_documents_checkbox" name="selected_equipments_documents[]"
-                                            value="{{ $ed->id }}">
+                                        <input type="checkbox" class="equipments_documents_checkbox"
+                                            name="selected_equipments_documents[]" value="{{ $ed->id }}">
                                     </td>
                                     <td>{{ $ed->equipment->number }}</td>
                                     <td class="text-start">{{ $ed->equipment->name }}</td>
@@ -147,6 +148,134 @@
             </div>
         </div>
     </div>
+    @endcan
+
+    @can('officer')
+    <div class="tab-content" id="documentTabContent">
+        <div class="tab-pane fade {{ request()->get('page') < 1 ? 'show active' : '' }}" id="edit-document"
+            role="tabpanel" aria-labelledby="edit-tab">
+            {{-- card สำหรับฟอร์มแก้ไขข้อมูลเอกสาร --}}
+            <div class="card w-auto mx-auto shadow-lg p-3 mb-4 bg-body rounded border border-dark mt-4">
+                <div class="card-body">
+                    <!-- ฟอร์มแก้ไขข้อมูล -->
+                    <form action="{{ route('document.update', $document->id) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
+                        <div class="mb-3">
+                            <label for="document_type" class="form-label">ประเภทเอกสาร <span
+                                    class="text-danger">*</span></label>
+                            <select name="document_type" class="form-select" required @if($document->document_type != 'แทงจำหน่ายครุภัณฑ์') disabled @endif >
+                                <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
+                                    {{ $document->document_type == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
+                                    ยื่นแทงจำหน่ายครุภัณฑ์</option>
+                                <option value="แทงจำหน่ายครุภัณฑ์"
+                                    {{ $document->document_type == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
+                                    แทงจำหน่ายครุภัณฑ์
+                                </option>
+                                <option value="โอนครุภัณฑ์"
+                                    {{ $document->document_type == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
+                                    โอนครุภัณฑ์</option>
+                                <option value="ไม่พบ" {{ request('document_type') == 'ไม่พบ' ? 'selected' : '' }}>
+                                    ไม่พบ</option>
+                                <option value="ชำรุด" {{ request('document_type') == 'ชำรุด' ? 'selected' : '' }}>
+                                    ชำรุด</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="date" class="form-label">วันที่ดำเนินการ <span
+                                    class="text-danger">*</span></label>
+                            <input type="date" name="date" class="form-control" value="{{ $document->date }}" @if($document->document_type != 'แทงจำหน่ายครุภัณฑ์') disabled @endif
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="newFile" class="form-label">เอกสารอ้างอิง
+                                pdf</label>
+                            <input type="file" name="newFile" class="form-control" accept=".pdf" @if($document->document_type != 'แทงจำหน่ายครุภัณฑ์') disabled @endif>
+                            @if ($document && $document->path)
+                                <small class="form-text text-muted">ไฟล์เดิม: <a
+                                        href="{{ url('storage/' . $document->path) }}"
+                                        download>{{ basename($document->path) }}</a></small>
+                            @endif
+                        </div>
+
+                        @if ($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                            @can('officer')
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">บันทึก</button>
+                                    <a href="{{ url()->previous() }}" class="btn btn-secondary">ยกเลิก</a>
+                                </div>
+                            @endcan
+                        @endif
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade {{ request()->get('page') >= 1 ? 'show active' : '' }}" id="edit-related-equipment"
+            role="tabpanel" aria-labelledby="edit-related-equipment-tab">
+            <form action="{{ route('equipments_documents.deleteSelected') }}" method="POST" id="delete-form">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="document_id" value="{{ $document->id }}">
+                @if($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                <div class="col-4">
+                    <div>
+                        <!-- ปุ่มลบทั้งหมด -->
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-all-btn"
+                            style="display:none;">ลบรายการทั้งหมด</button>
+                        <!-- ปุ่มลบที่เลือก -->
+                        <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn"
+                            style="display:none;">ลบรายการที่เลือก</button>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-success mb-4" id="add-equipment-btn">
+                        เพิ่มครุภัณฑ์ที่เกี่ยวข้อง
+                    </button>
+                </div>
+                @endif
+                {{-- ตารางสำหรับเพิ่มข้อมูลครุภัณฑ์ที่เกี่ยวข้อง --}}
+                <div id="equipment-table-container">
+                    <table class="table table-hover w-full">
+                        <thead class="text-center table-dark align-middle">
+                            <tr class="text-center">
+                                <th style="width: 5%;"><input type="checkbox" id="select-all"></th>
+                                <th class="align-middle" style="width:20%;">รหัสครุภัณฑ์</th>
+                                <th class="align-middle" style="width: 70%">รายการ</th>
+                                <th class="align-middle" style="width: 5%;">จำนวน</th>
+                            </tr>
+                        </thead>
+                        <tbody class="align-middle p-3" id="equipment-table-body">
+                            @forelse ($equipments_documents as $key => $ed)
+                                <tr class="text-center" style="cursor: pointer;" onclick="window.location=''">
+                                    <td onclick="event.stopPropagation();">
+                                        <input type="checkbox" class="equipments_documents_checkbox"
+                                            name="selected_equipments_documents[]" value="{{ $ed->id }}">
+                                    </td>
+                                    <td>{{ $ed->equipment->number }}</td>
+                                    <td class="text-start">{{ $ed->equipment->name }}</td>
+                                    <td>{{ $ed->amount }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="100%" class="text-center">ไม่พบข้อมูล
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+            <div class="d-flex justify-content-center">
+                {{ $equipments_documents->links() }}
+            </div>
+        </div>
+    </div>
+    @endcan
+
     <script>
         // เพิ่มครุภัณฑ์ที่เกี่ยวข้อง
         (function() {
