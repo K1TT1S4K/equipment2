@@ -16,7 +16,6 @@ class Custom_activity extends BaseActivity
                 'firstname' => $this->properties['ข้อมูลก่อนแก้ไข']['firstname'],
                 'lastname' => $this->properties['ข้อมูลก่อนแก้ไข']['lastname'],
                 'user_type' => $this->properties['ข้อมูลก่อนแก้ไข']['user_type'],
-                'email' => $this->properties['ข้อมูลก่อนแก้ไข']['email'],
             ];
 
             $ordered['ข้อมูลหลังแก้ไข'] = [
@@ -25,7 +24,6 @@ class Custom_activity extends BaseActivity
                 'firstname' => $this->properties['ข้อมูลหลังแก้ไข']['firstname'],
                 'lastname' => $this->properties['ข้อมูลหลังแก้ไข']['lastname'],
                 'user_type' => $this->properties['ข้อมูลหลังแก้ไข']['user_type'],
-                'email' => $this->properties['ข้อมูลหลังแก้ไข']['email'],
             ];
         } else {
             $ordered = [
@@ -34,7 +32,6 @@ class Custom_activity extends BaseActivity
                 'firstname' => $this->properties['firstname'],
                 'lastname' => $this->properties['lastname'],
                 'user_type' => $this->properties['user_type'],
-                'email' => $this->properties['email'],
             ];
         }
         return $ordered;
@@ -74,11 +71,6 @@ class Custom_activity extends BaseActivity
                 'amount' => $this->properties['ข้อมูลก่อนแก้ไข']['amount'],
                 'price' => $this->properties['ข้อมูลก่อนแก้ไข']['price'],
                 'total_price' => $this->properties['ข้อมูลก่อนแก้ไข']['total_price'],
-                'status_found' => $this->properties['ข้อมูลก่อนแก้ไข']['status_found'],
-                'status_not_found' => $this->properties['ข้อมูลก่อนแก้ไข']['status_not_found'],
-                'status_broken' => $this->properties['ข้อมูลก่อนแก้ไข']['status_broken'],
-                'status_disposal' => $this->properties['ข้อมูลก่อนแก้ไข']['status_disposal'],
-                'status_transfer' => $this->properties['ข้อมูลก่อนแก้ไข']['status_transfer'],
                 'description' => $this->properties['ข้อมูลก่อนแก้ไข']['description'],
                 'unit' => $this->properties['ข้อมูลก่อนแก้ไข']['unit'],
                 'location' => $this->properties['ข้อมูลก่อนแก้ไข']['location'],
@@ -92,11 +84,6 @@ class Custom_activity extends BaseActivity
                 'amount' => $this->properties['ข้อมูลหลังแก้ไข']['amount'],
                 'price' => $this->properties['ข้อมูลหลังแก้ไข']['price'],
                 'total_price' => $this->properties['ข้อมูลหลังแก้ไข']['total_price'],
-                'status_found' => $this->properties['ข้อมูลหลังแก้ไข']['status_found'],
-                'status_not_found' => $this->properties['ข้อมูลหลังแก้ไข']['status_not_found'],
-                'status_broken' => $this->properties['ข้อมูลหลังแก้ไข']['status_broken'],
-                'status_disposal' => $this->properties['ข้อมูลหลังแก้ไข']['status_disposal'],
-                'status_transfer' => $this->properties['ข้อมูลหลังแก้ไข']['status_transfer'],
                 'description' => $this->properties['ข้อมูลหลังแก้ไข']['description'],
                 'unit' => $this->properties['ข้อมูลหลังแก้ไข']['unit'],
                 'location' => $this->properties['ข้อมูลหลังแก้ไข']['location'],
@@ -111,11 +98,6 @@ class Custom_activity extends BaseActivity
                 'amount' => $this->properties['amount'],
                 'price' => $this->properties['price'],
                 'total_price' => $this->properties['total_price'],
-                'status_found' => $this->properties['status_found'],
-                'status_not_found' => $this->properties['status_not_found'],
-                'status_broken' => $this->properties['status_broken'],
-                'status_disposal' => $this->properties['status_disposal'],
-                'status_transfer' => $this->properties['status_transfer'],
                 'description' => $this->properties['description'],
                 'unit' => $this->properties['unit'],
                 'location' => $this->properties['location'],
