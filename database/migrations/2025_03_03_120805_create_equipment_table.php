@@ -18,11 +18,11 @@ return new class extends Migration
             $table->integer('amount');
             $table->decimal('price',10,2)->nullable();
             $table->decimal('total_price',10,2)->nullable();
-            $table->integer('status_found');
-            $table->integer('status_not_found');
-            $table->integer('status_broken');
-            $table->integer('status_disposal');
-            $table->integer('status_transfer');
+            $table->integer('status_found')->default(0);
+            $table->integer('status_not_found')->default(0);
+            $table->integer('status_broken')->default(0);
+            $table->integer('status_disposal')->default(0);
+            $table->integer('status_transfer')->default(0);
             $table->integer('equipment_unit_id')->nullable()->constrained('equipment_unit')->onDelete('set null');
             $table->integer('location_id')->nullable()->constrained('locations')->onDelete('set null');
             $table->integer('equipment_type_id')->nullable()->constrained('equipment_type')->onDelete('set null');

@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Equipment extends Model
@@ -66,5 +64,37 @@ class Equipment extends Model
     public function title()
     {
         return $this->belongsTo(Title::class, 'title_id');
+    }
+
+    public function getStatusNotFound()
+    {
+        return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
+            ->whereHas('document', function ($q) {
+                $q->where('document_type', 'ไม่พบ'); // filter จาก document ที่ join
+            });
+    }
+
+    public function getStatusBroken()
+    {
+        return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
+            ->whereHas('document', function ($q) {
+                $q->where('document_type', 'ชำรุด'); // filter จาก document ที่ join
+            });
+    }
+
+    public function getStatusTransfer()
+    {
+        return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
+            ->whereHas('document', function ($q) {
+                $q->where('document_type', 'โอนครุภัณฑ์'); // filter จาก document ที่ join
+            });
+    }
+
+    public function getStatusDisposal()
+    {
+        return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
+            ->whereHas('document', function ($q) {
+                $q->where('document_type', 'แทงจำหน่ายครุภัณฑ์'); // filter จาก document ที่ join
+            });
     }
 }

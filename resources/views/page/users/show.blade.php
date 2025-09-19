@@ -9,12 +9,12 @@
                 <option value="">-- เลือกระดับผู้ใช้ --</option>
                 <option value="ผู้ดูแลระบบ" {{ request()->get('user_type') == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>
                     ผู้ดูแลระบบ</option>
-                <option value="เจ้าหน้าที่สาขา"
-                    {{ request()->get('user_type') == 'เจ้าหน้าที่สาขา' ? 'selected' : '' }}>เจ้าหน้าที่สาขา</option>
+                <option value="เจ้าหน้าที่พ้สดุ"
+                    {{ request()->get('user_type') == 'เจ้าหน้าที่พ้สดุ' ? 'selected' : '' }}>เจ้าหน้าที่พ้สดุ</option>
                 <option value="ผู้ปฏิบัติงานบริหาร"
                     {{ request()->get('user_type') == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร
                 </option>
-                <option value="อาจารย์" {{ request()->get('user_type') == 'อาจารย์' ? 'selected' : '' }}>อาจารย์
+                <option value="ผู้ใช้งานครุภัณฑ์" {{ request()->get('user_type') == 'ผู้ใช้งานครุภัณฑ์' ? 'selected' : '' }}>ผู้ใช้งานครุภัณฑ์
                 </option>
             </select>
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>

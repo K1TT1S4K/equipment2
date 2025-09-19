@@ -35,26 +35,41 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="mb-3 col-3"> <label class="form-label">จำนวน <span class="text-danger">*</span></label>
+                    <div class="mb-3 col-6"> <label class="form-label">จำนวน <span class="text-danger">*</span></label>
                         <input type="number" name="amount" class="form-control" required value="0">
                     </div>
-                    <div class="mb-3 col-3"> <label class="form-label">ราคา <span class="text-danger">*</span></label>
+                    <div class="mb-3 col-6"> <label class="form-label">ราคา <span class="text-danger">*</span></label>
                         <input type="number" name="price" class="form-control" required value="0">
                     </div>
-                    <div class="col"> <label class="form-label">พบ <span class="text-danger">*</span></label>
-                        <input type="number" name="status_found" class="form-control" required value="0">
+                    {{-- <div class="col"> <label class="form-label">พบ <span class="text-danger">*</span></label>
+                        <input type="hidden" name="status_found" class="form-control" required value="0">
                     </div>
                     <div class="col"> <label class="form-label">ไม่พบ <span class="text-danger">*</span></label>
-                        <input type="number" name="status_not_found" class="form-control" required value="0">
+                        <input type="hidden" name="status_not_found" class="form-control" required value="0">
                     </div>
                     <div class="col"> <label class="form-label">ชำรุด <span class="text-danger">*</span></label>
-                        <input type="number" name="status_broken" class="form-control" required value="0">
+                        <input type="hidden" name="status_broken" class="form-control" required value="0">
                     </div>
                     <div class="col"> <label class="form-label">จำหน่าย <span class="text-danger">*</span></label>
-                        <input type="number" name="status_disposal" class="form-control" required value="0">
+                        <input type="hidden" name="status_disposal" class="form-control" required value="0">
                     </div>
                     <div class="col"> <label class="form-label">โอน <span class="text-danger">*</span></label>
-                        <input type="number" name="status_transfer" class="form-control" required value="0">
+                        <input type="hidden" name="status_transfer" class="form-control" required value="0">
+                    </div> --}}
+                    <div class="col">
+                        <input type="hidden" name="status_found" class="form-control" required value="0">
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="status_not_found" class="form-control" required value="0">
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="status_broken" class="form-control" required value="0">
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="status_disposal" class="form-control" required value="0">
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="status_transfer" class="form-control" required value="0">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -71,9 +86,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท<button
-                                type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
-                                data-bs-toggle="modal" data-bs-target="#typeModal">
+                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท<button type="button"
+                                class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
+                                data-bs-target="#typeModal">
                                 <i class="bi bi-gear"></i>
                             </button></label>
                         <select name="equipment_type_id" id="equipmentTypeSelect" class="form-control">

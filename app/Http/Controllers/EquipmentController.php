@@ -103,7 +103,7 @@ class EquipmentController extends Controller
                                 ->whereRaw("CONCAT(prefixes.name, ' ', users.firstname) LIKE ?", ["%{$search}%"]);
                         })
                     ;
-            });
+                });
         })
             ->when($title, function ($query, $title) {
                 $query->where('title_id', $title); // กรองตามหัวข้อ
@@ -313,11 +313,6 @@ class EquipmentController extends Controller
                 'amount',
                 'price',
                 'total_price',
-                'status_found',
-                'status_not_found',
-                'status_broken',
-                'status_disposal',
-                'status_transfer',
                 'description'
             ]), [
                 'unit' => optional($equipment->equipmentUnit)->name,
@@ -467,11 +462,6 @@ class EquipmentController extends Controller
                         'amount',
                         'price',
                         'total_price',
-                        'status_found',
-                        'status_not_found',
-                        'status_broken',
-                        'status_disposal',
-                        'status_transfer',
                         'description'
                     ]),
                     [
@@ -489,11 +479,6 @@ class EquipmentController extends Controller
                         'amount',
                         'price',
                         'total_price',
-                        'status_found',
-                        'status_not_found',
-                        'status_broken',
-                        'status_disposal',
-                        'status_transfer',
                         'description'
                     ]),
                     [
@@ -530,11 +515,6 @@ class EquipmentController extends Controller
                         'amount',
                         'price',
                         'total_price',
-                        'status_found',
-                        'status_not_found',
-                        'status_broken',
-                        'status_disposal',
-                        'status_transfer',
                         'description'
                     ]), [
                         'unit' => optional($equipment->equipmentUnit)->name,
@@ -574,11 +554,6 @@ class EquipmentController extends Controller
                     'amount',
                     'price',
                     'total_price',
-                    'status_found',
-                    'status_not_found',
-                    'status_broken',
-                    'status_disposal',
-                    'status_transfer',
                     'description'
                 ]), [
                     'unit' => optional($equipment->equipmentUnit)->name,
@@ -616,11 +591,6 @@ class EquipmentController extends Controller
                     'amount',
                     'price',
                     'total_price',
-                    'status_found',
-                    'status_not_found',
-                    'status_broken',
-                    'status_disposal',
-                    'status_transfer',
                     'description'
                 ]), [
                     'unit' => optional($equipment->equipmentUnit)->name,

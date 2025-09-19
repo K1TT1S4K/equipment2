@@ -7,7 +7,18 @@
             $count = 0;
         }
     @endphp
-
+    {{-- {{ dd(
+        $equipments[0]->amount,
+        $equipments[0]->amount -
+            $equipments[0]->getStatusBroken->sum('amount') -
+            $equipments[0]->getStatusNotFound->sum('amount') -
+            $equipments[0]->getStatusDisposal->sum('amount') -
+            $equipments[0]->getStatusTransfer->sum('amount'),
+        $equipments[0]->getStatusNotFound->sum('amount'),
+        $equipments[0]->getStatusBroken->sum('amount'),
+        $equipments[0]->getStatusDisposal->sum('amount'),
+        $equipments[0]->getStatusTransfer->sum('amount'),
+    ) }} --}}
     <h3 class="text-dark mb-4">จัดการครุภัณฑ์</h3>
 
     <form action="{{ route('equipment.index') }}" method="GET" class="mb-3">
@@ -70,7 +81,8 @@
                 placeholder="ค้นหาจากข้อมูลครุภัณฑ์" value="{{ request('query') }}">
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
             <button type="button" class="btn btn-danger ms-2 shadow-lg p-2 mb-3 rounded"
-                onclick="window.location='{{ route('equipment.index') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all'" style="width: 10%">ล้างการค้นหา</button>
+                onclick="window.location='{{ route('equipment.index') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all'"
+                style="width: 10%">ล้างการค้นหา</button>
         </div>
     </form>
 
@@ -200,7 +212,7 @@
                                 </td>
                             </tr>
                         @else
-                        <tr class="text-center" style="cursor: pointer;">
+                            <tr class="text-center" style="cursor: pointer;">
                                 <td colspan="3" class="bg-secondary text-white">
                                 </td>
                                 <td class="bg-secondary text-white">
@@ -255,53 +267,41 @@
                                         <input type="checkbox" class="equipment-checkbox"
                                             name="selected_equipments[]" value="{{ $equipment->id }}">
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ ++$count }}<br>
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->number }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->name }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->equipmentUnit->name }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->amount }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->price }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->total_price }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->status_found }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->amount - $equipment->getStatusBroken->sum('amount') - $equipment->getStatusNotFound->sum('amount') - $equipment->getStatusDisposal->sum('amount') - $equipment->getStatusTransfer->sum('amount') }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->status_not_found }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->getStatusNotFound->sum('amount') }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->status_broken }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->getStatusBroken->sum('amount') }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->status_disposal }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->getStatusDisposal->sum('amount') }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->status_transfer }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->getStatusTransfer->sum('amount') }}
                                     </td>
                                     <td class="text-start"
                                         onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
@@ -317,16 +317,14 @@
                                             </span>{{ $equipment->description ?? '-' }}
                                         </p>
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{-- {{ $equipment->updated_at }} --}}
                                         {{ $equipment->updated_at->format('j') }}
                                         {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
                                         {{ $equipment->updated_at->year + 543 }}
                                         {{ $equipment->updated_at->format('H:i:s') }}
                                     </td>
-                                    <td
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{-- {{ $equipment->created_at }} --}}
                                         {{ $equipment->created_at->format('j') }}
                                         {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
@@ -344,7 +342,7 @@
                         @php
                             $displayedTypes[] = $type;
                         @endphp
-                        @empty
+                    @empty
                         <tr>
                             <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
                         </tr>

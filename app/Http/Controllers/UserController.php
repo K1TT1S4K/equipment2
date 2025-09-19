@@ -91,7 +91,7 @@ class UserController extends Controller
             'prefix' => 'required|exists:prefixes,id',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
-            'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่สาขา,ผู้ปฏิบัติงานบริหาร,อาจารย์',
+            'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่พ้สดุ,ผู้ปฏิบัติงานบริหาร,ผู้ใช้งานครุภัณฑ์',
             // 'email' => 'required|email|max:100|unique:users,email',
             // 'email' => Str::random(15) . "@gmail.com",
             'password' => 'required|string|min:8',
@@ -118,7 +118,7 @@ class UserController extends Controller
             })
             ->useLog(auth()->user()->full_name)
             ->performedOn($user)
-            ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]))
+            ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]))
             ->log('บุคลากร');
 
         return redirect($request->input('redirect_to', route('user')))->with('success', 'เพิ่มบุคลากรเรียบร้อยแล้ว');
@@ -149,7 +149,7 @@ class UserController extends Controller
             'prefix' => 'required|exists:prefixes,id',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
-            'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่สาขา,ผู้ปฏิบัติงานบริหาร,อาจารย์',
+            'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่พ้สดุ,ผู้ปฏิบัติงานบริหาร,ผู้ใช้งานครุภัณฑ์',
             // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8', // ถ้าไม่กรอก จะไม่เปลี่ยนรหัสผ่าน
         ]);
@@ -189,8 +189,8 @@ class UserController extends Controller
                 //         'status_transfer',
                 //         'description'
                 //     ]),
-                'ข้อมูลก่อนแก้ไข' => array_merge(Arr::only($oldValues, ['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
-                'ข้อมูลหลังแก้ไข' => array_merge(Arr::only($newValues, ['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
+                'ข้อมูลก่อนแก้ไข' => array_merge(Arr::only($oldValues, ['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]),
+                'ข้อมูลหลังแก้ไข' => array_merge(Arr::only($newValues, ['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]),
             ])
             ->log('บุคลากร');
 
@@ -266,8 +266,8 @@ class UserController extends Controller
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
                 ->withProperties([
-                    'ข้อมูลก่อนแก้ไข' => array_merge($oldValues->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
-                    'ข้อมูลหลังแก้ไข' => array_merge($newValues->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]),
+                    'ข้อมูลก่อนแก้ไข' => array_merge($oldValues->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]),
+                    'ข้อมูลหลังแก้ไข' => array_merge($newValues->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]),
                 ])
                 ->log('บุคลากร');
 
@@ -280,8 +280,8 @@ class UserController extends Controller
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
                 ->withProperties([
-                    'ข้อมูลก่อนแก้ไข' => $oldValues->only(['username', 'firstname', 'lastname', 'user_type', 'email']),
-                    'ข้อมูลหลังแก้ไข' => $newValues->only(['username', 'firstname', 'lastname', 'user_type', 'email'])
+                    'ข้อมูลก่อนแก้ไข' => $oldValues->only(['username', 'firstname', 'lastname', 'user_type']),
+                    'ข้อมูลหลังแก้ไข' => $newValues->only(['username', 'firstname', 'lastname', 'user_type'])
                 ])
                 ->log('บุคลากร');
 
@@ -311,7 +311,7 @@ class UserController extends Controller
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
-                ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]))
+                ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]))
                 ->log('บุคลากร');
         }
         LogBatch::endBatch();
@@ -343,7 +343,7 @@ class UserController extends Controller
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
-                ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]))
+                ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]))
                 ->log('บุคลากร');
         }
         LogBatch::endBatch();
@@ -368,7 +368,7 @@ class UserController extends Controller
                 })
                 ->useLog(auth()->user()->full_name)
                 ->performedOn($user)
-                ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type', 'email']), ['prefix' => optional($user->prefix)->name]))
+                ->withProperties(array_merge($user->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]))
                 ->log('บุคลากร');
         }
         LogBatch::endBatch();

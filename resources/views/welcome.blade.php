@@ -21,7 +21,15 @@
 
 <body class="bg-secondary text-dark d-flex align-items-center justify-content-center min-vh-100">
     <div class="container">
-        @livewire('auth.login')
+        @if (Route::has('login'))
+            @auth
+                <script>
+                    window.location.href = "{{ route('dashboard.index') }}";
+                </script>
+            @else
+                @livewire('auth.login')
+            @endauth
+        @endif
     </div>
 
     <!-- Bootstrap JS (Optional for interactivity like modals, tooltips) -->

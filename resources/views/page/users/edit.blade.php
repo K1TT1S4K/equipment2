@@ -52,9 +52,9 @@
                     <select name="user_type" class="form-control" required>
                         <option value="">-- ระบุสิทธิ์บุคลากร --</option>
                         <option value="ผู้ดูแลระบบ" {{ $user->user_type == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>ผู้ดูแลระบบ</option>
-                        <option value="เจ้าหน้าที่สาขา" {{ $user->user_type == 'เจ้าหน้าที่สาขา' ? 'selected' : '' }}>เจ้าหน้าที่สาขา</option>
+                        <option value="เจ้าหน้าที่พ้สดุ" {{ $user->user_type == 'เจ้าหน้าที่พ้สดุ' ? 'selected' : '' }}>เจ้าหน้าที่พ้สดุ</option>
                         <option value="ผู้ปฏิบัติงานบริหาร" {{ $user->user_type == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร</option>
-                        <option value="อาจารย์" {{ $user->user_type == 'อาจารย์' ? 'selected' : '' }}>อาจารย์</option>
+                        <option value="ผู้ใช้งานครุภัณฑ์" {{ $user->user_type == 'ผู้ใช้งานครุภัณฑ์' ? 'selected' : '' }}>ผู้ใช้งานครุภัณฑ์</option>
                     </select>
                     @error('user_type')
                         <small class="text-danger">{{ $message }}</small>

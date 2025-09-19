@@ -61,17 +61,17 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="mb-3 col-3"> <label class="form-label">จำนวน <span
+                            <div class="mb-3 col-6"> <label class="form-label">จำนวน <span
                                         class="text-danger">*</span></label>
                                 <input type="number" name="amount" class="form-control" required
                                     value="{{ $equipment->amount }}">
                             </div>
-                            <div class="mb-3 col-3"> <label class="form-label">ราคา <span
+                            <div class="mb-3 col-6"> <label class="form-label">ราคา <span
                                         class="text-danger">*</span></label>
                                 <input type="number" name="price" class="form-control"
                                     value="{{ $equipment->price }}">
                             </div>
-                            <div class="col"> <label class="form-label">พบ <span class="text-danger">*</span></label>
+                            {{-- <div class="col"> <label class="form-label">พบ <span class="text-danger">*</span></label>
                                 <input type="number" name="status_found" class="form-control" required
                                     value="{{ $equipment->status_found }}">
                             </div>
@@ -94,7 +94,24 @@
                                         class="text-danger">*</span></label>
                                 <input type="number" name="status_transfer" class="form-control" required
                                     value="{{ $equipment->status_transfer }}">
-                            </div>
+                            </div> --}}
+
+
+                             <div class="col">
+                        <input type="hidden" name="status_found" class="form-control" required value="0">
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="status_not_found" class="form-control" required value="0">
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="status_broken" class="form-control" required value="0">
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="status_disposal" class="form-control" required value="0">
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="status_transfer" class="form-control" required value="0">
+                    </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col"> <label for="title_id" class="form-label">หัวข้อ <span

@@ -20,18 +20,23 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
     public bool $remember = false;
 
+    protected array $rules = [
+        'username' => 'required|string|max:50',
+        'password' => 'required|string|min:8|max:100',
+    ];
+
     /**
      * Handle an incoming authentication request.
      */
     public function login(): void
     {
+        // dd($this);
         $this->validate();
 
         $this->ensureIsNotRateLimited();
 
         if (!Auth::attempt(['username' => $this->username, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
-
             throw ValidationException::withMessages([
                 'username' => __('auth.failed'),
             ]);
@@ -107,9 +112,6 @@ new #[Layout('components.layouts.auth')] class extends Component {
                             <input wire:model.defer="username" type="text" name="username"
                                 class="form-control @error('username') is-invalid @enderror" required autofocus
                                 autocomplete="username" placeholder="ชื่อผู้ใช้" />
-                            {{-- @error('username')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror --}}
                             <div class="invalid-feedback">Username หรือ Password ของคุณไม่ถูกต้อง</div>
                         </div>
 
@@ -151,9 +153,3 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </div>
     </div>
 </div>
-
-<script>
-    // console.log(sessionStorage.setItem('dashboardRefreshed'));
-    sessionStorage.setItem('dashboardRefreshed', 'false');
-    // console.log(sessionStorage.getItem('dashboardRefreshed'));
-</script>

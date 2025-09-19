@@ -16,6 +16,7 @@ class Logout
             ->tap(function ($activity) {
                 $activity->menu = 'ออกจากระบบ';
             })
+            
             ->useLog(auth()->user()->full_name)
             ->log('บุคลากร');
 
