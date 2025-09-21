@@ -25,19 +25,32 @@ class DashboardController extends Controller
         // ')
         //     ->first();
 
-        $totals = DB::table('equipment')
-            ->selectRaw('
-            SUM(amount) as total_found,
-            SUM(amount) as total_not_found,
-            SUM(amount) as total_broken,
-            SUM(amount) as total_disposal,
-            SUM(amount) as total_transfer
-        ')
-            ->first();
+        $totals = ["total_found" => 0, "total_not_found" => 0, "total_broken" => 0, "total_disposal" => 0, "total_transfer" => 0];
 
-$arr = ['total_found' => '274','total_not_found' => '274',];
+        foreach ($equipments as $key => $equipment) {
+            $totals["total_found"] += $equipment->amount - $equipment->getStatusBroken->sum('amount') - $equipment->getStatusNotFound->sum('amount') - $equipment->getStatusDisposal->sum('amount') - $equipment->getStatusTransfer->sum('amount');
+            $totals["total_not_found"] += $equipment->getStatusNotFound->sum('amount');
+            $totals["total_broken"] += $equipment->getStatusBroken->sum('amount');
+            $totals["total_disposal"] += $equipment->getStatusDisposal->sum('amount');
+            $totals["total_transfer"] += $equipment->getStatusTransfer->sum('amount');
+        }
 
-dd($totals,$arr);
+
+
+
+        // $totals = DB::table('equipment')
+        //     ->selectRaw('
+        //     SUM(amount) as total_found,
+        //     SUM(amount) as total_not_found,
+        //     SUM(amount) as total_broken,
+        //     SUM(amount) as total_disposal,
+        //     SUM(amount) as total_transfer
+        // ')
+        //     ->first();
+
+        $arr = ['total_found' => '274', 'total_not_found' => '274',];
+
+        // dd($totals, $arr);
 
         // กำหนดปี
         $currentYear = Carbon::now()->year;

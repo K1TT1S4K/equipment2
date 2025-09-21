@@ -137,10 +137,15 @@ class DocumentController extends Controller
     // ฟังก์ชันเพิ่มข้อมูลเอกสาร
     public function store(Request $request)
     {
-        $request->validate([ // ตรวจสอบความถูกต้องของข้อมูล
+    //     $file = $request->file('document');
+    //     $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+    // dd($request);
+
+         $request->validate([ // ตรวจสอบความถูกต้องของข้อมูล
             'document_type' => 'required|string', // ประเภทเอกสาร
             'date' => 'required|date', // วันที่
-            'document' => 'required|file|mimes:pdf|max:2048' // ขนาดไฟล์ไม่เกิน 2MB
+            'document' => 'required|file|mimes:pdf' // ขนาดไฟล์ไม่เกิน 2MB
         ]);
 
         $file = $request->file('document'); // รับไฟล์เอกสาร
@@ -181,7 +186,7 @@ class DocumentController extends Controller
         $request->validate([
             'document_type' => 'required|string',
             'date' => 'required|date',
-            'newFile' => 'nullable|file|mimes:pdf|max:10240',
+            'newFile' => 'nullable|file|mimes:pdf',
         ]);
 
         $document = Document::findOrFail($id);

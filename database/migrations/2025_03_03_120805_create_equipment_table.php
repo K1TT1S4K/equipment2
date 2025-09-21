@@ -16,14 +16,16 @@ return new class extends Migration
             $table->string('number');
             $table->text('name');
             $table->integer('amount');
-            $table->decimal('price',10,2)->nullable();
-            $table->decimal('total_price',10,2)->nullable();
+            $table->decimal('price', 10, 2)->nullable();
+            $table->decimal('total_price', 10, 2)->nullable();
             $table->integer('equipment_unit_id')->nullable()->constrained('equipment_unit')->onDelete('set null');
             $table->integer('location_id')->nullable()->constrained('locations')->onDelete('set null');
             $table->integer('equipment_type_id')->nullable()->constrained('equipment_type')->onDelete('set null');
             $table->integer('title_id')->nullable()->constrained('titles')->onDelete('set null');
             $table->integer('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('description')->nullable();
+            $table->string('original_image_name');
+            $table->string('stored_image_name');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้สร้าง
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้แก้ไขล่าสุด
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้ลบ

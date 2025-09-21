@@ -31,35 +31,58 @@
                         <input type="hidden" id="currentEquipmentTitleId" value="{{ $equipment->title_id }}">
                         <input type="hidden" id="currentEquipmentTypeId" value="{{ $equipment->equipment_type_id }}">
                         <input type="hidden" id="currentEquipmentLocationId" value="{{ $equipment->location_id }}">
-                        <div class="row">
-                            <div class="mb-3 col">
-                                <label class="form-label">หมายเลขครุภัณฑ์ <span class="text-danger">*</span></label>
-                                <input type="text" name="number" class="form-control"
-                                    value="{{ $equipment->number }}" required>
-                            </div>
-                            <div class="mb-3 col">
-                                <label class="form-label">ชื่อครุภัณฑ์ <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" required
-                                    value="{{ $equipment->name }}">
-                            </div>
-                            <div class="mb-3 col">
-                                <label for="equipment_unit_id" class="form-label">หน่วยนับ <span
-                                        class="text-danger">*</span>
-                                    <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
-                                        data-bs-toggle="modal" data-bs-target="#unitModal">
-                                        <i class="bi bi-gear"></i>
-                                    </button>
-                                </label>
-                                <select name="equipment_unit_id" id="unitSelect" class="form-control" required>
-                                    @foreach ($equipment_units as $unit)
-                                        <option value="{{ $unit->id }}"
-                                            {{ $equipment->equipment_unit_id == $unit->id ? 'selected' : '' }}>
-                                            {{ $unit->name }}</option>
-                                    @endforeach
 
-                                </select>
+
+
+
+
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <div class="h-100 p-2 text-start" style="height:100%;">
+                                    <!-- ซ่อน input ปกติ -->
+                                    <input type="file" name="image" id="image" accept="image/*"
+                                        style="display:none">
+
+                                    <!-- ใช้ img เป็นตัวแทน input -->
+                                    <img id="preview"
+                                        src="{{ $equipment->image ? asset('storage/' . $equipment->image) : 'https://png.pngtree.com/png-clipart/20200225/original/pngtree-image-upload-icon-photo-upload-icon-png-image_5279794.jpg' }}"
+                                        alt="คลิกเพื่อเปลี่ยนรูป" class="inputImage" <!-- รูปขนาดใหญ่สำหรับ hover -->
+                                    <img id="hoverPreview"
+                                        src="{{ $equipment->image ? asset('storage/' . $equipment->image) : 'https://png.pngtree.com/png-clipart/20200225/original/pngtree-image-upload-icon-photo-upload-icon-png-image_5279794.jpg' }}"
+                                        class="bigImage">
+                                </div>
+                            </div>
+                            <!-- คอลัมน์ซ้าย: A เรียงแนวตั้ง -->
+                            <div class="col-9 d-flex flex-column">
+                                <div class="mb-3"> <label class="form-label">หมายเลขครุภัณฑ์ <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" name="number" class="form-control"
+                                        value="{{ $equipment->number }}" required>
+                                </div>
+                                <div class="mb-3"><label class="form-label">ชื่อครุภัณฑ์ <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" name="name" class="form-control" required
+                                        value="{{ $equipment->name }}">
+                                </div>
+                                <div class="mb-3"> <label for="equipment_unit_id" class="form-label">หน่วยนับ <span
+                                            class="text-danger">*</span>
+                                        <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
+                                            data-bs-toggle="modal" data-bs-target="#unitModal">
+                                            <i class="bi bi-gear"></i>
+                                        </button>
+                                    </label>
+                                    <select name="equipment_unit_id" id="unitSelect" class="form-control" required>
+                                        @foreach ($equipment_units as $unit)
+                                            <option value="{{ $unit->id }}"
+                                                {{ $equipment->equipment_unit_id == $unit->id ? 'selected' : '' }}>
+                                                {{ $unit->name }}</option>
+                                        @endforeach
+
+                                    </select>
+                                </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="mb-3 col-6"> <label class="form-label">จำนวน <span
                                         class="text-danger">*</span></label>
@@ -71,26 +94,6 @@
                                 <input type="number" name="price" class="form-control"
                                     value="{{ $equipment->price }}">
                             </div>
-
-                            {{-- <div class="col">
-                                <input type="hidden" name="status_found" class="form-control" required value="0">
-                            </div>
-                            <div class="col">
-                                <input type="hidden" name="status_not_found" class="form-control" required
-                                    value="0">
-                            </div>
-                            <div class="col">
-                                <input type="hidden" name="status_broken" class="form-control" required
-                                    value="0">
-                            </div>
-                            <div class="col">
-                                <input type="hidden" name="status_disposal" class="form-control" required
-                                    value="0">
-                            </div>
-                            <div class="col">
-                                <input type="hidden" name="status_transfer" class="form-control" required
-                                    value="0">
-                            </div> --}}
                         </div>
                         <div class="row mb-3">
                             <div class="col"> <label for="title_id" class="form-label">หัวข้อ <span
@@ -143,7 +146,8 @@
                                 <label for="user_id" class="form-label">ผู้ดูแล</label>
                                 <select name="user_id" class="form-control">
                                     {{-- <option value="">-- เลือกผู้ดูแล --</option> --}}
-                                    <option value="" {{ $equipment->user_id == null ? 'selected' : '' }}>สาขาเทคโนโลยีคอมพิวเตอร์</option>
+                                    <option value="" {{ $equipment->user_id == null ? 'selected' : '' }}>
+                                        สาขาเทคโนโลยีคอมพิวเตอร์</option>
                                     @foreach ($users as $u)
                                         <option value="{{ $u->id }}"
                                             {{ $equipment->user_id == $u->id ? 'selected' : '' }}>
@@ -349,4 +353,31 @@
         </div>
     @endcan
 
+
 </x-layouts.app>
+
+<script>
+    const imageInput = document.getElementById('image');
+    const preview = document.getElementById('preview');
+
+    // คลิกที่รูปก็เหมือนคลิก input
+    preview.addEventListener('click', () => {
+        imageInput.click();
+    });
+
+    // เมื่อเลือกไฟล์ใหม่ ให้โชว์ preview ทันที
+    imageInput.addEventListener('change', function() {
+        const [file] = this.files;
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+        }
+    });
+
+    // แสดงรูปใหญ่เมื่อ hover
+    preview.addEventListener('mouseenter', () => {
+        hoverPreview.style.display = 'block';
+    });
+    preview.addEventListener('mouseleave', () => {
+        hoverPreview.style.display = 'none';
+    });
+</script>

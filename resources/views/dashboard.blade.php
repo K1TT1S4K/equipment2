@@ -2,16 +2,18 @@
     <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
         <div class="card-body">
             <div class="container">
-                <div class="d-flex mb-2" style="max-height: 500px">
-                    <div class="left row mb-0 pb-0 d-flex justify-content-start">
-                        <h2 class="text-center">ครุภัณฑ์ที่ดำเนินการ</h2>
-                        <canvas id="myChart2" style="max-width:800px; max-height:500px;"></canvas>
+                <div class="d-flex" style="max-height: 500px">
+                    <div class="left row d-flex justify-content-start">
+                        <h2 class="text-center mb-0 pb-0">ครุภัณฑ์ที่ดำเนินการ</h2>
+                        <canvas class="pt-0 mt-0" id="myChart2" style="max-width:800px; max-height:500px;"></canvas>
                     </div>
-                    <div class="left row mb-0 pb-0 d-flex justify-content-center">
-                        <h2 class="text-center">ครุภัณฑ์ทั้งหมด</h2>
-                        <canvas id="myChart" style="max-width:500px; max-height:500px;"></canvas>
+                    <div class="left row d-flex justify-content-center">
+                        <h2 class="text-center mb-0 pb-0">ครุภัณฑ์ทั้งหมด</h2>
+                        <canvas class="pt-0 mt-0" id="myChart" style="max-width:500px; max-height:500px;"></canvas>
                     </div>
                 </div>
+
+
                 {{-- <div id="pie-chart"></div> --}}
                 <div class="row">
                     <!-- ตารางที่ 1 -->
@@ -131,9 +133,9 @@
 
         (function() {
             var xValues = ["พบ", "ไม่พบ", "ชำรุด", "จำหน่าย", "โอน"];
-            var yValues = [{{ $totals->total_found ?? 0 }}, {{ $totals->total_not_found ?? 0 }},
-                {{ $totals->total_broken ?? 0 }},
-                {{ $totals->total_disposal ?? 0 }}, {{ $totals->total_transfer ?? 0 }}
+            var yValues = [{{ $totals['total_found'] }}, {{ $totals['total_not_found'] }},
+                {{ $totals['total_broken'] }},
+                {{ $totals['total_disposal'] }}, {{ $totals['total_transfer'] }}
             ];
             var barColors = [
                 "#28a745",
