@@ -20,7 +20,6 @@
         $equipments[0]->getStatusTransfer->sum('amount'),
     ) }} --}}
     <h3 class="text-dark mb-4">จัดการครุภัณฑ์</h3>
-
     <form action="{{ route('equipment.index') }}" method="GET" class="mb-3">
         <div class="d-flex mb-2">
             <select class="form-control shadow-lg p-2 mb-1 rounded" id="title_filter" name="title_filter">
@@ -61,8 +60,12 @@
             </select>
             <select class="form-control shadow-lg p-2 mb-1 rounded" id="user_filter" name="user_filter">
                 <option value="all"
-                    {{ request('user_filter') == 'all' || !request('user_filter') ? 'selected' : '' }}>
+                    {{ request('user_filter') == 'all' ? 'selected' : ''}}>
                     ---ผู้ดูแลทั้งหมด---
+                </option>
+                <option value=""
+                    {{ request('user_filter') == null ? 'selected' : '' }}>
+                    สาขาเทคโนโลยีคอมพิวเตอร์
                 </option>
                 @foreach ($users as $user)
                     <option value="{{ $user->id }}" {{ request('user_filter') == $user->id ? 'selected' : '' }}>
@@ -76,6 +79,8 @@
                 @endforeach
             </select>
         </div>
+                                    {{-- {{dd(request('user_filter'))}} --}}
+
         <div class="d-flex">
             <input type="text" id="query" name="query" class="form-control shadow-lg p-2 mb-3 rounded"
                 placeholder="ค้นหาจากข้อมูลครุภัณฑ์" value="{{ request('query') }}">
@@ -138,7 +143,7 @@
                                     style="height: 100%;"> --}}
                             {{-- <input class="form-check-input" type="checkbox" id="select-all"
                                     style="transform: scale(1.5);"> --}}
-                            @if (!'admin-or-branch-or-officer')
+                            @if ('admin-or-branch-or-officer')
                                 <input type="checkbox" id="select-all">
                             @endif
                                 {{-- </div> --}}
@@ -266,7 +271,7 @@
                             @if ($equipment->equipment_type_id === $type)
                                 <tr class="text-center" style="cursor: pointer;">
                                     <td>
-                                        @if (!'admin-or-branch-or-officer')
+                                        @if ('admin-or-branch-or-officer')
                                             <input type="checkbox" class="equipment-checkbox"
                                                 name="selected_equipments[]" value="{{ $equipment->id }}">
                                         @endif
@@ -310,8 +315,7 @@
                                     <td class="text-start"
                                         onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         <p><span class="text-muted">ผู้ดูแล:</span>
-                                            {{-- {{ $equipment->user?->prefix?->name }} {{ $equipment->user?->firstname }} --}}
-                                            {{ $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' }}
+                                            {{$equipment->user ? $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' : 'สาขาเทคโนโลยีคอมพิวเตอร์'}}
                                         </p>
                                         <hr>
                                         <p><span class="text-muted">ที่อยู่:

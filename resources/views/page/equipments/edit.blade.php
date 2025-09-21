@@ -71,47 +71,26 @@
                                 <input type="number" name="price" class="form-control"
                                     value="{{ $equipment->price }}">
                             </div>
-                            {{-- <div class="col"> <label class="form-label">พบ <span class="text-danger">*</span></label>
-                                <input type="number" name="status_found" class="form-control" required
-                                    value="{{ $equipment->status_found }}">
+
+                            {{-- <div class="col">
+                                <input type="hidden" name="status_found" class="form-control" required value="0">
                             </div>
-                            <div class="col"> <label class="form-label">ไม่พบ <span
-                                        class="text-danger">*</span></label>
-                                <input type="number" name="status_not_found" class="form-control" required
-                                    value="{{ $equipment->status_not_found }}">
+                            <div class="col">
+                                <input type="hidden" name="status_not_found" class="form-control" required
+                                    value="0">
                             </div>
-                            <div class="col"> <label class="form-label">ชำรุด <span
-                                        class="text-danger">*</span></label>
-                                <input type="number" name="status_broken" class="form-control" required
-                                    value="{{ $equipment->status_broken }}">
+                            <div class="col">
+                                <input type="hidden" name="status_broken" class="form-control" required
+                                    value="0">
                             </div>
-                            <div class="col"> <label class="form-label">จำหน่าย <span
-                                        class="text-danger">*</span></label>
-                                <input type="number" name="status_disposal" class="form-control" required
-                                    value="{{ $equipment->status_disposal }}">
+                            <div class="col">
+                                <input type="hidden" name="status_disposal" class="form-control" required
+                                    value="0">
                             </div>
-                            <div class="col"> <label class="form-label">โอน <span
-                                        class="text-danger">*</span></label>
-                                <input type="number" name="status_transfer" class="form-control" required
-                                    value="{{ $equipment->status_transfer }}">
+                            <div class="col">
+                                <input type="hidden" name="status_transfer" class="form-control" required
+                                    value="0">
                             </div> --}}
-
-
-                             <div class="col">
-                        <input type="hidden" name="status_found" class="form-control" required value="0">
-                    </div>
-                    <div class="col">
-                        <input type="hidden" name="status_not_found" class="form-control" required value="0">
-                    </div>
-                    <div class="col">
-                        <input type="hidden" name="status_broken" class="form-control" required value="0">
-                    </div>
-                    <div class="col">
-                        <input type="hidden" name="status_disposal" class="form-control" required value="0">
-                    </div>
-                    <div class="col">
-                        <input type="hidden" name="status_transfer" class="form-control" required value="0">
-                    </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col"> <label for="title_id" class="form-label">หัวข้อ <span
@@ -164,9 +143,7 @@
                                 <label for="user_id" class="form-label">ผู้ดูแล</label>
                                 <select name="user_id" class="form-control">
                                     {{-- <option value="">-- เลือกผู้ดูแล --</option> --}}
-                                    <option value="" {{ $equipment->user_id == null ? 'selected' : '' }}>--
-                                        เลือกผู้ดูแล
-                                        --</option>
+                                    <option value="" {{ $equipment->user_id == null ? 'selected' : '' }}>สาขาเทคโนโลยีคอมพิวเตอร์</option>
                                     @foreach ($users as $u)
                                         <option value="{{ $u->id }}"
                                             {{ $equipment->user_id == $u->id ? 'selected' : '' }}>
@@ -282,7 +259,7 @@
                                 </tr>
                             </thead>
                             <tbody id="unitTableBody">
-                                
+
                             </tbody>
                         </table>
                     </div>

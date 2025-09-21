@@ -5,10 +5,6 @@
             <form action="{{ route('equipment.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
-                {{-- @php
-    dd(url()->previous());
-@endphp --}}
-                {{-- {{url()->previous()}} --}}
                 <div class="row">
                     <div class="mb-3 col">
                         <label class="form-label">หมายเลขครุภัณฑ์ <span class="text-danger">*</span></label>
@@ -41,36 +37,21 @@
                     <div class="mb-3 col-6"> <label class="form-label">ราคา <span class="text-danger">*</span></label>
                         <input type="number" name="price" class="form-control" required value="0">
                     </div>
-                    {{-- <div class="col"> <label class="form-label">พบ <span class="text-danger">*</span></label>
+                    {{-- <div class="col">
                         <input type="hidden" name="status_found" class="form-control" required value="0">
                     </div>
-                    <div class="col"> <label class="form-label">ไม่พบ <span class="text-danger">*</span></label>
+                    <div class="col">
                         <input type="hidden" name="status_not_found" class="form-control" required value="0">
                     </div>
-                    <div class="col"> <label class="form-label">ชำรุด <span class="text-danger">*</span></label>
+                    <div class="col">
                         <input type="hidden" name="status_broken" class="form-control" required value="0">
                     </div>
-                    <div class="col"> <label class="form-label">จำหน่าย <span class="text-danger">*</span></label>
+                    <div class="col">
                         <input type="hidden" name="status_disposal" class="form-control" required value="0">
                     </div>
-                    <div class="col"> <label class="form-label">โอน <span class="text-danger">*</span></label>
+                    <div class="col">
                         <input type="hidden" name="status_transfer" class="form-control" required value="0">
                     </div> --}}
-                    <div class="col">
-                        <input type="hidden" name="status_found" class="form-control" required value="0">
-                    </div>
-                    <div class="col">
-                        <input type="hidden" name="status_not_found" class="form-control" required value="0">
-                    </div>
-                    <div class="col">
-                        <input type="hidden" name="status_broken" class="form-control" required value="0">
-                    </div>
-                    <div class="col">
-                        <input type="hidden" name="status_disposal" class="form-control" required value="0">
-                    </div>
-                    <div class="col">
-                        <input type="hidden" name="status_transfer" class="form-control" required value="0">
-                    </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col"> <label for="title_id" class="form-label">หัวข้อ <span
@@ -93,9 +74,6 @@
                             </button></label>
                         <select name="equipment_type_id" id="equipmentTypeSelect" class="form-control">
                             <option value="">-- เลือกประเภท --</option>
-                            {{-- @foreach ($equipment_types as $et)
-                                <option value="{{$et->id}}">{{$et->name}}</option>
-                            @endforeach --}}
                         </select>
                     </div>
                 </div>
@@ -103,7 +81,7 @@
                     <div class="mb-3 col-6">
                         <label for="user_id" class="form-label">ผู้ดูแล</label>
                         <select name="user_id" class="form-control">
-                            <option value="">-- เลือกผู้ดูแล --</option>
+                            <option value="">สาขาเทคโนโลยีคอมพิวเตอร์</option>
                             @foreach ($users as $u)
                                 <option value="{{ $u->id }}">{{ $u->prefix->name }}{{ $u->firstname }}
                                     {{ $u->lastname }}</option>

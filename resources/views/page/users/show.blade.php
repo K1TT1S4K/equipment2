@@ -14,7 +14,7 @@
                 <option value="ผู้ปฏิบัติงานบริหาร"
                     {{ request()->get('user_type') == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร
                 </option>
-                <option value="ผู้ใช้งานครุภัณฑ์" {{ request()->get('user_type') == 'ผู้ใช้งานครุภัณฑ์' ? 'selected' : '' }}>ผู้ใช้งานครุภัณฑ์
+                <option value="ผู้ดูแลครุภัณฑ์" {{ request()->get('user_type') == 'ผู้ดูแลครุภัณฑ์' ? 'selected' : '' }}>ผู้ดูแลครุภัณฑ์
                 </option>
             </select>
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>

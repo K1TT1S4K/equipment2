@@ -35,7 +35,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('teacher', function ($user) {
-            return $user->user_type === 'ผู้ใช้งานครุภัณฑ์';
+            return $user->user_type === 'ผู้ดูแลครุภัณฑ์';
         });
 
         Gate::define('admin-or-branch', function ($user) {

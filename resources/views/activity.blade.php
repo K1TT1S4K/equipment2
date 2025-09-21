@@ -75,11 +75,11 @@
                                 'amount' => 'จำนวนทั้งหมด',
                                 'number' => 'หมายเลขครุภัณฑ์',
                                 'location' => 'ที่อยู่',
-                                'status_found' => 'พบ',
-                                'status_not_found' => 'ไม่พบ',
-                                'status_broken' => 'ชำรุด',
-                                'status_disposal' => 'จำหน่าย',
-                                'status_transfer' => 'โอน',
+                                // 'status_found' => 'พบ',
+                                // 'status_not_found' => 'ไม่พบ',
+                                // 'status_broken' => 'ชำรุด',
+                                // 'status_disposal' => 'จำหน่าย',
+                                // 'status_transfer' => 'โอน',
                                 'total_price' => 'ราคารวม',
 
                                 // export

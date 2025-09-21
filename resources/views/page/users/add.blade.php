@@ -40,7 +40,7 @@
                         <option value="ผู้ดูแลระบบ">ผู้ดูแลระบบ</option>
                         <option value="เจ้าหน้าที่พ้สดุ">เจ้าหน้าที่พ้สดุ</option>
                         <option value="ผู้ปฏิบัติงานบริหาร">ผู้ปฏิบัติงานบริหาร</option>
-                        <option value="ผู้ใช้งานครุภัณฑ์">ผู้ใช้งานครุภัณฑ์</option>
+                        <option value="ผู้ดูแลครุภัณฑ์">ผู้ดูแลครุภัณฑ์</option>
                     </select>
                 </div>
                 {{-- <div class="mb-3">

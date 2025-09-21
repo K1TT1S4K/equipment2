@@ -91,7 +91,7 @@ class UserController extends Controller
             'prefix' => 'required|exists:prefixes,id',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
-            'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่พ้สดุ,ผู้ปฏิบัติงานบริหาร,ผู้ใช้งานครุภัณฑ์',
+            'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่พ้สดุ,ผู้ปฏิบัติงานบริหาร,ผู้ดูแลครุภัณฑ์',
             // 'email' => 'required|email|max:100|unique:users,email',
             // 'email' => Str::random(15) . "@gmail.com",
             'password' => 'required|string|min:8',
@@ -149,7 +149,7 @@ class UserController extends Controller
             'prefix' => 'required|exists:prefixes,id',
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
-            'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่พ้สดุ,ผู้ปฏิบัติงานบริหาร,ผู้ใช้งานครุภัณฑ์',
+            'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่พ้สดุ,ผู้ปฏิบัติงานบริหาร,ผู้ดูแลครุภัณฑ์',
             // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8', // ถ้าไม่กรอก จะไม่เปลี่ยนรหัสผ่าน
         ]);

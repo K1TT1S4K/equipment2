@@ -18,7 +18,6 @@ use App\Models\Document as ModelsDocument;
 use App\Models\Equipment_document;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Arr;
-use Laravel\Pail\ValueObjects\Origin\Console;
 
 class EquipmentController extends Controller
 {
@@ -38,18 +37,14 @@ class EquipmentController extends Controller
         $unit = $request->input('unit_filter'); //ค้นหาจากประเภทหน่วยนับ
         $location = $request->input('location_filter');
         $user = $request->input('user_filter');
+
         $equipments = Equipment::when($search, function ($query, $search) {
             if ($search != 'all')
                 $query->where(function ($q) use ($search) {
                     $q->where('number', 'like', "%{$search}%")
                         ->orWhere('name', 'like', "%{$search}%")
                         ->orWhere('price', 'like', "%{$search}%")
-                        ->orWhere('total_price', 'like', "%{$search}%")
-                        ->orWhere('status_found', 'like', "%{$search}%")
-                        ->orWhere('status_not_found', 'like', "%{$search}%")
-                        ->orWhere('status_broken', 'like', "%{$search}%")
-                        ->orWhere('status_disposal', 'like', "%{$search}%")
-                        ->orWhere('status_transfer', 'like', "%{$search}%")
+                        ->orWhere('amount', 'link', "%{$search}%")
                         ->orWhereRaw("
                     CONCAT(DAY(created_at), ' ', 
                         CASE MONTH(created_at)
@@ -116,9 +111,32 @@ class EquipmentController extends Controller
             })
             ->when($user, function ($query, $user) {
                 if ($user != 'all') $query->where('user_id', $user); // กรองตามผู้ดูแล
+                if ($user == null) $query->where('user_id', null);
             })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->get('id');
+
+        $idFilterd = [];
+
+        foreach ($equipments as $key => $equipment) {
+            $idFilterd[] = $equipment->id;
+        }
+
+        $statusFilter = Equipment::all();
+
+        foreach ($statusFilter as $key => $value) {
+            $found = $statusFilter[$key]->amount - $statusFilter[$key]->getStatusBroken->sum('amount') - $statusFilter[$key]->getStatusNotFound->sum('amount') - $statusFilter[$key]->getStatusDisposal->sum('amount') - $statusFilter[$key]->getStatusTransfer->sum('amount');
+            $notFound = $statusFilter[$key]->getStatusNotFound->sum('amount');
+            $broken = $statusFilter[$key]->getStatusBroken->sum('amount');
+            $disposal = $statusFilter[$key]->getStatusDisposal->sum('amount');
+            $transfer = $statusFilter[$key]->getStatusTransfer->sum('amount');
+            $result = str_contains($found, $search) || str_contains($notFound, $search) || str_contains($broken, $search) || str_contains($disposal, $search) || str_contains($transfer, $search);
+            if ($result) {
+                $idFilterd[] = $value->id;
+            }
+        }
+
+        $equipments = Equipment::whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->paginate(10);
+
         $equipments->appends($request->all());
 
         return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
@@ -134,24 +152,20 @@ class EquipmentController extends Controller
         $titles = Title::all();
         $equipment_trash = Equipment::onlyTrashed()->get();
 
-        $search = $request->input('query'); // ค้นหาจากชื่อไฟล์
+        $search = null;
+        if (!empty($request['query'])) $search = $request->input('query');
         $title = $request->input('title_filter'); // ค้นหาจากประเภทหัวข้อ
         $unit = $request->input('unit_filter'); //ค้นหาจากประเภทหน่วยนับ
         $location = $request->input('location_filter');
         $user = $request->input('user_filter');
 
-        $equipments = Equipment::when($search, function ($query, $search) {
+        $equipments = Equipment::onlyTrashed()->when($search, function ($query, $search) {
             if ($search != 'all')
                 $query->where(function ($q) use ($search) {
                     $q->where('number', 'like', "%{$search}%")
                         ->orWhere('name', 'like', "%{$search}%")
                         ->orWhere('price', 'like', "%{$search}%")
-                        ->orWhere('total_price', 'like', "%{$search}%")
-                        ->orWhere('status_found', 'like', "%{$search}%")
-                        ->orWhere('status_not_found', 'like', "%{$search}%")
-                        ->orWhere('status_broken', 'like', "%{$search}%")
-                        ->orWhere('status_disposal', 'like', "%{$search}%")
-                        ->orWhere('status_transfer', 'like', "%{$search}%")
+                        ->orWhere('amount', 'link', "%{$search}%")
                         ->orWhereRaw("
                     CONCAT(DAY(created_at), ' ', 
                         CASE MONTH(created_at)
@@ -218,11 +232,39 @@ class EquipmentController extends Controller
             })
             ->when($user, function ($query, $user) {
                 if ($user != 'all') $query->where('user_id', $user); // กรองตามผู้ดูแล
+                if ($user == null) $query->where('user_id', null);
             })
-            ->onlyTrashed()
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->get('id');
 
+        $idFilterd = [];
+
+        foreach ($equipments as $key => $equipment) {
+            $idFilterd[] = $equipment->id;
+        }
+
+        $statusFilter = Equipment::onlyTrashed()->get();
+
+        // dd($statusFilter);
+
+        foreach ($statusFilter as $key => $value) {
+            $found = $statusFilter[$key]->amount - $statusFilter[$key]->getStatusBroken->sum('amount') - $statusFilter[$key]->getStatusNotFound->sum('amount') - $statusFilter[$key]->getStatusDisposal->sum('amount') - $statusFilter[$key]->getStatusTransfer->sum('amount');
+            $notFound = $statusFilter[$key]->getStatusNotFound->sum('amount');
+            $broken = $statusFilter[$key]->getStatusBroken->sum('amount');
+            $disposal = $statusFilter[$key]->getStatusDisposal->sum('amount');
+            $transfer = $statusFilter[$key]->getStatusTransfer->sum('amount');
+            $result = str_contains($found, $search) || str_contains($notFound, $search) || str_contains($broken, $search) || str_contains($disposal, $search) || str_contains($transfer, $search);
+
+            // if($key == 2){
+            //     dd($found, $notFound, $broken, $disposal, $transfer, $result);
+            // }
+
+            if ($result) {
+                $idFilterd[] = $value->id;
+            }
+        }
+// dd($idFilterd);
+        $equipments = Equipment::onlyTrashed()->whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->paginate(10);
+// dd($equipments);
         $equipments->appends($request->all());
 
         return view('page.equipments.trash', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
@@ -265,11 +307,6 @@ class EquipmentController extends Controller
             'name' => 'required|string|max:2000',
             'amount' => 'required|integer|max:9999999999',
             'price' => 'nullable|numeric|min:0|max:99999999.99',
-            'status_found' => 'required|integer|max:9999999999',
-            'status_not_found' => 'required|integer|max:9999999999',
-            'status_broken' => 'required|integer|max:9999999999',
-            'status_disposal' => 'required|integer|max:9999999999',
-            'status_transfer' => 'required|integer|max:9999999999',
             'equipment_unit_id'  => 'required|integer|max:9999999999',
             'location_id'  => 'nullable|integer|max:9999999999',
             'equipment_type_id'  => 'nullable|integer|max:9999999999',
@@ -286,11 +323,11 @@ class EquipmentController extends Controller
             'amount' =>  $request->amount,
             'price' =>  $request->price,
             'total_price' =>  $total_price,
-            'status_found' =>  $request->status_found,
-            'status_not_found' =>  $request->status_not_found,
-            'status_broken' =>  $request->status_broken,
-            'status_disposal' =>  $request->status_disposal,
-            'status_transfer' =>  $request->status_transfer,
+            // 'status_found' =>  $request->status_found,
+            // 'status_not_found' =>  $request->status_not_found,
+            // 'status_broken' =>  $request->status_broken,
+            // 'status_disposal' =>  $request->status_disposal,
+            // 'status_transfer' =>  $request->status_transfer,
             'equipment_unit_id'  =>  $request->equipment_unit_id,
             'location_id'  =>  $request->location_id,
             'equipment_type_id'  =>  $request->equipment_type_id,
@@ -350,11 +387,11 @@ class EquipmentController extends Controller
             'equipment_unit_id' => 'หน่วยนับ',
             'amount' => 'จำนวน',
             'price' => 'ราคา',
-            'status_found' => 'พบ',
-            'status_not_found' => 'ไม่พบ',
-            'status_broken' => 'ชำรุด',
-            'status_disposal' => 'จำหน่าย',
-            'status_transfer' => 'โอน',
+            // 'status_found' => 'พบ',
+            // 'status_not_found' => 'ไม่พบ',
+            // 'status_broken' => 'ชำรุด',
+            // 'status_disposal' => 'จำหน่าย',
+            // 'status_transfer' => 'โอน',
             'title_id' => 'หัวข้อ',
             'equipment_type_id' => 'ประเภท',
             'user_id' => 'ผู้ดูแล',
@@ -372,11 +409,6 @@ class EquipmentController extends Controller
             'name' => 'required|string|max:2000',
             'amount' => 'required|integer|max:9999999999',
             'price' => 'nullable|numeric|min:0|max:99999999.99',
-            'status_found' => 'required|integer|max:9999999999',
-            'status_not_found' => 'required|integer|max:9999999999',
-            'status_broken' => 'required|integer|max:9999999999',
-            'status_disposal' => 'required|integer|max:9999999999',
-            'status_transfer' => 'required|integer|max:9999999999',
             'equipment_unit_id'  => 'required|integer|max:9999999999',
             'location_id'  => 'nullable|integer|max:9999999999',
             'equipment_type_id'  => 'nullable|integer|max:9999999999',
@@ -432,11 +464,11 @@ class EquipmentController extends Controller
                 'amount' =>  $request->amount,
                 'price' =>  $request->price,
                 'total_price' =>  $total_price,
-                'status_found' =>  $request->status_found,
-                'status_not_found' =>  $request->status_not_found,
-                'status_broken' =>  $request->status_broken,
-                'status_disposal' =>  $request->status_disposal,
-                'status_transfer' =>  $request->status_transfer,
+                // 'status_found' =>  $request->status_found,
+                // 'status_not_found' =>  $request->status_not_found,
+                // 'status_broken' =>  $request->status_broken,
+                // 'status_disposal' =>  $request->status_disposal,
+                // 'status_transfer' =>  $request->status_transfer,
                 'equipment_unit_id'  =>  $request->equipment_unit_id,
                 'location_id'  =>  $request->location_id,
                 'equipment_type_id'  =>  $request->equipment_type_id,

@@ -53,6 +53,7 @@
                     {{ request('user_filter') == 'all' || !request('user_filter') ? 'selected' : '' }}>
                     ---ผู้ดูแลทั้งหมด---
                 </option>
+
                 @foreach ($users as $user)
                     <option value="{{ $user->id }}" {{ request('user_filter') == $user->id ? 'selected' : '' }}>
                         @if ($user->id == null)
@@ -129,137 +130,187 @@
             </div>
         </div></div>
 
-        {{-- <div class="table-responsive"> --}}
-        <table class="table table-hover w-full">
-            <thead class="text-center table-dark align-middle">
-                <tr class="text-center">
-                    <th rowspan="2">
-                        {{-- <div class="form-check d-flex justify-content-center align-items-center"
+         <table class="table table-hover w-full">
+                <thead class="text-center table-dark align-middle">
+                    <tr class="text-center">
+                        <th rowspan="2">
+                            {{-- <div class="form-check d-flex justify-content-center align-items-center"
                                     style="height: 100%;"> --}}
-                        {{-- <input class="form-check-input" type="checkbox" id="select-all"
+                            {{-- <input class="form-check-input" type="checkbox" id="select-all"
                                     style="transform: scale(1.5);"> --}}
-                        <input type="checkbox" id="select-all">
-                        {{-- </div> --}}
-                    </th>
-                    <th class="align-middle" rowspan="2">ลำดับ</th>
-                    <th class="align-middle" rowspan="2" style="width: 9%">รหัสครุภัณฑ์</th>
-                    <th class="align-middle" rowspan="2" style="width: 20%;">รายการ <br>( ยี่ห้อ,
-                        ชนิด,
-                        แบบ,
-                        ขนาดและลักษณะ )</th>
-                    <th class="align-middle" rowspan="2">หน่วยนับ</th>
-                    <th class="align-middle" rowspan="2">จำนวน<br>คงเหลือ</th>
-                    <th class="align-middle" rowspan="2">ราคาต่อหน่วย <br>(บาท)</th>
-                    <th class="align-middle" rowspan="2">ราคารวม</th>
-                    <th class="align-middle" colspan="5" style="width:10%">สถานะ</th>
-                    <th class="align-middle" rowspan="2" style="width: 16%">หมายเหตุ</th>
-                    <th class="align-middle" rowspan="2">วันที่ลบ</th>
-                    {{-- <th class="align-middle" rowspan="2">วันที่สร้าง</th> --}}
-                    {{-- <th class="align-middle" rowspan="2">จัดการ</th> --}}
-                </tr>
-                <tr class="text-center">
-                    <th class="align-middle" style="width: 2%">พบ</th>
-                    <th class="align-middle" style="width: 2%">ไม่พบ</th>
-                    <th class="align-middle" style="width: 2%">ชำรุด</th>
-                    <th class="align-middle" style="width: 2%">จำ<br>หน่าย</th>
-                    <th class="align-middle" style="width: 2%">โอน</th>
-                </tr>
-            </thead>
-            <tbody class="align-middle p-3">
-                @php
-                    $displayedTypes = [];
-                @endphp
-                @forelse ($equipments as $key => $equipment)
+                            @if ('admin-or-branch-or-officer')
+                                <input type="checkbox" id="select-all">
+                            @endif
+                                {{-- </div> --}}
+                        </th>
+                        <th class="align-middle" rowspan="2">ลำดับ</th>
+                        <th class="align-middle" rowspan="2" style="width: 9%">รหัสครุภัณฑ์</th>
+                        <th class="align-middle" rowspan="2" style="width: 20%;">รายการ <br>( ยี่ห้อ,
+                            ชนิด,
+                            แบบ,
+                            ขนาดและลักษณะ )</th>
+                        <th class="align-middle" rowspan="2">หน่วยนับ</th>
+                        <th class="align-middle" rowspan="2">จำนวน<br>คงเหลือ</th>
+                        <th class="align-middle" rowspan="2">ราคาต่อหน่วย <br>(บาท)</th>
+                        <th class="align-middle" rowspan="2">ราคารวม</th>
+                        <th class="align-middle" colspan="5" style="width:10%">สถานะ</th>
+                        <th class="align-middle" rowspan="2" style="width: 16%">หมายเหตุ</th>
+                        <th class="align-middle" rowspan="2">วันที่แก้ไข</th>
+                        <th class="align-middle" rowspan="2">วันที่สร้าง</th>
+                        {{-- <th class="align-middle" rowspan="2">จัดการ</th> --}}
+                    </tr>
+                    <tr class="text-center">
+                        <th class="align-middle" style="width: 2%">พบ</th>
+                        <th class="align-middle" style="width: 2%">ไม่พบ</th>
+                        <th class="align-middle" style="width: 2%">ชำรุด</th>
+                        <th class="align-middle" style="width: 2%">จำ<br>หน่าย</th>
+                        <th class="align-middle" style="width: 2%">โอน</th>
+                    </tr>
+                </thead>
+                <tbody class="align-middle p-3">
                     @php
-                        $type = $equipment->equipment_type_id;
+                        $displayedTypes = [];
                     @endphp
-                    @if ($type !== null)
+                    @forelse ($equipments as $key => $equipment)
+                        @php
+                            $type = $equipment->equipment_type_id;
+                        @endphp
                         @if (in_array($type, $displayedTypes))
                             @php
                                 continue;
                             @endphp
                         @endif
 
-                        <tr class="text-center" style="cursor: pointer;">
-                            <td colspan="3" class="bg-secondary text-white">
-                            </td>
-                            <td class="bg-secondary text-white">
-                                {{ $equipment->equipmentType->name }}
-                            </td>
-                            <td class="bg-secondary text-white">
-                            </td>
-                            <td class="bg-secondary text-white">
-                                {{ number_format($equipment->equipmentType->amount) }}
-                            </td>
-                            <td class="bg-secondary text-white">
-                                {{ number_format($equipment->equipmentType->price, 2) }}
-                            </td>
-                            <td class="bg-secondary text-white">
-                                {{ number_format($equipment->equipmentType->total_price, 2) }}
-                            </td>
-                            <td class="bg-secondary text-white">
-                            </td>
-                            <td class="bg-secondary text-white">
-                            </td>
-                            <td class="bg-secondary text-white">
-                            </td>
-                            <td class="bg-secondary text-white">
-                            </td>
-                            <td class="bg-secondary text-white">
-                            </td>
-                            <td class="bg-secondary text-white">
-                            </td>
-                            <td class="bg-secondary text-white">
-                            </td>
-                        </tr>
+                        @if ($type == null)
+                            <tr class="text-center" style="cursor: pointer;">
+                                <td colspan="3" class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                    ไม่มีประเภท
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                            </tr>
+                        @else
+                            <tr class="text-center" style="cursor: pointer;">
+                                <td colspan="3" class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                    {{ $equipment->equipmentType->name }}
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                    {{ number_format($equipment->equipmentType->amount) }}
+                                </td>
+                                <td class="bg-secondary text-white">
+                                    {{ number_format($equipment->equipmentType->price, 2) }}
+                                </td>
+                                <td class="bg-secondary text-white">
+                                    {{ number_format($equipment->equipmentType->total_price, 2) }}
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                </td>
+                                <td class="bg-secondary text-white">
+                                    {{-- {{ $equipment->equipmentType->updated_at }} --}}
+                                    {{ $equipment->equipmentType->updated_at->format('j') }}
+                                    {{ $equipment->equipmentType->updated_at->locale('th')->translatedFormat('M') }}
+                                    {{ $equipment->equipmentType->updated_at->year + 543 }}
+                                    {{ $equipment->equipmentType->updated_at->format('H:i:s') }}
+
+                                </td>
+                                <td class="bg-secondary text-white">
+                                    {{-- {{ $equipment->equipmentType->created_at }} --}}
+                                    {{ $equipment->equipmentType->created_at->format('j') }}
+                                    {{ $equipment->equipmentType->created_at->locale('th')->translatedFormat('M') }}
+                                    {{ $equipment->equipmentType->created_at->year + 543 }}
+                                    {{ $equipment->equipmentType->created_at->format('H:i:s') }}
+
+                                </td>
+                            </tr>
+                        @endif
 
                         @forelse ($equipments as $key => $equipment)
                             @if ($equipment->equipment_type_id === $type)
                                 <tr class="text-center" style="cursor: pointer;">
-                                    <td class="soft-grey">
-                                        <input type="checkbox" class="equipment-checkbox"
-                                            name="selected_equipments[]" value="{{ $equipment->id }}">
+                                    <td>
+                                        @if ('admin-or-branch-or-officer')
+                                            <input type="checkbox" class="equipment-checkbox"
+                                                name="selected_equipments[]" value="{{ $equipment->id }}">
+                                        @endif
                                     </td>
-                                    <td class="soft-grey">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ ++$count }}<br>
                                     </td>
-                                    <td class="soft-grey">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->number }}
                                     </td>
-                                    <td class="soft-grey">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->name }}
                                     </td>
-                                    <td class="soft-grey">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->equipmentUnit->name }}
                                     </td>
-                                    <td class="soft-grey">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->amount }}
                                     </td>
-                                    <td class="soft-grey">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->price }}
                                     </td>
-                                    <td class="soft-grey">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->total_price }}
                                     </td>
-                                    <td class="soft-grey">
-                                        {{ $equipment->status_found }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->amount - $equipment->getStatusBroken->sum('amount') - $equipment->getStatusNotFound->sum('amount') - $equipment->getStatusDisposal->sum('amount') - $equipment->getStatusTransfer->sum('amount') }}
                                     </td>
-                                    <td class="soft-grey">
-                                        {{ $equipment->status_not_found }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->getStatusNotFound->sum('amount') }}
                                     </td>
-                                    <td class="soft-grey">
-                                        {{ $equipment->status_broken }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->getStatusBroken->sum('amount') }}
                                     </td>
-                                    <td class="soft-grey">
-                                        {{ $equipment->status_disposal }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->getStatusDisposal->sum('amount') }}
                                     </td>
-                                    <td class="soft-grey">
-                                        {{ $equipment->status_transfer }}
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{ $equipment->getStatusTransfer->sum('amount') }}
                                     </td>
-                                    <td class="text-start soft-grey">
+                                    <td class="text-start"
+                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         <p><span class="text-muted">ผู้ดูแล:</span>
-                                            {{-- {{ $equipment->user?->prefix?->name }} {{ $equipment->user?->firstname }} --}}
-                                            {{ $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' }}
+                                            {{$equipment->user ? $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' : 'สาขาเทคโนโลยีคอมพิวเตอร์'}}
                                         </p>
                                         <hr>
                                         <p><span class="text-muted">ที่อยู่:
@@ -269,16 +320,22 @@
                                             </span>{{ $equipment->description ?? '-' }}
                                         </p>
                                     </td>
-                                    <td class="soft-grey">
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{-- {{ $equipment->updated_at }} --}}
-                                        {{ $equipment->deleted_at->format('j') }}
-                                        {{ $equipment->deleted_at->locale('th')->translatedFormat('M') }}
-                                        {{ $equipment->deleted_at->year + 543 }}
-                                        {{ $equipment->deleted_at->format('H:i:s') }}
+                                        {{ $equipment->updated_at->format('j') }}
+                                        {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
+                                        {{ $equipment->updated_at->year + 543 }}
+                                        {{ $equipment->updated_at->format('H:i:s') }}
+                                    </td>
+                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                        {{-- {{ $equipment->created_at }} --}}
+                                        {{ $equipment->created_at->format('j') }}
+                                        {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
+                                        {{ $equipment->created_at->year + 543 }}
+                                        {{ $equipment->created_at->format('H:i:s') }}
                                     </td>
                                 </tr>
                             @endif
-
                         @empty
                             <tr>
                                 <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
@@ -288,88 +345,16 @@
                         @php
                             $displayedTypes[] = $type;
                         @endphp
-                    @else
-                        <tr class="text-center">
-                            <td>
-                                <input type="checkbox" class="equipment-checkbox" name="selected_equipments[]"
-                                    value="{{ $equipment->id }}">
-
-                            </td>
-                            <td>
-                                {{ ++$count }}<br>
-                                {{-- {{ $loop->iteration + ($equipments->currentPage() - 1) * $equipments->perPage() }} --}}
-                            </td>
-                            <td>
-                                {{ $equipment->number }}
-                            </td>
-                            <td>
-                                {{ $equipment->name }}
-                            </td>
-                            <td>
-                                {{ $equipment->equipmentUnit->name }}
-                            </td>
-                            <td>
-                                {{ number_format($equipment->amount) }}
-                            </td>
-                            <td>
-                                {{ number_format($equipment->price, 2) }}
-                            </td>
-                            <td>
-                                {{ number_format($equipment->total_price, 2) }}
-                            </td>
-                            <td>
-                                {{ number_format($equipment->status_found) }}
-                            </td>
-                            <td>
-                                {{ number_format($equipment->status_not_found) }}
-                            </td>
-                            <td>
-                                {{ number_format($equipment->status_broken) }}
-                            </td>
-                            <td>
-                                {{ number_format($equipment->status_disposal) }}
-                            </td>
-                            <td>
-                                {{ number_format($equipment->status_transfer) }}
-                            </td>
-                            <td class="text-start">
-                                <p><span class="text-muted">ผู้ดูแล:</span>
-                                    {{ $equipment->user?->id }}
-                                    {{-- {{ $equipment->user?->prefix?->name }} {{ $equipment->user?->firstname }} --}}
-                                    {{ $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' }}
-                                </p>
-                                <hr>
-                                <p><span class="text-muted">ที่อยู่:
-                                    </span>{{ $equipment->location?->name ?? '-' }}
-                                </p>
-                                <hr>
-                                <p class="mb-0"><span class="text-muted">คำอธิบาย:
-                                    </span>{{ $equipment->description ?? '-' }}
-                                </p>
-                            </td>
-                            <td>
-                                {{ $equipment->deleted_at->format('j') }}
-                                {{ $equipment->deleted_at->locale('th')->translatedFormat('M') }}
-                                {{ $equipment->deleted_at->year + 543 }}
-                                {{ $equipment->deleted_at->format('H:i:s') }}
-                            </td>
+                    @empty
+                        <tr>
+                            <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
                         </tr>
-                    @endif
-                @empty
-                    <tr>
-                        <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                    @endforelse
+                </tbody>
+            </table>
 
         {{-- ตัวแบ่งหน้า --}}
         <div class="d-flex justify-content-center">
-            {{-- ไว้ดูค่าเพื่อ debug --}}
-            {{-- <pre>
-                    {{ print_r(request()->all(), true) }}
-    {{ $equipments->url(2) }}
-</pre> --}}
             {{ $equipments->links() }}
         </div>
     </div>
