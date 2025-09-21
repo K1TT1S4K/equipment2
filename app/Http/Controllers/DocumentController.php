@@ -152,7 +152,7 @@ class DocumentController extends Controller
         // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
         $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
         // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
-        $filePath = $file->store('', 'public'); // เก็บด้วยชื่อเดิม
+        $filePath = $file->store('', 'public'); 
 
         Document::create([ // สร้างเอกสารใหม่ในฐานข้อมูล
             // dd('99'),

@@ -29,6 +29,8 @@ class Equipment extends Model
         'title_id',
         'description',
         'user_id',
+        'stored_image_name',
+        'original_image_name'
     ];
 
     public function documents(): HasMany

@@ -19,6 +19,7 @@ use App\Models\Equipment_document;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Arr;
 
+
 class EquipmentController extends Controller
 {
     // หน้าแสดงข้อมูล
@@ -366,38 +367,10 @@ class EquipmentController extends Controller
     // ฟังก์ชันแก้ไขข้อมุล
     public function update(Request $request, $id)
     {
+
+// dd($request);
+
         $equipment = Equipment::findOrFail($id);
-        $locationNameMap = Location::pluck('name', 'id')->toArray();
-        $unitNameMap = Equipment_unit::pluck('name', 'id')->toArray();
-        $typeNameMap = Equipment_type::pluck('name', 'id')->toArray();
-        $userPrefixMap = User::pluck('prefix_id', 'id')->toArray();
-        $prefixNameMap = Prefix::pluck('name', 'id');
-        $userPrefixMap = User::pluck('prefix_id', 'id')->toArray();
-        $userFirstnameMap = User::pluck('firstname', 'id')->toArray();
-        $userLastnameMap = User::pluck('lastname', 'id')->toArray();
-        $titleGroupMap = Title::pluck('group', 'id')->toArray();
-        $titleNameMap = Title::pluck('name', 'id')->toArray();
-
-        $changes = [];
-
-        // กำหนดฟิลด์ที่ต้องการตรวจสอบการเปลี่ยนแปลง
-        $fieldsToCheck = [
-            'number' => 'หมายเลขครุภัณฑ์',
-            'name' => 'ชื่อครุภัณฑ์',
-            'equipment_unit_id' => 'หน่วยนับ',
-            'amount' => 'จำนวน',
-            'price' => 'ราคา',
-            // 'status_found' => 'พบ',
-            // 'status_not_found' => 'ไม่พบ',
-            // 'status_broken' => 'ชำรุด',
-            // 'status_disposal' => 'จำหน่าย',
-            // 'status_transfer' => 'โอน',
-            'title_id' => 'หัวข้อ',
-            'equipment_type_id' => 'ประเภท',
-            'user_id' => 'ผู้ดูแล',
-            'location_id' => 'ที่อยู่',
-            'description' => 'คำอธิบาย',
-        ];
 
         $request->validate([
             'number' => [
@@ -414,46 +387,15 @@ class EquipmentController extends Controller
             'equipment_type_id'  => 'nullable|integer|max:9999999999',
             'title_id'  => 'required|integer|max:9999999999',
             'user_id'  => 'nullable|integer|max:9999999999',
-            'description'  => 'nullable|string|max:255'
+            'description'  => 'nullable|string|max:255',
         ]);
 
+
+        $file = $request->file('image');
+        $originalName = $file->getClientOriginalName();
+        $filePath = $file->store('','public');
+
         $total_price = $request->price * $request->amount;
-
-        foreach ($fieldsToCheck as $field => $label) {
-            $oldValue = $equipment->$field;
-            $newValue = $request->$field;
-
-            if ((string)$oldValue !== (string)$newValue) {
-                // กรณีเป็น relational (เช่น ID ต้องแสดงชื่อแทน)
-                if (in_array($field, ['equipment_unit_id', 'title_id', 'equipment_type_id', 'user_id', 'location_id'])) {
-                    switch ($field) {
-                        case "equipment_unit_id":
-                            $oldName = $unitNameMap[$equipment->$field] ?? '-';
-                            $newName = $unitNameMap[$request->$field] ?? '-';
-                            break;
-                        case "title_id":
-                            $oldName = ($titleGroupMap[$equipment->$field] ?? '-') . " - " . ($titleNameMap[$equipment->$field] ?? '-');
-                            $newName = ($titleGroupMap[$request->$field] ?? '-') . " - " . ($titleNameMap[$request->$field] ?? '-');
-                            break;
-                        case "equipment_type_id":
-                            $oldName = $typeNameMap[$equipment->$field] ?? '-';
-                            $newName = $typeNameMap[$request->$field] ?? '-';
-                            break;
-                        case "user_id":
-                            $oldName = ($prefixNameMap[$userPrefixMap[$equipment->$field] ?? 0] ?? '-') . ($userFirstnameMap[$equipment->$field] ?? '-') . " " . ($userLastnameMap[$equipment->$field] ?? '-');
-                            $newName = ($prefixNameMap[$userPrefixMap[$request->$field] ?? 0] ?? '-') . ($userFirstnameMap[$request->$field] ?? '-') . " " . ($userLastnameMap[$request->$field] ?? '-');
-                            break;
-                        case "location_id":
-                            $oldName = $locationNameMap[$equipment->$field] ?? '-';
-                            $newName = $locationNameMap[$request->$field] ?? '-';
-                            break;
-                    }
-                    $changes[] = "{$label}: {$oldName} |->| {$newName}";
-                } else {
-                    $changes[] = "{$label}: {$oldValue} |->| {$newValue}";
-                }
-            }
-        }
 
         $oldValues = $equipment->toArray(); // คัดลอกเป็น array แยกออกมา
 
@@ -474,7 +416,9 @@ class EquipmentController extends Controller
                 'equipment_type_id'  =>  $request->equipment_type_id,
                 'title_id'  =>  $request->title_id,
                 'user_id'  =>  $request->user_id,
-                'description'  =>  $request->description
+                'description'  =>  $request->description,
+                'original_image_name' => $originalName,
+                'stored_image_name' => $filePath,
             ]
         );
 

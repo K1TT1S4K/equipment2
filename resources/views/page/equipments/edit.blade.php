@@ -1,6 +1,6 @@
 <x-layouts.app>
     <h3 class="text-dark mb-3">แก้ไขข้อมูลครุภัณฑ์</h3>
-
+{{dd(phpinfo())}}
     <!-- Nav tabs -->
     <ul class="nav nav-tabs mb-3" id="equipmentTab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -23,7 +23,7 @@
         <div class="tab-pane fade show active" id="edit" role="tabpanel" aria-labelledby="edit-tab">
             <div class="card shadow-lg p-3 mb-3 bg-body rounded border border-dark">
                 <div class="card-body">
-                    <form action="{{ route('equipment.update', $equipment->id) }}" method="POST">
+                    <form action="{{ route('equipment.update', $equipment->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
@@ -31,10 +31,6 @@
                         <input type="hidden" id="currentEquipmentTitleId" value="{{ $equipment->title_id }}">
                         <input type="hidden" id="currentEquipmentTypeId" value="{{ $equipment->equipment_type_id }}">
                         <input type="hidden" id="currentEquipmentLocationId" value="{{ $equipment->location_id }}">
-
-
-
-
 
                         <div class="row">
                             <div class="col-3 mb-3">
@@ -45,10 +41,10 @@
 
                                     <!-- ใช้ img เป็นตัวแทน input -->
                                     <img id="preview"
-                                        src="{{ $equipment->image ? asset('storage/' . $equipment->image) : 'https://png.pngtree.com/png-clipart/20200225/original/pngtree-image-upload-icon-photo-upload-icon-png-image_5279794.jpg' }}"
-                                        alt="คลิกเพื่อเปลี่ยนรูป" class="inputImage" <!-- รูปขนาดใหญ่สำหรับ hover -->
+                                        src="{{ $equipment->stored_image_name ? asset('storage/' . $equipment->stored_image_name) : 'https://png.pngtree.com/png-clipart/20200225/original/pngtree-image-upload-icon-photo-upload-icon-png-image_5279794.jpg' }}"
+                                        alt="คลิกเพื่อเปลี่ยนรูป" class="inputImage">
                                     <img id="hoverPreview"
-                                        src="{{ $equipment->image ? asset('storage/' . $equipment->image) : 'https://png.pngtree.com/png-clipart/20200225/original/pngtree-image-upload-icon-photo-upload-icon-png-image_5279794.jpg' }}"
+                                        src="{{ $equipment->stored_image_name ? asset('storage/' . $equipment->stored_image_name) : 'https://png.pngtree.com/png-clipart/20200225/original/pngtree-image-upload-icon-photo-upload-icon-png-image_5279794.jpg' }}"
                                         class="bigImage">
                                 </div>
                             </div>
