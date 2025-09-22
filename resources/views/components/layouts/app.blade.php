@@ -156,8 +156,6 @@
                             <td class="title-name">${loc.name}</td>
                                                         <td class="text-center">
             <a href="/titles/${loc.id}/clone" class="btn btn-primary">โคลน</a>
-
-
                             </td>
                         </tr>`;
                     });

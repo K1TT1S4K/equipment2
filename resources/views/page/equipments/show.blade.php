@@ -29,7 +29,7 @@
                     </option>
                 @endforeach
             </select>
-            <button class="btn btn-secondary ms-2 shadow-lg p-2 rounded" data-bs-toggle="modal"
+            <button type="button" class="btn btn-secondary ms-2 shadow-lg p-2 rounded" data-bs-toggle="modal"
                 data-bs-target="#titleModal">
                 โคลน </button>
             {{-- <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button> --}}
