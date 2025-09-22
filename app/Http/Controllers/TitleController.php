@@ -92,7 +92,9 @@ class TitleController extends Controller
                 'description' => $equipment->description,
                 'original_image_name' => $equipment->original_image_name,
                 'stored_image_name' => $equipment->stored_image_name,
-                'original_id' => $equipment->original_id ? $equipment->original_id : $equipment->id
+                'original_id' => $equipment->original_id ? $equipment->original_id : $equipment->id,
+                'created_at' => $equipment->created_at,
+                'updated_at' => $equipment->updated_at
             ]);
         }
         // dd($oldAndNewTypeId);

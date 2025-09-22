@@ -33,6 +33,7 @@ class EquipmentController extends Controller
         $locations = Location::all();
         $titles = Title::all();
         $equipment_trash = Equipment::onlyTrashed()->get();
+        $fullEquipments = Equipment::all();
 
         $search = null;
         if (!empty($request['query'])) $search = $request->input('query');
@@ -144,7 +145,7 @@ class EquipmentController extends Controller
 
         $equipments->appends($request->all());
 
-        return view('page.equipments.show', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
+        return view('page.equipments.show', compact('fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
     }
 
     // หน้ากู้คืนข้อมูล
@@ -156,6 +157,8 @@ class EquipmentController extends Controller
         $locations = Location::all();
         $titles = Title::all();
         $equipment_trash = Equipment::onlyTrashed()->get();
+        $fullEquipments = Equipment::all();
+
 
         $search = null;
         if (!empty($request['query'])) $search = $request->input('query');
@@ -272,7 +275,7 @@ class EquipmentController extends Controller
         // dd($equipments);
         $equipments->appends($request->all());
 
-        return view('page.equipments.trash', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
+        return view('page.equipments.trash', compact('fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
     }
 
     // หน้าสร้างข้อมูล
@@ -428,17 +431,19 @@ class EquipmentController extends Controller
         if ($request->file('image')) {
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
-            $filePath = $file->store('', 'public'); 
+            $filePath = $file->store('', 'public');
 
             $data['original_image_name'] = $originalName;
             $data['stored_image_name']   = $filePath;
 
-            Storage::disk('public')->delete($equipment->stored_image_name);
+            if ($equipment->stored_image_name) {
+                Storage::disk('public')->delete($equipment->stored_image_name);
+            }
 
-           $equipments = Equipment::where('id', $equipment->original_id ?? $equipment->id)
+            $equipments = Equipment::where('id', $equipment->original_id ?? $equipment->id)
                 ->orWhere('original_id', $equipment->original_id ?? $equipment->id)->get();
 
-            foreach($equipments as $q){
+            foreach ($equipments as $q) {
                 $q->update(['original_image_name' => $originalName, 'stored_image_name' => $filePath]);
             }
         }

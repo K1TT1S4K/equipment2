@@ -11,12 +11,7 @@ use App\Http\Controllers\TitleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EquipmentDocumentController;
 use App\Http\Controllers\ActivityController;
-use App\Models\Equipment;
-use App\Models\Equipment_document;
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
-use Spatie\Activitylog\Contracts\Activity;
 
 Route::get('/', function () {
     return view('welcome');

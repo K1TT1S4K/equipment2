@@ -10,20 +10,25 @@
                     <label for="document_type" class="form-label">เอกสาร <span class="text-danger">*</span></label>
                     <select name="document_type" class="form-select" required>
                         <option value="">-- เลือกประเภทเอกสาร --</option>
-                        <option value="แทงจำหน่ายครุภัณฑ์"
-                            {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
-                        </option>
-                        @if(!('officer'))
-                        <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
-                            {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
-                            ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                        <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
-                            โอนครุภัณฑ์</option>
-                        <option value="ไม่พบ" {{ request('document_type') == 'ไม่พบ' ? 'selected' : '' }}>
-                            ไม่พบ</option>
-                        <option value="ชำรุด" {{ request('document_type') == 'ชำรุด' ? 'selected' : '' }}>
-                            ชำรุด</option>
-                            @endif
+                        @can('admin-or-branch')
+                            <option value="แทงจำหน่ายครุภัณฑ์"
+                                {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
+                            </option>
+                            <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
+                                {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
+                                ยื่นแทงจำหน่ายครุภัณฑ์</option>
+                            <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
+                                โอนครุภัณฑ์</option>
+                            <option value="ไม่พบ" {{ request('document_type') == 'ไม่พบ' ? 'selected' : '' }}>
+                                ไม่พบ</option>
+                            <option value="ชำรุด" {{ request('document_type') == 'ชำรุด' ? 'selected' : '' }}>
+                                ชำรุด</option>
+                        @endcan
+                        @can('officer')
+                            <option value="แทงจำหน่ายครุภัณฑ์"
+                                {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
+                            </option>
+                        @endcan
                     </select>
                 </div>
                 <div class="mb-3">

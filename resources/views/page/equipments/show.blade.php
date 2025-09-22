@@ -323,9 +323,20 @@
                                     </td>
                                     <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->total_price }}
+                                        {{-- {{dd($equipment->original_id, $fullEquipments)}} --}}
                                     </td>
                                     <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->amount - $equipment->getStatusBroken->sum('amount') - $equipment->getStatusNotFound->sum('amount') - $equipment->getStatusDisposal->sum('amount') - $equipment->getStatusTransfer->sum('amount') }}
+                                        {{ $equipment->original_id
+                                            ? $fullEquipments->firstWhere('id', $equipment->original_id)->amount -
+                                            $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusBroken->sum('amount') -
+                                                $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusNotFound->sum('amount') -
+                                                $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusDisposal->sum('amount') -
+                                                $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusTransfer->sum('amount')
+                                            : $equipment->amount -
+                                                $equipment->getStatusBroken->sum('amount') -
+                                                $equipment->getStatusNotFound->sum('amount') -
+                                                $equipment->getStatusDisposal->sum('amount') -
+                                                $equipment->getStatusTransfer->sum('amount') }}
                                     </td>
                                     <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->getStatusNotFound->sum('amount') }}

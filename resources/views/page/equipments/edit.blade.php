@@ -1,6 +1,6 @@
+{{-- {{phpinfo()}} --}}
 <x-layouts.app>
     <h3 class="text-dark mb-3">แก้ไขข้อมูลครุภัณฑ์</h3>
-{{-- {{dd(phpinfo())}} --}}
     <!-- Nav tabs -->
     <ul class="nav nav-tabs mb-3" id="equipmentTab" role="tablist">
         <li class="nav-item" role="presentation">
