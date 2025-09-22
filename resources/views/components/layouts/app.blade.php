@@ -155,7 +155,7 @@
                             <td class="title-group">${loc.group}</td>
                             <td class="title-name">${loc.name}</td>
                                                         <td class="text-center">
-                                                                                            <button class="btn btn-sm btn-primary">โคลน</button>
+                                                                                            // <button class="btn btn-sm btn-primary">โคลน</button>
             <a href="/titles/${loc.id}/clone" class="btn btn-primary">Clone</a>
 
 

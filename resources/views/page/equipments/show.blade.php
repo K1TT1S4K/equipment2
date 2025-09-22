@@ -339,16 +339,16 @@
                                                 $equipment->getStatusTransfer->sum('amount') }}
                                     </td>
                                     <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->getStatusNotFound->sum('amount') }}
+                                        {{ $equipment->original_id ? $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusNotFound->sum('amount') : $equipment->getStatusNotFound->sum('amount') }}
                                     </td>
                                     <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->getStatusBroken->sum('amount') }}
+                                        {{ $equipment->original_id ? $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusBroken->sum('amount') : $equipment->getStatusBroken->sum('amount') }}
                                     </td>
                                     <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->getStatusDisposal->sum('amount') }}
+                                        {{ $equipment->original_id ? $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusDisposal->sum('amount') : $equipment->getStatusDisposal->sum('amount') }}
                                     </td>
                                     <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->getStatusTransfer->sum('amount') }}
+                                        {{ $equipment->original_id ? $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusTransfer->sum('amount') : $equipment->getStatusTransfer->sum('amount') }}
                                     </td>
                                     <td class="text-start"
                                         onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
