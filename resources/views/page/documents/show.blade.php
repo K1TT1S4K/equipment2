@@ -80,7 +80,7 @@
                 <tbody class="align-middle p-3">
                     @forelse ($documents as $key => $document)
                         <tr class="text-center" style="cursor: pointer;"
-                            @can('admin-or-branch-or-branch')
+                            @can('admin-or-branch-or-officer')
                                 onclick="window.location='{{ route('document.edit', $document->id) }}'"
                             @endcan>
                             <td onclick="event.stopPropagation();">
