@@ -4,15 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipment;
 use App\Models\Equipment_unit;
-use App\Models\Equipment_type;
 use App\Models\Location;
-use App\Models\Prefix;
 use App\Models\Title;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EquipmentsExport;
-use Illuminate\Validation\Rule;
 
 use App\Models\Document as ModelsDocument;
 use App\Models\Equipment_document;
@@ -29,7 +26,6 @@ class EquipmentController extends Controller
     {
         $users = User::all();
         $equipment_units = Equipment_unit::all();
-        $equipment_types = Equipment_type::all();
         $locations = Location::all();
         $titles = Title::all();
         $equipment_trash = Equipment::onlyTrashed()->get();
@@ -145,7 +141,7 @@ class EquipmentController extends Controller
 
         $equipments->appends($request->all());
 
-        return view('page.equipments.show', compact('fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
+        return view('page.equipments.show', compact('fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'locations', 'users', 'titles'));
     }
 
     // หน้ากู้คืนข้อมูล
@@ -153,7 +149,6 @@ class EquipmentController extends Controller
     {
         $users = User::all();
         $equipment_units = Equipment_unit::all();
-        $equipment_types = Equipment_type::all();
         $locations = Location::all();
         $titles = Title::all();
         $equipment_trash = Equipment::onlyTrashed()->get();
@@ -275,7 +270,7 @@ class EquipmentController extends Controller
         // dd($equipments);
         $equipments->appends($request->all());
 
-        return view('page.equipments.trash', compact('fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
+        return view('page.equipments.trash', compact('fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'locations', 'users', 'titles'));
     }
 
     // หน้าสร้างข้อมูล
@@ -283,12 +278,11 @@ class EquipmentController extends Controller
     {
         $users = User::all();
         $equipment_units = Equipment_unit::all();
-        $equipment_types = Equipment_type::all();
         $equipments = Equipment::all();
         $locations = Location::all();
         $titles = Title::all();
 
-        return view('page.equipments.add', compact('equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
+        return view('page.equipments.add', compact('equipments', 'equipment_units', 'locations', 'users', 'titles'));
     }
 
     // หน้าแก้ไขข้อมูล
@@ -297,14 +291,13 @@ class EquipmentController extends Controller
         $equipment = Equipment::findOrFail($id);
         $users = User::all();
         $equipment_units = Equipment_unit::all();
-        $equipment_types = Equipment_type::all();
         $equipments = Equipment::all();
         $locations = Location::all();
         $titles = Title::all();
         $equipment_documents = Equipment_document::all();
         $documents = ModelsDocument::all();
 
-        return view('page.equipments.edit', compact('equipments', 'equipment_documents', 'equipment', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles')) . $id;
+        return view('page.equipments.edit', compact('equipments', 'equipment_documents', 'equipment', 'equipment_units', 'locations', 'users', 'titles')) . $id;
     }
 
     // ฟังก์ชันสร้างข้อมูล
@@ -318,7 +311,6 @@ class EquipmentController extends Controller
             'price' => 'nullable|numeric|min:0|max:99999999.99',
             'equipment_unit_id'  => 'required|integer|max:9999999999',
             'location_id'  => 'nullable|integer|max:9999999999',
-            'equipment_type_id'  => 'nullable|integer|max:9999999999',
             'title_id'  => 'required|integer|max:9999999999',
             'user_id'  => 'nullable|integer|max:9999999999',
             'description'  => 'nullable|string|max:255',
@@ -340,7 +332,6 @@ class EquipmentController extends Controller
             'total_price' =>  $total_price,
             'equipment_unit_id'  =>  $request->equipment_unit_id,
             'location_id'  =>  $request->location_id,
-            'equipment_type_id'  =>  $request->equipment_type_id,
             'title_id'  =>  $request->title_id,
             'user_id'  =>  $request->user_id,
             'description'  =>  $request->description,
@@ -401,7 +392,6 @@ class EquipmentController extends Controller
             'price' => 'nullable|numeric|min:0|max:99999999.99',
             'equipment_unit_id'  => 'required|integer|max:9999999999',
             'location_id'  => 'nullable|integer|max:9999999999',
-            'equipment_type_id'  => 'nullable|integer|max:9999999999',
             'title_id'  => 'required|integer|max:9999999999',
             'user_id'  => 'nullable|integer|max:9999999999',
             'description'  => 'nullable|string|max:255',
@@ -421,7 +411,6 @@ class EquipmentController extends Controller
             'total_price' =>  $total_price,
             'equipment_unit_id'  =>  $request->equipment_unit_id,
             'location_id'  =>  $request->location_id,
-            'equipment_type_id'  =>  $request->equipment_type_id,
             'title_id'  =>  $request->title_id,
             'user_id'  =>  $request->user_id,
             'description'  =>  $request->description,

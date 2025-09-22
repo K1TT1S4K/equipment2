@@ -22,8 +22,6 @@ class Equipment extends Model
         // 'status_broken',
         // 'status_disposal',
         'status_transfer',
-        'group',
-        'equipment_type_id',
         'equipment_unit_id',
         'location_id',
         'title_id',
@@ -36,17 +34,11 @@ class Equipment extends Model
         'updated_at'
     ];
 
-    public function documents(): HasMany
-    {
-        // foreign key ใน table equipment_documents คือ equipment_id
-        return $this->hasMany(Equipment_document::class, 'equipment_id');
-    }
-
-    // ความสัมพันธ์กับ Equipment_type
-    public function equipmentType()
-    {
-        return $this->belongsTo(Equipment_type::class, 'equipment_type_id');
-    }
+    // public function documents(): HasMany
+    // {
+    //     // foreign key ใน table equipment_documents คือ equipment_id
+    //     return $this->hasMany(Equipment_document::class, 'equipment_id');
+    // }
 
     // ความสัมพันธ์กับ Equipment_unit
     public function equipmentUnit()
@@ -71,35 +63,35 @@ class Equipment extends Model
         return $this->belongsTo(Title::class, 'title_id');
     }
 
-    public function getStatusNotFound()
-    {
-        return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
-            ->whereHas('document', function ($q) {
-                $q->where('document_type', 'ไม่พบ'); // filter จาก document ที่ join
-            });
-    }
+    // public function getStatusNotFound()
+    // {
+    //     return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
+    //         ->whereHas('document', function ($q) {
+    //             $q->where('document_type', 'ไม่พบ'); // filter จาก document ที่ join
+    //         });
+    // }
 
-    public function getStatusBroken()
-    {
-        return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
-            ->whereHas('document', function ($q) {
-                $q->where('document_type', 'ชำรุด'); // filter จาก document ที่ join
-            });
-    }
+    // public function getStatusBroken()
+    // {
+    //     return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
+    //         ->whereHas('document', function ($q) {
+    //             $q->where('document_type', 'ชำรุด'); // filter จาก document ที่ join
+    //         });
+    // }
 
-    public function getStatusTransfer()
-    {
-        return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
-            ->whereHas('document', function ($q) {
-                $q->where('document_type', 'โอนครุภัณฑ์'); // filter จาก document ที่ join
-            });
-    }
+    // public function getStatusTransfer()
+    // {
+    //     return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
+    //         ->whereHas('document', function ($q) {
+    //             $q->where('document_type', 'โอนครุภัณฑ์'); // filter จาก document ที่ join
+    //         });
+    // }
 
-    public function getStatusDisposal()
-    {
-        return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
-            ->whereHas('document', function ($q) {
-                $q->where('document_type', 'แทงจำหน่ายครุภัณฑ์'); // filter จาก document ที่ join
-            });
-    }
+    // public function getStatusDisposal()
+    // {
+    //     return $this->hasMany(Equipment_document::class, 'equipment_id') // ชี้ไปที่ equipment_id
+    //         ->whereHas('document', function ($q) {
+    //             $q->where('document_type', 'แทงจำหน่ายครุภัณฑ์'); // filter จาก document ที่ join
+    //         });
+    // }
 }

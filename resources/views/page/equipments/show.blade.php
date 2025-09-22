@@ -29,11 +29,11 @@
                     </option>
                 @endforeach
             </select>
-@can('admin-or-branch')
-            <button type="button" class="btn btn-secondary ms-2 shadow-lg p-2 rounded" data-bs-toggle="modal"
-                data-bs-target="#titleModal">
-                โคลน </button>
-                @endcan
+            @can('admin-or-branch')
+                <button type="button" class="btn btn-secondary ms-2 shadow-lg p-2 rounded" data-bs-toggle="modal"
+                    data-bs-target="#titleModal">
+                    โคลน </button>
+            @endcan
             {{-- <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button> --}}
         </div>
         <div class="d-flex mb-2">
@@ -168,10 +168,6 @@
                 <thead class="text-center table-dark align-middle">
                     <tr class="text-center">
                         <th rowspan="2">
-                            {{-- <div class="form-check d-flex justify-content-center align-items-center"
-                                    style="height: 100%;"> --}}
-                            {{-- <input class="form-check-input" type="checkbox" id="select-all"
-                                    style="transform: scale(1.5);"> --}}
                             @can('admin-or-branch-or-officer')
                                 <input type="checkbox" id="select-all">
                             @endcan
@@ -202,7 +198,7 @@
                     </tr>
                 </thead>
                 <tbody class="align-middle p-3">
-                    @php
+                    {{-- @php
                         $displayedTypes = [];
                     @endphp
                     @forelse ($equipments as $key => $equipment)
@@ -215,8 +211,8 @@
                             @endphp
                         @endif
 
-                        @if ($type == null)
-                            <tr class="text-center" style="cursor: pointer;">
+                        @if ($type == null) --}}
+                    {{-- <tr class="text-center" style="cursor: pointer;">
                                 <td colspan="3" class="bg-secondary text-white">
                                 </td>
                                 <td class="bg-secondary text-white">
@@ -247,8 +243,8 @@
                                 <td class="bg-secondary text-white">
                                 </td>
                             </tr>
-                        @else
-                            <tr class="text-center" style="cursor: pointer;">
+                        @else --}}
+                    {{-- <tr class="text-center" style="cursor: pointer;">
                                 <td colspan="3" class="bg-secondary text-white">
                                 </td>
                                 <td class="bg-secondary text-white">
@@ -277,124 +273,104 @@
                                 </td>
                                 <td class="bg-secondary text-white">
                                 </td>
-                                <td class="bg-secondary text-white">
-                                    {{-- {{ $equipment->equipmentType->updated_at }} --}}
-                                    {{ $equipment->equipmentType->updated_at->format('j') }}
+                                <td class="bg-secondary text-white"> --}}
+                    {{-- {{ $equipment->equipmentType->updated_at }} --}}
+                    {{-- {{ $equipment->equipmentType->updated_at->format('j') }}
                                     {{ $equipment->equipmentType->updated_at->locale('th')->translatedFormat('M') }}
                                     {{ $equipment->equipmentType->updated_at->year + 543 }}
                                     {{ $equipment->equipmentType->updated_at->format('H:i:s') }}
 
                                 </td>
-                                <td class="bg-secondary text-white">
-                                    {{-- {{ $equipment->equipmentType->created_at }} --}}
-                                    {{ $equipment->equipmentType->created_at->format('j') }}
+                                <td class="bg-secondary text-white"> --}}
+                    {{-- {{ $equipment->equipmentType->created_at }} --}}
+                    {{-- {{ $equipment->equipmentType->created_at->format('j') }}
                                     {{ $equipment->equipmentType->created_at->locale('th')->translatedFormat('M') }}
                                     {{ $equipment->equipmentType->created_at->year + 543 }}
                                     {{ $equipment->equipmentType->created_at->format('H:i:s') }}
 
                                 </td>
                             </tr>
-                        @endif
+                        @endif --}}
 
-                        @forelse ($equipments as $key => $equipment)
-                            @if ($equipment->equipment_type_id === $type)
-                                <tr class="text-center" style="cursor: pointer;">
-                                    <td>
-                                        @can('admin-or-branch-or-officer')
-                                            <input type="checkbox" class="equipment-checkbox"
-                                                name="selected_equipments[]" value="{{ $equipment->id }}">
-                                        @endcan
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ ++$count }}<br>
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->number }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->name }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->equipmentUnit->name }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->amount }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->price }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->total_price }}
-                                        {{-- {{dd($equipment->original_id, $fullEquipments)}} --}}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->original_id
-                                            ? $fullEquipments->firstWhere('id', $equipment->original_id)->amount -
-                                                $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusBroken->sum('amount') -
-                                                $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusNotFound->sum('amount') -
-                                                $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusDisposal->sum('amount') -
-                                                $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusTransfer->sum('amount')
-                                            : $equipment->amount -
-                                                $equipment->getStatusBroken->sum('amount') -
-                                                $equipment->getStatusNotFound->sum('amount') -
-                                                $equipment->getStatusDisposal->sum('amount') -
-                                                $equipment->getStatusTransfer->sum('amount') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->original_id ? $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusNotFound->sum('amount') : $equipment->getStatusNotFound->sum('amount') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->original_id ? $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusBroken->sum('amount') : $equipment->getStatusBroken->sum('amount') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->original_id ? $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusDisposal->sum('amount') : $equipment->getStatusDisposal->sum('amount') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->original_id ? $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusTransfer->sum('amount') : $equipment->getStatusTransfer->sum('amount') }}
-                                    </td>
-                                    <td class="text-start"
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        <p><span class="text-muted">ผู้ดูแล:</span>
-                                            {{ $equipment->user ? ($equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-') : 'สาขาเทคโนโลยีคอมพิวเตอร์' }}
-                                        </p>
-                                        <hr>
-                                        <p><span class="text-muted">ที่อยู่:
-                                            </span>{{ $equipment->location?->name ?? '-' }}</p>
-                                        <hr>
-                                        <p class="mb-0"><span class="text-muted">คำอธิบาย:
-                                            </span>{{ $equipment->description ?? '-' }}
-                                        </p>
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{-- {{ $equipment->updated_at }} --}}
-                                        {{ $equipment->updated_at->format('j') }}
-                                        {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
-                                        {{ $equipment->updated_at->year + 543 }}
-                                        {{ $equipment->updated_at->format('H:i:s') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{-- {{ $equipment->created_at }} --}}
-                                        {{ $equipment->created_at->format('j') }}
-                                        {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
-                                        {{ $equipment->created_at->year + 543 }}
-                                        {{ $equipment->created_at->format('H:i:s') }}
-                                    </td>
-                                </tr>
-                            @endif
-                        @empty
-                            <tr>
-                                <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
-                            </tr>
-                        @endforelse
-
-                        @php
-                            $displayedTypes[] = $type;
-                        @endphp
+                    @forelse ($equipments as $key => $equipment)
+                        <tr class="text-center" style="cursor: pointer;">
+                            <td>
+                                @can('admin-or-branch-or-officer')
+                                    <input type="checkbox" class="equipment-checkbox" name="selected_equipments[]"
+                                        value="{{ $equipment->id }}">
+                                @endcan
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ ++$count }}<br>
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->number }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->name }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->equipmentUnit->name }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->amount }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->price }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->total_price }}
+                                {{-- {{dd($equipment->original_id, $fullEquipments)}} --}}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->status_found }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->status_not_found }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->status_broken }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->status_disposal }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{ $equipment->status_transfer }}
+                            </td>
+                            <td class="text-start"
+                                onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                <p><span class="text-muted">ผู้ดูแล:</span>
+                                    {{ $equipment->user ? ($equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-') : 'สาขาเทคโนโลยีคอมพิวเตอร์' }}
+                                </p>
+                                <hr>
+                                <p><span class="text-muted">ที่อยู่:
+                                    </span>{{ $equipment->location?->name ?? '-' }}</p>
+                                <hr>
+                                <p class="mb-0"><span class="text-muted">คำอธิบาย:
+                                    </span>{{ $equipment->description ?? '-' }}
+                                </p>
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{-- {{ $equipment->updated_at }} --}}
+                                {{ $equipment->updated_at->format('j') }}
+                                {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
+                                {{ $equipment->updated_at->year + 543 }}
+                                {{ $equipment->updated_at->format('H:i:s') }}
+                            </td>
+                            <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                                {{-- {{ $equipment->created_at }} --}}
+                                {{ $equipment->created_at->format('j') }}
+                                {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
+                                {{ $equipment->created_at->year + 543 }}
+                                {{ $equipment->created_at->format('H:i:s') }}
+                            </td>
+                        </tr>
                     @empty
                         <tr>
                             <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
                         </tr>
                     @endforelse
+
                 </tbody>
             </table>
         </form>
@@ -408,7 +384,6 @@
     <script>
         // เลือก container หรือ document
         const equipment = document;
-        console.log("Hello world!");
         equipment.getElementById('select-all').addEventListener('click', function(event) {
             let checkboxes = equipment.querySelectorAll('.equipment-checkbox');
             checkboxes.forEach(checkbox => {

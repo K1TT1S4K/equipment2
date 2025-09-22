@@ -108,15 +108,6 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท<button
-                                type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
-                                data-bs-toggle="modal" data-bs-target="#typeModal">
-                                <i class="bi bi-gear"></i>
-                            </button></label>
-                        <select name="equipment_type_id" id="equipmentTypeSelect" class="form-control">
-                            <option value="">-- เลือกประเภท --</option>
-                        </select>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="mb-3 col-6">

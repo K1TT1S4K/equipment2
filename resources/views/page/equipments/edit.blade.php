@@ -2,7 +2,7 @@
 <x-layouts.app>
     <h3 class="text-dark mb-3">แก้ไขข้อมูลครุภัณฑ์</h3>
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs mb-3" id="equipmentTab" role="tablist">
+    {{-- <ul class="nav nav-tabs mb-3" id="equipmentTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit" type="button"
                 role="tab" aria-controls="edit" aria-selected="true">
@@ -15,11 +15,10 @@
                 การดำเนินการ
             </button>
         </li>
-    </ul>
+    </ul> --}}
 
     <!-- Tab content -->
-    <div class="tab-content" id="equipmentTabContent">
-        <!-- แก้ไขข้อมูล -->
+            <!-- แก้ไขข้อมูล -->
         <div class="tab-pane fade show active" id="edit" role="tabpanel" aria-labelledby="edit-tab">
             <div class="card shadow-lg p-3 mb-3 bg-body rounded border border-dark">
                 <div class="card-body">
@@ -29,7 +28,6 @@
                         <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
                         <input type="hidden" id="currentEquipmentUnitId" value="{{ $equipment->equipment_unit_id }}">
                         <input type="hidden" id="currentEquipmentTitleId" value="{{ $equipment->title_id }}">
-                        <input type="hidden" id="currentEquipmentTypeId" value="{{ $equipment->equipment_type_id }}">
                         <input type="hidden" id="currentEquipmentLocationId" value="{{ $equipment->location_id }}">
 
                         <div class="row">
@@ -111,31 +109,6 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col"> <label for="equipment_type_id"
-                                    class="form-label">ประเภท@can('admin-or-branch')
-                                        <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
-                                            data-bs-toggle="modal" data-bs-target="#typeModal">
-                                            <i class="bi bi-gear"></i>
-                                        </button>
-                                    @endcan
-                                </label>
-                                <select name="equipment_type_id" id="equipmentTypeSelect" class="form-control">
-                                    {{-- <option value="">-- เลือกประเภท --</option> --}}
-                                    <option value=""
-                                        {{ $equipment->equipment_type_id == null ? 'selected' : '' }}>--
-                                        เลือกประเภท --</option>
-                                    @foreach ($equipment_types as $et)
-                                        {{-- <option
-                                    value="{{ $et->id }} {{ $equipment->equipment_type_id == $et->id ? 'selected' : 'disabled' }}">
-                                    {{ $et->name }}</option> --}}
-                                        @if ($equipment->title_id == $et->title_id)
-                                            <option value="{{ $et->id }}"
-                                                {{ $equipment->equipment_type_id == $et->id ? 'selected' : '' }}>
-                                                {{ $et->name }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="mb-3 col-6">
@@ -187,59 +160,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- การดำเนินการ -->
-        <div class="tab-pane fade" id="document" role="tabpanel" aria-labelledby="document-tab">
-            <div class="card shadow-lg p-3 mb-3 bg-body rounded border border-dark">
-                <div class="card-body">
-                    <table class="table mt-3 table-hover w-full">
-                        <thead class="text-center table-dark align-middle">
-                            <tr class="text-center">
-                                <th class="align-middle">ประเภท</th>
-                                <th class="align-middle">จำนวน</th>
-                                <th class="align-middle">วันที่ดำเนินการ</th>
-                                <th class="align-middle">เอกสาร</th>
-                                {{-- <th class="align-middle">จัดการ</th> --}}
-                            </tr>
-                        </thead>
-                        <tbody class="align-middle p-3">
-                            {{-- ข้อมูลเอกสาร --}}
-                            {{-- {{dd($equipment_documents)}} --}}
-                            @forelse ($equipment_documents->where('equipment_id', $equipment->id) as $key => $equipment_document)
-                                <tr class="text-center" style="cursor: pointer;">
-                                    <td>
-                                        {{ $equipment_document->document->document_type }}
-                                    </td>
-                                    <td>
-                                        {{ $equipment_document->amount }}
-                                    </td>
-                                    @php
-                                        $date = \Carbon\Carbon::parse($equipment_document->document->date)->locale(
-                                            'th',
-                                        );
-                                        // $buddhistYear = $date->year + 543;
-                                    @endphp
-                                    <td>{{ $date->isoFormat('D MMM YYYY') }}</td>
-                                    <td>
-                                        @if ($equipment_document->document->stored_name)
-                                            <a href="{{ asset('storage/' . $equipment_document->document->stored_name) }}"
-                                                download="{{ $equipment_document->document->original_name }}">{{ $equipment_document->document->original_name }}</a>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 
     @can('admin-or-branch')
         <div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">

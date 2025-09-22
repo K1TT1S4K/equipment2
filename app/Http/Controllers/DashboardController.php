@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipment;
 use App\Models\Document;
-use App\Models\Equipment_document;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -73,40 +72,40 @@ class DashboardController extends Controller
         //         ->first();
         // }
 
-        foreach ([$twoYearsAgo, $lastYear, $currentYear] as $year) {
-            $totalsByYear[$year] = Equipment_document::join('documents', 'equipment_documents.document_id', '=', 'documents.id')
-                ->whereYear('documents.date', $year)
-                ->whereNotNull('equipment_documents.equipment_id')
-                ->whereNotNull('equipment_documents.document_id')
-                ->selectRaw("
-                    SUM(CASE 
-                        WHEN documents.document_type = 'ยื่นแทงจำหน่ายครุภัณฑ์' 
-                        THEN equipment_documents.amount 
-                        ELSE 0 
-                    END) as total_disposal_request,
-                    SUM(CASE 
-                        WHEN documents.document_type = 'แทงจำหน่ายครุภัณฑ์' 
-                        THEN equipment_documents.amount 
-                        ELSE 0 
-                    END) as total_disposal,
-                    SUM(CASE 
-                        WHEN documents.document_type = 'โอนครุภัณฑ์' 
-                        THEN equipment_documents.amount 
-                        ELSE 0 
-                    END) as total_transfer,
-                    SUM(CASE 
-                        WHEN documents.document_type = 'ไม่พบ' 
-                        THEN equipment_documents.amount 
-                        ELSE 0 
-                    END) as total_not_found,
-                    SUM(CASE 
-                        WHEN documents.document_type = 'ชำรุด' 
-                        THEN equipment_documents.amount 
-                        ELSE 0 
-                    END) as total_broken
-                ")
-                ->first();
-        }
+        // foreach ([$twoYearsAgo, $lastYear, $currentYear] as $year) {
+        //     $totalsByYear[$year] = Equipment_document::join('documents', 'equipment_documents.document_id', '=', 'documents.id')
+        //         ->whereYear('documents.date', $year)
+        //         ->whereNotNull('equipment_documents.equipment_id')
+        //         ->whereNotNull('equipment_documents.document_id')
+        //         ->selectRaw("
+        //             SUM(CASE 
+        //                 WHEN documents.document_type = 'ยื่นแทงจำหน่ายครุภัณฑ์' 
+        //                 THEN equipment_documents.amount 
+        //                 ELSE 0 
+        //             END) as total_disposal_request,
+        //             SUM(CASE 
+        //                 WHEN documents.document_type = 'แทงจำหน่ายครุภัณฑ์' 
+        //                 THEN equipment_documents.amount 
+        //                 ELSE 0 
+        //             END) as total_disposal,
+        //             SUM(CASE 
+        //                 WHEN documents.document_type = 'โอนครุภัณฑ์' 
+        //                 THEN equipment_documents.amount 
+        //                 ELSE 0 
+        //             END) as total_transfer,
+        //             SUM(CASE 
+        //                 WHEN documents.document_type = 'ไม่พบ' 
+        //                 THEN equipment_documents.amount 
+        //                 ELSE 0 
+        //             END) as total_not_found,
+        //             SUM(CASE 
+        //                 WHEN documents.document_type = 'ชำรุด' 
+        //                 THEN equipment_documents.amount 
+        //                 ELSE 0 
+        //             END) as total_broken
+        //         ")
+        //         ->first();
+        // }
 
 
         // dd($totalsByYear[2023]);

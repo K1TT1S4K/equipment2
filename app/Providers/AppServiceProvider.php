@@ -34,12 +34,12 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('components.layouts.app', function ($view) {
             $units = Equipment_unit::all(); // ดึงข้อมูลหน่วยอุปกรณ์
-            $equipment_types = Equipment_type::all(); // ดึงข้อมูลประเภทอุปกรณ์
+            // $equipment_types = Equipment_type::all(); // ดึงข้อมูลประเภทอุปกรณ์
             $titles = Title::all();
 
             $view->with([
                 'units' => $units,
-                'equipment_types' => $equipment_types,
+                // 'equipment_types' => $equipment_types,
                 'titles' => $titles
             ]);
         });

@@ -17,8 +17,8 @@ class Equipment_unit extends Model
         return $this->hasMany(Equipment::class);
     }
 
-    public function equipment_types(): HasMany
-    {
-        return $this->hasMany(Equipment_type::class);
-    }
+    // public function equipment_types(): HasMany
+    // {
+    //     return $this->hasMany(Equipment_type::class);
+    // }
 }

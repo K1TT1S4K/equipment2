@@ -18,9 +18,7 @@ return new class extends Migration
             $table->string('firstname');
             $table->string('lastname');
             $table->string('user_type');
-            $table->string('email')->unique();
             $table->string('password');
-            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamp('last_login_at')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้สร้าง
@@ -28,12 +26,6 @@ return new class extends Migration
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้ลบ
             $table->timestamps();
             $table->softDeletes();
-        });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
         });
 
         Schema::create('sessions', function (Blueprint $table) {
@@ -52,7 +44,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
 };

@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
                 TitleSeeder::class,
                 PrefixSeeder::class,
                 Equipment_unitSeeder::class,
-                Equipment_typeSeeder::class,
                 UserSeeder::class,
                 EquipmentSeeder::class,
             ]

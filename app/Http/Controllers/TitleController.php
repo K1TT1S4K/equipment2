@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Equipment;
-use App\Models\Equipment_type;
 use Illuminate\Http\Request;
 use App\Models\Title;
 
@@ -20,8 +19,7 @@ class TitleController extends Controller
         // return response()->noContent();
         $validated = $request->validate([
 
-            'name' => 'required',
-            'group' => 'required'
+            'name' => 'required'
         ]);
 
         Title::create($validated);
@@ -31,8 +29,7 @@ class TitleController extends Controller
     public function update(Request $request, Title $title)
     {
         $validated = $request->validate([
-            'name' => 'required',
-            'group' => 'required'
+            'name' => 'required'
         ]);
 
         $title->update($validated);
@@ -47,7 +44,7 @@ class TitleController extends Controller
 
     public function checkUsage(Title $title)
     {
-        $inUse = $title->equipments()->exists() || $title->equipment_types()->exists();
+        $inUse = $title->equipments()->exists();
         return response()->json(['in_use' => $inUse]);
     }
 
@@ -56,14 +53,12 @@ class TitleController extends Controller
         $item = Title::findOrFail($title->id);
 
         Title::create([
-            'name' => $item->name . ' - Copy',
-            'group' => $item->group . ' - Copy'
+            'name' => $item->name . ' - Copy'
         ]);
 
-        $types = Equipment_type::where('title_id', $title->id)->get();
         $oldAndNewTypeId = [];
 
-        foreach($types as $type){
+        foreach ($types as $type) {
             Equipment_type::create([
                 'name' => $type->name,
                 'amount' => $type->amount,
@@ -72,12 +67,12 @@ class TitleController extends Controller
                 'equipment_unit_id' => $type->equipment_unit_id,
                 'title_id' => Title::latest('id')->first()->id
             ]);
-        $oldAndNewTypeId[$type->id] = Equipment_type::latest('id')->first()->id;
+            $oldAndNewTypeId[$type->id] = Equipment_type::latest('id')->first()->id;
         }
 
         $equipments = Equipment::where('title_id', $title->id)->get();
 
-        foreach($equipments as $equipment){
+        foreach ($equipments as $equipment) {
             Equipment::create([
                 'number' => $equipment->number,
                 'name' => $equipment->name,

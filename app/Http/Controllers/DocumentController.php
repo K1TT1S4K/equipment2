@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Models\Equipment;
-use App\Models\Equipment_document;
+// use App\Models\Equipment_document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Facades\LogBatch;
@@ -29,13 +29,13 @@ class DocumentController extends Controller
     public function edit($id)
     {
         $document = Document::findOrFail($id); // ค้นหาเอกสารตาม ID ที่ส่งมา
-        $equipments_documents = Equipment_document::where('document_id', $document->id)->orderByDesc('created_at')->paginate(10);
-        $equipment_ids = $equipments_documents->pluck('equipment_id');
+        // $equipments_documents = Equipment_document::where('document_id', $document->id)->orderByDesc('created_at')->paginate(10);
+        // $equipment_ids = $equipments_documents->pluck('equipment_id');
         $equipments = Equipment::all();
 
         // dd($document->id, $equipments_documents, $equipments);
 
-        return view('page.documents.edit', compact('document', 'equipments_documents', 'equipments')); // ส่งเอกสารไปยัง view
+        return view('page.documents.edit', compact('document', 'equipments')); // ส่งเอกสารไปยัง view
     }
 
     // หน้ากู้ข้อมูลเอกสาร
