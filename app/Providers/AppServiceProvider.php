@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with([
                 'units' => $units,
-                // 'equipment_types' => $equipment_types,
+                // 'equipment_types' => $equipment_;types,
                 'titles' => $titles
             ]);
         });

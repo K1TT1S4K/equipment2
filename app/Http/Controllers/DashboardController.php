@@ -27,11 +27,11 @@ class DashboardController extends Controller
         $totals = ["total_found" => 0, "total_not_found" => 0, "total_broken" => 0, "total_disposal" => 0, "total_transfer" => 0];
 
         foreach ($equipments as $key => $equipment) {
-            $totals["total_found"] += $equipment->amount - $equipment->getStatusBroken->sum('amount') - $equipment->getStatusNotFound->sum('amount') - $equipment->getStatusDisposal->sum('amount') - $equipment->getStatusTransfer->sum('amount');
-            $totals["total_not_found"] += $equipment->getStatusNotFound->sum('amount');
-            $totals["total_broken"] += $equipment->getStatusBroken->sum('amount');
-            $totals["total_disposal"] += $equipment->getStatusDisposal->sum('amount');
-            $totals["total_transfer"] += $equipment->getStatusTransfer->sum('amount');
+            // $totals["total_found"] += $equipment->amount - $equipment->getStatusBroken->sum('amount') - $equipment->getStatusNotFound->sum('amount') - $equipment->getStatusDisposal->sum('amount') - $equipment->getStatusTransfer->sum('amount');
+            // $totals["total_not_found"] += $equipment->getStatusNotFound->sum('amount');
+            // $totals["total_broken"] += $equipment->getStatusBroken->sum('amount');
+            // $totals["total_disposal"] += $equipment->getStatusDisposal->sum('amount');
+            // $totals["total_transfer"] += $equipment->getStatusTransfer->sum('amount');
         }
 
 

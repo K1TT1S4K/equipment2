@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
                 'prefix_id' => 1,
                 'firstname' => 'สุเชษฐา',
                 'lastname' => 'พรหมประเสริฐ',
-                'user_type' => 'เจ้าหน้าที่พ้สดุ',
+                'user_type' => 'เจ้าหน้าที่พัสดุ',
                 'password' => static::$password ??= Hash::make('password'),
                 'remember_token' => Str::random(10),
             ],

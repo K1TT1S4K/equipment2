@@ -9,8 +9,8 @@
                 <option value="">-- เลือกระดับผู้ใช้ --</option>
                 <option value="ผู้ดูแลระบบ" {{ request()->get('user_type') == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>
                     ผู้ดูแลระบบ</option>
-                <option value="เจ้าหน้าที่พ้สดุ"
-                    {{ request()->get('user_type') == 'เจ้าหน้าที่พ้สดุ' ? 'selected' : '' }}>เจ้าหน้าที่พ้สดุ</option>
+                <option value="เจ้าหน้าที่พัสดุ"
+                    {{ request()->get('user_type') == 'เจ้าหน้าที่พัสดุ' ? 'selected' : '' }}>เจ้าหน้าที่พัสดุ</option>
                 <option value="ผู้ปฏิบัติงานบริหาร"
                     {{ request()->get('user_type') == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร
                 </option>

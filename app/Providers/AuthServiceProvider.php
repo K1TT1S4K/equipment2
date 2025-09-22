@@ -27,7 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('branch', function ($user) {
-            return $user->user_type === 'เจ้าหน้าที่พ้สดุ';
+            return $user->user_type === 'เจ้าหน้าที่พัสดุ';
         });
 
         Gate::define('officer', function ($user) {
@@ -39,11 +39,11 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('admin-or-branch', function ($user) {
-            return $user->user_type === 'เจ้าหน้าที่พ้สดุ' || $user->user_type === 'ผู้ดูแลระบบ';
+            return $user->user_type === 'เจ้าหน้าที่พัสดุ' || $user->user_type === 'ผู้ดูแลระบบ';
         });
 
         Gate::define('admin-or-branch-or-officer', function ($user) {
-            return $user->user_type === 'เจ้าหน้าที่พ้สดุ' || $user->user_type === 'ผู้ดูแลระบบ' || $user->user_type === 'ผู้ปฏิบัติงานบริหาร';
+            return $user->user_type === 'เจ้าหน้าที่พัสดุ' || $user->user_type === 'ผู้ดูแลระบบ' || $user->user_type === 'ผู้ปฏิบัติงานบริหาร';
         });
     }
 }
