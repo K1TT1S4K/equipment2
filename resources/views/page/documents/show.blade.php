@@ -80,15 +80,25 @@
                 <tbody class="align-middle p-3">
                     @forelse ($documents as $key => $document)
                         <tr class="text-center" style="cursor: pointer;"
-                            onclick="window.location='{{ route('document.edit', $document->id) }}'">
+                            @can('officer')
+                                    @if ($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                                        onclick="window.location='{{ route('document.edit', $document->id) }}'"
+                                   @endif
+                                @endcan
+                            @can('admin-or-branch-or-officer')
+                                onclick="window.location='{{ route('document.edit', $document->id) }}'"
+                            @endcan>
                             <td onclick="event.stopPropagation();">
-                                @if ('officer' && $document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                                @can('officer')
+                                    @if ($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
+                                        <input type="checkbox" class="document-checkbox" name="selected_documents[]"
+                                            value="{{ $document->id }}">
+                                    @endif
+                                @endcan
+                                @can('admin-or-branch-or-officer')
                                     <input type="checkbox" class="document-checkbox" name="selected_documents[]"
                                         value="{{ $document->id }}">
-                                @elseif('admin-or-branch-or-officer')
-                                    <input type="checkbox" class="document-checkbox" name="selected_documents[]"
-                                        value="{{ $document->id }}">
-                                @endif
+                                @endcan
                             </td>
                             <td>{{ $loop->iteration + ($documents->currentPage() - 1) * $documents->perPage() }}</td>
                             <td>{{ $document->document_type }}</td>
