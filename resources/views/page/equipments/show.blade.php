@@ -22,17 +22,17 @@
     <h3 class="text-dark mb-4">จัดการครุภัณฑ์</h3>
     <form action="{{ route('equipment.index') }}" method="GET" class="mb-3">
         <div class="d-flex mb-2">
-            <select class="form-control shadow-lg p-2 mb-1 rounded" id="title_filter" name="title_filter">
+            <select class="form-control shadow-lg rounded" id="title_filter" name="title_filter">
                 @foreach ($titles as $t)
                     <option value="{{ $t->id }}" {{ request('title_filter') == $t->id ? 'selected' : '' }}>
                         {{ $t->group }} - {{ $t->name }}
                     </option>
                 @endforeach
             </select>
-            <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
+            <button class="btn btn-secondary ms-2 shadow-lg p-2 rounded" data-bs-toggle="modal"
                 data-bs-target="#titleModal">
-                <i class="bi bi-gear"></i>
-            </button>
+                โคลน </button>
+            {{-- <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button> --}}
         </div>
         <div class="d-flex mb-2">
             <select class="form-control shadow-lg p-2 mb-1 me-2 rounded" id="unit_filter" name="unit_filter">
@@ -328,7 +328,7 @@
                                     <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         {{ $equipment->original_id
                                             ? $fullEquipments->firstWhere('id', $equipment->original_id)->amount -
-                                            $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusBroken->sum('amount') -
+                                                $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusBroken->sum('amount') -
                                                 $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusNotFound->sum('amount') -
                                                 $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusDisposal->sum('amount') -
                                                 $fullEquipments->firstWhere('id', $equipment->original_id)->getStatusTransfer->sum('amount')
