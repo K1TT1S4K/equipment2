@@ -77,6 +77,7 @@ class Custom_activity extends BaseActivity
                 'type' => $this->properties['ข้อมูลก่อนแก้ไข']['type'],
                 'title' => $this->properties['ข้อมูลก่อนแก้ไข']['title'],
                 'user' => $this->properties['ข้อมูลก่อนแก้ไข']['user'],
+                'original_image_name' => $this->properties['ข้อมูลก่อนแก้ไข']['original_image_name']
             ];
             $ordered['ข้อมูลหลังแก้ไข'] = [
                 'number' => $this->properties['ข้อมูลหลังแก้ไข']['number'],
@@ -90,6 +91,7 @@ class Custom_activity extends BaseActivity
                 'type' => $this->properties['ข้อมูลหลังแก้ไข']['type'],
                 'title' => $this->properties['ข้อมูลหลังแก้ไข']['title'],
                 'user' => $this->properties['ข้อมูลหลังแก้ไข']['user'],
+                'original_image_name' => $this->properties['ข้อมูลหลังแก้ไข']['original_image_name']
             ];
         } else {
             $ordered = [
@@ -104,6 +106,7 @@ class Custom_activity extends BaseActivity
                 'type' => $this->properties['type'],
                 'title' => $this->properties['title'],
                 'user' => $this->properties['user'],
+                'original_image_name' => $this->properties['original_image_name']
             ];
         }
         return $ordered;

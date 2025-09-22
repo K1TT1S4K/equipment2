@@ -18,6 +18,8 @@ use App\Models\Document as ModelsDocument;
 use App\Models\Equipment_document;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class EquipmentController extends Controller
@@ -124,15 +126,17 @@ class EquipmentController extends Controller
 
         $statusFilter = Equipment::all();
 
-        foreach ($statusFilter as $key => $value) {
-            $found = $statusFilter[$key]->amount - $statusFilter[$key]->getStatusBroken->sum('amount') - $statusFilter[$key]->getStatusNotFound->sum('amount') - $statusFilter[$key]->getStatusDisposal->sum('amount') - $statusFilter[$key]->getStatusTransfer->sum('amount');
-            $notFound = $statusFilter[$key]->getStatusNotFound->sum('amount');
-            $broken = $statusFilter[$key]->getStatusBroken->sum('amount');
-            $disposal = $statusFilter[$key]->getStatusDisposal->sum('amount');
-            $transfer = $statusFilter[$key]->getStatusTransfer->sum('amount');
-            $result = str_contains($found, $search) || str_contains($notFound, $search) || str_contains($broken, $search) || str_contains($disposal, $search) || str_contains($transfer, $search);
-            if ($result) {
-                $idFilterd[] = $value->id;
+        if ($search) {
+            foreach ($statusFilter as $key => $value) {
+                $found = $statusFilter[$key]->amount - $statusFilter[$key]->getStatusBroken->sum('amount') - $statusFilter[$key]->getStatusNotFound->sum('amount') - $statusFilter[$key]->getStatusDisposal->sum('amount') - $statusFilter[$key]->getStatusTransfer->sum('amount');
+                $notFound = $statusFilter[$key]->getStatusNotFound->sum('amount');
+                $broken = $statusFilter[$key]->getStatusBroken->sum('amount');
+                $disposal = $statusFilter[$key]->getStatusDisposal->sum('amount');
+                $transfer = $statusFilter[$key]->getStatusTransfer->sum('amount');
+                $result = str_contains($found, $search) || str_contains($notFound, $search) || str_contains($broken, $search) || str_contains($disposal, $search) || str_contains($transfer, $search);
+                if ($result) {
+                    $idFilterd[] = $value->id;
+                }
             }
         }
 
@@ -263,9 +267,9 @@ class EquipmentController extends Controller
                 $idFilterd[] = $value->id;
             }
         }
-// dd($idFilterd);
+        // dd($idFilterd);
         $equipments = Equipment::onlyTrashed()->whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->paginate(10);
-// dd($equipments);
+        // dd($equipments);
         $equipments->appends($request->all());
 
         return view('page.equipments.trash', compact('equipment_trash', 'equipments', 'equipment_units', 'equipment_types', 'locations', 'users', 'titles'));
@@ -303,8 +307,9 @@ class EquipmentController extends Controller
     // ฟังก์ชันสร้างข้อมูล
     public function store(Request $request)
     {
+        // dd($request);   
         $request->validate([
-            'number' => 'required|string|max:255|unique:equipment,number',
+            'number' => 'required|string|max:255',
             'name' => 'required|string|max:2000',
             'amount' => 'required|integer|max:9999999999',
             'price' => 'nullable|numeric|min:0|max:99999999.99',
@@ -313,29 +318,42 @@ class EquipmentController extends Controller
             'equipment_type_id'  => 'nullable|integer|max:9999999999',
             'title_id'  => 'required|integer|max:9999999999',
             'user_id'  => 'nullable|integer|max:9999999999',
-            'description'  => 'nullable|string|max:255'
+            'description'  => 'nullable|string|max:255',
         ]);
+
+        if ($request->file('image')) {
+            $file = $request->file('image');
+            $originalName = $file->getClientOriginalName();
+            $filePath = $file->store('', 'public');
+        }
 
         $total_price = $request->price * $request->amount;
 
-        Equipment::create([
+        $data = [
             'number' =>  $request->number,
             'name' =>  $request->name,
             'amount' =>  $request->amount,
             'price' =>  $request->price,
             'total_price' =>  $total_price,
-            // 'status_found' =>  $request->status_found,
-            // 'status_not_found' =>  $request->status_not_found,
-            // 'status_broken' =>  $request->status_broken,
-            // 'status_disposal' =>  $request->status_disposal,
-            // 'status_transfer' =>  $request->status_transfer,
             'equipment_unit_id'  =>  $request->equipment_unit_id,
             'location_id'  =>  $request->location_id,
             'equipment_type_id'  =>  $request->equipment_type_id,
             'title_id'  =>  $request->title_id,
             'user_id'  =>  $request->user_id,
-            'description'  =>  $request->description
-        ]);
+            'description'  =>  $request->description,
+        ];
+
+        // ถ้ามีการอัปโหลดไฟล์
+        if ($request->file('image')) {
+            $file = $request->file('image');
+            $originalName = $file->getClientOriginalName();
+            $filePath = $file->store(); // เก็บไว้ใน storage/app/public/img
+
+            $data['original_image_name'] = $originalName;
+            $data['stored_image_name']   = $filePath;
+        }
+
+        Equipment::create($data);
 
         $equipment = Equipment::latest('id')->first();
 
@@ -351,7 +369,8 @@ class EquipmentController extends Controller
                 'amount',
                 'price',
                 'total_price',
-                'description'
+                'description',
+                'original_image_name'
             ]), [
                 'unit' => optional($equipment->equipmentUnit)->name,
                 'location' => optional($equipment->location)->name,
@@ -368,17 +387,12 @@ class EquipmentController extends Controller
     public function update(Request $request, $id)
     {
 
-// dd($request);
+        // dd($request);
 
         $equipment = Equipment::findOrFail($id);
 
         $request->validate([
-            'number' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('equipment', 'number')->ignore($id)
-            ],
+            'number' => 'required|string|max:255',
             'name' => 'required|string|max:2000',
             'amount' => 'required|integer|max:9999999999',
             'price' => 'nullable|numeric|min:0|max:99999999.99',
@@ -390,37 +404,46 @@ class EquipmentController extends Controller
             'description'  => 'nullable|string|max:255',
         ]);
 
-
-        $file = $request->file('image');
-        $originalName = $file->getClientOriginalName();
-        $filePath = $file->store('','public');
+        // dd($request);
 
         $total_price = $request->price * $request->amount;
 
         $oldValues = $equipment->toArray(); // คัดลอกเป็น array แยกออกมา
 
-        $equipment->update(
-            [
-                'number' =>  $request->number,
-                'name' =>  $request->name,
-                'amount' =>  $request->amount,
-                'price' =>  $request->price,
-                'total_price' =>  $total_price,
-                // 'status_found' =>  $request->status_found,
-                // 'status_not_found' =>  $request->status_not_found,
-                // 'status_broken' =>  $request->status_broken,
-                // 'status_disposal' =>  $request->status_disposal,
-                // 'status_transfer' =>  $request->status_transfer,
-                'equipment_unit_id'  =>  $request->equipment_unit_id,
-                'location_id'  =>  $request->location_id,
-                'equipment_type_id'  =>  $request->equipment_type_id,
-                'title_id'  =>  $request->title_id,
-                'user_id'  =>  $request->user_id,
-                'description'  =>  $request->description,
-                'original_image_name' => $originalName,
-                'stored_image_name' => $filePath,
-            ]
-        );
+        $data = [
+            'number' =>  $request->number,
+            'name' =>  $request->name,
+            'amount' =>  $request->amount,
+            'price' =>  $request->price,
+            'total_price' =>  $total_price,
+            'equipment_unit_id'  =>  $request->equipment_unit_id,
+            'location_id'  =>  $request->location_id,
+            'equipment_type_id'  =>  $request->equipment_type_id,
+            'title_id'  =>  $request->title_id,
+            'user_id'  =>  $request->user_id,
+            'description'  =>  $request->description,
+        ];
+
+        // ถ้ามีการอัปโหลดไฟล์
+        if ($request->file('image')) {
+            $file = $request->file('image');
+            $originalName = $file->getClientOriginalName();
+            $filePath = $file->store('', 'public'); 
+
+            $data['original_image_name'] = $originalName;
+            $data['stored_image_name']   = $filePath;
+
+            Storage::disk('public')->delete($equipment->stored_image_name);
+
+           $equipments = Equipment::where('id', $equipment->original_id ?? $equipment->id)
+                ->orWhere('original_id', $equipment->original_id ?? $equipment->id)->get();
+
+            foreach($equipments as $q){
+                $q->update(['original_image_name' => $originalName, 'stored_image_name' => $filePath]);
+            }
+        }
+
+        $equipment->update($data);
 
         $newValues = $equipment->toArray();
 
@@ -438,7 +461,8 @@ class EquipmentController extends Controller
                         'amount',
                         'price',
                         'total_price',
-                        'description'
+                        'description',
+                        'original_image_name'
                     ]),
                     [
                         'unit' => optional($equipment->equipmentUnit)->name,
@@ -455,7 +479,8 @@ class EquipmentController extends Controller
                         'amount',
                         'price',
                         'total_price',
-                        'description'
+                        'description',
+                        'original_image_name'
                     ]),
                     [
                         'unit' => optional($equipment->equipmentUnit)->name,
@@ -491,7 +516,8 @@ class EquipmentController extends Controller
                         'amount',
                         'price',
                         'total_price',
-                        'description'
+                        'description',
+                        'original_image_name'
                     ]), [
                         'unit' => optional($equipment->equipmentUnit)->name,
                         'location' => optional($equipment->location)->name,
@@ -530,7 +556,8 @@ class EquipmentController extends Controller
                     'amount',
                     'price',
                     'total_price',
-                    'description'
+                    'description',
+                    'original_image_name'
                 ]), [
                     'unit' => optional($equipment->equipmentUnit)->name,
                     'location' => optional($equipment->location)->name,
@@ -567,7 +594,8 @@ class EquipmentController extends Controller
                     'amount',
                     'price',
                     'total_price',
-                    'description'
+                    'description',
+                    'original_image_name'
                 ]), [
                     'unit' => optional($equipment->equipmentUnit)->name,
                     'location' => optional($equipment->location)->name,

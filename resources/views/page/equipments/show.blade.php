@@ -29,6 +29,10 @@
                     </option>
                 @endforeach
             </select>
+            <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
+                data-bs-target="#titleModal">
+                <i class="bi bi-gear"></i>
+            </button>
         </div>
         <div class="d-flex mb-2">
             <select class="form-control shadow-lg p-2 mb-1 me-2 rounded" id="unit_filter" name="unit_filter">
@@ -59,12 +63,10 @@
                 @endforeach
             </select>
             <select class="form-control shadow-lg p-2 mb-1 rounded" id="user_filter" name="user_filter">
-                <option value="all"
-                    {{ request('user_filter') == 'all' ? 'selected' : ''}}>
+                <option value="all" {{ request('user_filter') == 'all' ? 'selected' : '' }}>
                     ---ผู้ดูแลทั้งหมด---
                 </option>
-                <option value=""
-                    {{ request('user_filter') == null ? 'selected' : '' }}>
+                <option value="" {{ request('user_filter') == null ? 'selected' : '' }}>
                     สาขาเทคโนโลยีคอมพิวเตอร์
                 </option>
                 @foreach ($users as $user)
@@ -79,7 +81,7 @@
                 @endforeach
             </select>
         </div>
-                                    {{-- {{dd(request('user_filter'))}} --}}
+        {{-- {{dd(request('user_filter'))}} --}}
 
         <div class="d-flex">
             <input type="text" id="query" name="query" class="form-control shadow-lg p-2 mb-3 rounded"
@@ -90,6 +92,31 @@
                 style="width: 10%">ล้างการค้นหา</button>
         </div>
     </form>
+
+    <div class="modal fade" id="titleModal" tabindex="-1" aria-labelledby="titleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark" id="titleModalLabel">จัดการข้อมูลหัวข้อ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>กลุ่ม</th>
+                                <th>ชื่อหัวข้อ</th>
+                                <th>การกระทำ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cloneTitleTableBody">
+                            {{-- โหลดข้อมูลด้วย JS --}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="card shadow-lg p-3 mb-4 bg-body">
         <h3>รายการครุภัณฑ์</h3>
@@ -146,7 +173,7 @@
                             @if ('admin-or-branch-or-officer')
                                 <input type="checkbox" id="select-all">
                             @endif
-                                {{-- </div> --}}
+                            {{-- </div> --}}
                         </th>
                         <th class="align-middle" rowspan="2">ลำดับ</th>
                         <th class="align-middle" rowspan="2" style="width: 9%">รหัสครุภัณฑ์</th>
@@ -315,7 +342,7 @@
                                     <td class="text-start"
                                         onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
                                         <p><span class="text-muted">ผู้ดูแล:</span>
-                                            {{$equipment->user ? $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' : 'สาขาเทคโนโลยีคอมพิวเตอร์'}}
+                                            {{ $equipment->user ? ($equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-') : 'สาขาเทคโนโลยีคอมพิวเตอร์' }}
                                         </p>
                                         <hr>
                                         <p><span class="text-muted">ที่อยู่:

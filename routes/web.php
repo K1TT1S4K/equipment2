@@ -27,7 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
     Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
     Route::get('equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
-    Route::post('equipments_documents',[EquipmentDocumentController::class, 'store'])->name('equipments_documents.store');
+    Route::post('equipments_documents', [EquipmentDocumentController::class, 'store'])->name('equipments_documents.store');
     Route::delete('equipments_documents/delete-selected', [EquipmentDocumentController::class, 'deleteSelected'])->name('equipments_documents.deleteSelected');
 });
 
@@ -75,8 +75,7 @@ Route::middleware(['auth', 'can:admin-or-branch-or-officer'])->group(function ()
     Route::get('/trash/search', [DocumentController::class, 'searchTrash'])->name('trash.search');
     Route::post('/restore-multiple', [DocumentController::class, 'restoreMultiple'])->name('document.restoreMultiple');
     Route::delete('/delete-selected', [DocumentController::class, 'deleteSelected'])->name('document.deleteSelected');
-        Route::delete('/force-delete-selected', [DocumentController::class, 'forceDeleteSelected'])->name('document.forceDeleteSelected');
-
+    Route::delete('/force-delete-selected', [DocumentController::class, 'forceDeleteSelected'])->name('document.forceDeleteSelected');
 });
 
 
@@ -111,6 +110,7 @@ Route::middleware(['auth'])->group(function () {
 
     // เพิ่ม name ให้ route นี้
     Route::get('titles/{title}/check-usage', [TitleController::class, 'checkUsage'])->name('titles.checkUsage');
+    Route::get('titles/{title}/clone', [TitleController::class, 'clone'])->name('titles.clone');
 });
 
 require __DIR__ . '/auth.php';

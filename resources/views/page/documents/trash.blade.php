@@ -122,12 +122,12 @@
         <table class="table table-hover w-full">
             <thead class="text-center table-dark align-middle">
                 <tr class="text-center">
-                    <th><input type="checkbox" id="select-all"></th>
-                    <th class="align-middle">ลำดับ</th>
-                    <th class="align-middle">ประเภทเอกสาร</th>
-                    <th class="align-middle">วันที่ดำเนินการ</th>
-                    <th class="align-middle">เอกสารอ้างอิง</th>
-                    <th class="align-middle">วันที่ลบ</th>
+                    <th style="width: 3%"><input type="checkbox" id="select-all"></th>
+                        <th class="align-middle" style="width: 3%">ลำดับ</th>
+                        <th class="align-middle" style="width: 15%">ประเภทเอกสาร</th>
+                        <th class="align-middle" style="width: 10%">วันที่ดำเนินการ</th>
+                        <th class="align-middle">เอกสารอ้างอิง</th>
+                    <th class="align-middle" style="width: 16%">วันที่ลบ</th>
                     {{-- <th class="align-middle">วันที่สร้าง</th> --}}
                 </tr>
             </thead>

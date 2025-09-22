@@ -1,6 +1,6 @@
 <x-layouts.app>
     <h3 class="text-dark mb-3">แก้ไขข้อมูลครุภัณฑ์</h3>
-{{dd(phpinfo())}}
+{{-- {{dd(phpinfo())}} --}}
     <!-- Nav tabs -->
     <ul class="nav nav-tabs mb-3" id="equipmentTab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -34,17 +34,17 @@
 
                         <div class="row">
                             <div class="col-3 mb-3">
-                                <div class="h-100 p-2 text-start" style="height:100%;">
+                                <div class="h-100 p-2 text-center" style="height:100%;">
                                     <!-- ซ่อน input ปกติ -->
                                     <input type="file" name="image" id="image" accept="image/*"
                                         style="display:none">
 
                                     <!-- ใช้ img เป็นตัวแทน input -->
                                     <img id="preview"
-                                        src="{{ $equipment->stored_image_name ? asset('storage/' . $equipment->stored_image_name) : 'https://png.pngtree.com/png-clipart/20200225/original/pngtree-image-upload-icon-photo-upload-icon-png-image_5279794.jpg' }}"
-                                        alt="คลิกเพื่อเปลี่ยนรูป" class="inputImage">
+                                        src="{{ $equipment->stored_image_name ? asset('storage/' . $equipment->stored_image_name) : asset('storage/img/please_upload_image.png') }}"
+                                        alt="คลิกเพื่อเปลี่ยนรูป" class="inputImage p-3">
                                     <img id="hoverPreview"
-                                        src="{{ $equipment->stored_image_name ? asset('storage/' . $equipment->stored_image_name) : 'https://png.pngtree.com/png-clipart/20200225/original/pngtree-image-upload-icon-photo-upload-icon-png-image_5279794.jpg' }}"
+                                        src="{{ $equipment->stored_image_name ? asset('storage/' . $equipment->stored_image_name) : asset('storage/img/please_upload_image.png') }}"
                                         class="bigImage">
                                 </div>
                             </div>
@@ -160,7 +160,7 @@
                                         </button>
                                     @endcan
                                 </label>
-                                <select name="location_id" class="form-control" id="locationSelect">
+                                <select name="location_id" class="form-control">
                                     <option value="" {{ $equipment->location_id == null ? 'selected' : '' }}>--
                                         เลือกที่อยู่ --</option>
                                     @foreach ($locations as $l)
@@ -366,6 +366,7 @@
         const [file] = this.files;
         if (file) {
             preview.src = URL.createObjectURL(file);
+            hoverPreview.src = URL.createObjectURL(file);
         }
     });
 

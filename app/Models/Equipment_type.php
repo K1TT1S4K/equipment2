@@ -11,6 +11,7 @@ class Equipment_type extends Model
     // protected $table = 'equipment_types';
     protected $fillable = [
         'name',
+        'total_price',
         'equipment_unit_id',
         'amount',
         'price',

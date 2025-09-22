@@ -64,17 +64,17 @@
             <table class="table table-hover w-full">
                 <thead class="text-center table-dark align-middle">
                     <tr class="text-center">
-                        <th>
+                        <th style="width: 3%">
                             @if ('admin-or-branch-or-officer')
                                 <input type="checkbox" id="select-all">
                             @endif
                         </th>
-                        <th class="align-middle">ลำดับ</th>
-                        <th class="align-middle">ประเภทเอกสาร</th>
-                        <th class="align-middle">วันที่ดำเนินการ</th>
-                        <th class="align-middle">เอกสารอ้างอิง</th>
-                        <th class="align-middle">วันที่แก้ไข</th>
-                        <th class="align-middle">วันที่สร้าง</th>
+                        <th class="align-middle" style="width: 3%">ลำดับ</th>
+                        <th class="align-middle" style="width: 15%">ประเภทเอกสาร</th>
+                        <th class="align-middle" style="width: 10%">วันที่ดำเนินการ</th>
+                        <th class="align-middle" style="width: 37%">เอกสารอ้างอิง</th>
+                        <th class="align-middle" style="width: 16%">วันที่แก้ไข</th>
+                        <th class="align-middle" style="width: 16%">วันที่สร้าง</th>
                     </tr>
                 </thead>
                 <tbody class="align-middle p-3">
@@ -86,7 +86,7 @@
                                     <input type="checkbox" class="document-checkbox" name="selected_documents[]"
                                         value="{{ $document->id }}">
                                 @elseif('admin-or-branch-or-officer')
-                                <input type="checkbox" class="document-checkbox" name="selected_documents[]"
+                                    <input type="checkbox" class="document-checkbox" name="selected_documents[]"
                                         value="{{ $document->id }}">
                                 @endif
                             </td>

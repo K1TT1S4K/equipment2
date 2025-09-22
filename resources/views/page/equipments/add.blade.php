@@ -2,10 +2,52 @@
     <h3 class="text-dark">เพิ่มข้อมูลครุภัณฑ์</h3>
     <div class="card w-auto mx-auto shadow-lg p-3 mb-5 bg-body rounded border border-dark">
         <div class="card-body">
-            <form action="{{ route('equipment.store') }}" method="POST">
+            <form action="{{ route('equipment.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
+
                 <div class="row">
+                    <div class="col-3 mb-3">
+                        <div class="h-100 p-2 text-center" style="height:100%;">
+                            <!-- ซ่อน input ปกติ -->
+                            <input type="file" name="image" id="image" accept="image/*" style="display:none">
+
+                            <!-- ใช้ img เป็นตัวแทน input -->
+                            <img id="preview" src="{{ asset('storage/img/please_upload_image.png') }}"
+                                alt="คลิกเพื่อเปลี่ยนรูป" class="inputImage p-3">
+                            <img id="hoverPreview" src="{{ asset('storage/img/please_upload_image.png') }}"
+                                class="bigImage">
+                        </div>
+                    </div>
+                    <!-- คอลัมน์ซ้าย: A เรียงแนวตั้ง -->
+                    <div class="col-9 d-flex flex-column">
+                        <div class="mb-3"> <label class="form-label">หมายเลขครุภัณฑ์ <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="number" class="form-control" required>
+                        </div>
+                        <div class="mb-3"> <label class="form-label">ชื่อครุภัณฑ์ <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="equipment_unit_id" class="form-label">หน่วยนับ <span
+                                    class="text-danger">*</span>
+                                <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
+                                    data-bs-toggle="modal" data-bs-target="#unitModal">
+                                    <i class="bi bi-gear"></i>
+                                </button>
+                            </label>
+                            <select name="equipment_unit_id" class="form-control" required>
+                                <option value="">-- เลือกหน่วยนับ --</option>
+                                @foreach ($equipment_units as $unit)
+                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- <div class="row">
                     <div class="mb-3 col">
                         <label class="form-label">หมายเลขครุภัณฑ์ <span class="text-danger">*</span></label>
                         <input type="text" name="number" class="form-control" required>
@@ -22,14 +64,13 @@
                             </button>
                         </label>
                         <select name="equipment_unit_id" class="form-control" required>
-                            {{-- <option value="1" {{request('equipment_unit_id') == 1 ? 'selected' : '' }}>-- เลือกหน่วยนับ --</option> --}}
                             <option value="">-- เลือกหน่วยนับ --</option>
                             @foreach ($equipment_units as $unit)
                                 <option value="{{ $unit->id }}">{{ $unit->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                </div>
+                </div> --}}
                 <div class="row">
                     <div class="mb-3 col-6"> <label class="form-label">จำนวน <span class="text-danger">*</span></label>
                         <input type="number" name="amount" class="form-control" required value="0">
@@ -67,9 +108,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท<button type="button"
-                                class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1" data-bs-toggle="modal"
-                                data-bs-target="#typeModal">
+                    <div class="col"> <label for="equipment_type_id" class="form-label">ประเภท<button
+                                type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
+                                data-bs-toggle="modal" data-bs-target="#typeModal">
                                 <i class="bi bi-gear"></i>
                             </button></label>
                         <select name="equipment_type_id" id="equipmentTypeSelect" class="form-control">
@@ -139,15 +180,15 @@
         </div>
     </div>
 
-    <div class="modal fade" id="titleModal" tabindex="-1" aria-labelledby="titleModalLabel" aria-hidden="true">
+    <div class="modal fade" tabindex="-1" aria-labelledby="titleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-dark">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark" id="titleModalLabel">จัดการข้อมูลหัวข้อ</h5>
+                    <h5 class="modal-title text-dark" >จัดการข้อมูลหัวข้อ</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <button id="addtitleRow" class="btn btn-success mb-3">เพิ่มหัวข้อ</button>
+                    <button class="btn btn-success mb-3">เพิ่มหัวข้อ</button>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -156,7 +197,7 @@
                                 <th>การกระทำ</th>
                             </tr>
                         </thead>
-                        <tbody id="titleTableBody">
+                        <tbody>
                             {{-- โหลดข้อมูลด้วย JS --}}
                         </tbody>
                     </table>
@@ -221,3 +262,29 @@
     </div>
 
 </x-layouts.app>
+<script>
+    const imageInput = document.getElementById('image');
+    const preview = document.getElementById('preview');
+
+    // คลิกที่รูปก็เหมือนคลิก input
+    preview.addEventListener('click', () => {
+        imageInput.click();
+    });
+
+    // เมื่อเลือกไฟล์ใหม่ ให้โชว์ preview ทันที
+    imageInput.addEventListener('change', function() {
+        const [file] = this.files;
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            hoverPreview.src = URL.createObjectURL(file);
+        }
+    });
+
+    // แสดงรูปใหญ่เมื่อ hover
+    preview.addEventListener('mouseenter', () => {
+        hoverPreview.style.display = 'block';
+    });
+    preview.addEventListener('mouseleave', () => {
+        hoverPreview.style.display = 'none';
+    });
+</script>

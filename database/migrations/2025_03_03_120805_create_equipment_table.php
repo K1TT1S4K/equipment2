@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('original_image_name')->nullable();
             $table->string('stored_image_name')->nullable();
+            $table->integer('original_id')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้สร้าง
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้แก้ไขล่าสุด
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้ลบ
