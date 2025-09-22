@@ -29,9 +29,11 @@
                     </option>
                 @endforeach
             </select>
+@can('admin-or-branch')
             <button type="button" class="btn btn-secondary ms-2 shadow-lg p-2 rounded" data-bs-toggle="modal"
                 data-bs-target="#titleModal">
                 โคลน </button>
+                @endcan
             {{-- <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button> --}}
         </div>
         <div class="d-flex mb-2">
