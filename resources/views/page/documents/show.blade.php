@@ -80,12 +80,7 @@
                 <tbody class="align-middle p-3">
                     @forelse ($documents as $key => $document)
                         <tr class="text-center" style="cursor: pointer;"
-                            @can('officer')
-                                    @if ($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
-                                        onclick="window.location='{{ route('document.edit', $document->id) }}'"
-                                   @endif
-                                @endcan
-                            @can('admin-or-branch-or-officer')
+                            @can('admin-or-branch-or-branch')
                                 onclick="window.location='{{ route('document.edit', $document->id) }}'"
                             @endcan>
                             <td onclick="event.stopPropagation();">
@@ -95,7 +90,7 @@
                                             value="{{ $document->id }}">
                                     @endif
                                 @endcan
-                                @can('admin-or-branch-or-officer')
+                                @can('admin-or-branch')
                                     <input type="checkbox" class="document-checkbox" name="selected_documents[]"
                                         value="{{ $document->id }}">
                                 @endcan
