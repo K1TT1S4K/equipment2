@@ -37,7 +37,7 @@ class UserController extends Controller
                             $q2->whereRaw("CONCAT(prefixes.name, ' ', users.firstname, ' ', users.lastname) LIKE ?", ["%{$search}%"]);
                         })
                         ->orWhereRaw("
-                    CONCAT(DAY(last_login_at), ' ', 
+                    CONCAT(DAY(last_login_at), ' ',
                         CASE MONTH(last_login_at)
                             WHEN 1 THEN 'ม.ค.'
                             WHEN 2 THEN 'ก.พ.'
@@ -393,13 +393,12 @@ class UserController extends Controller
             if ($search)
                 $query->where(function ($q) use ($search) {
                     $q->where('username', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
                         ->orWhere('user_type', 'like', "%{$search}%")
                         ->orWhereHas('prefix', function ($q2) use ($search) {
                             $q2->whereRaw("CONCAT(prefixes.name, ' ', users.firstname, ' ', users.lastname) LIKE ?", ["%{$search}%"]);
                         })
                         ->orWhereRaw("
-                    CONCAT(DAY(deleted_at), ' ', 
+                    CONCAT(DAY(deleted_at), ' ',
                         CASE MONTH(deleted_at)
                             WHEN 1 THEN 'ม.ค.'
                             WHEN 2 THEN 'ก.พ.'
