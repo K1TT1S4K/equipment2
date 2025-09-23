@@ -123,20 +123,6 @@ class EquipmentController extends Controller
 
         $statusFilter = Equipment::all();
 
-        if ($search) {
-            foreach ($statusFilter as $key => $value) {
-                $found = $statusFilter[$key]->amount - $statusFilter[$key]->getStatusBroken->sum('amount') - $statusFilter[$key]->getStatusNotFound->sum('amount') - $statusFilter[$key]->getStatusDisposal->sum('amount') - $statusFilter[$key]->getStatusTransfer->sum('amount');
-                $notFound = $statusFilter[$key]->getStatusNotFound->sum('amount');
-                $broken = $statusFilter[$key]->getStatusBroken->sum('amount');
-                $disposal = $statusFilter[$key]->getStatusDisposal->sum('amount');
-                $transfer = $statusFilter[$key]->getStatusTransfer->sum('amount');
-                $result = str_contains($found, $search) || str_contains($notFound, $search) || str_contains($broken, $search) || str_contains($disposal, $search) || str_contains($transfer, $search);
-                if ($result) {
-                    $idFilterd[] = $value->id;
-                }
-            }
-        }
-
         $equipments = Equipment::whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->paginate(10);
         $equipmentsNoPaginate = Equipment::whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->get();
 

@@ -18,6 +18,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
+    Route::post('/equipment/update-status', [EquipmentController::class, 'updateStatus'])->name('equipment.update_status');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
     Route::get('/export', [EquipmentController::class, 'export'])->name('equipment.export');
@@ -27,7 +28,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'can:admin-or-branch'])->group(function () {
-    Route::post('/equipment/update-status', [EquipmentController::class, 'updateStatus'])->name('equipment.update_status');
     Route::get('equipment/create', [EquipmentController::class, 'create'])->name('equipment.create');
     Route::post('equipment', [EquipmentController::class, 'store'])->name('equipment.store');
     Route::put('equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
