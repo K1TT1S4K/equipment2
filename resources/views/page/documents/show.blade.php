@@ -8,20 +8,16 @@
             {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
             <select id="document_type" name="document_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
                 <option value="">-- เลือกประเภทเอกสาร --</option>
-                <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
-                    {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
-                    ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                <option value="แทงจำหน่ายครุภัณฑ์"
-                    {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
+                <option value="สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี"
+                    {{ request('document_type') == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี' ? 'selected' : '' }}>
+                    สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี</option>
+                <option value="รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด"
+                    {{ request('document_type') == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด' ? 'selected' : '' }}>
+                    รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด
                 </option>
                 <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
                     โอนครุภัณฑ์</option>
-                <option value="ไม่พบ" {{ request('document_type') == 'ไม่พบ' ? 'selected' : '' }}>
-                    ไม่พบ</option>
-                <option value="ชำรุด" {{ request('document_type') == 'ชำรุด' ? 'selected' : '' }}>
-                    ชำรุด</option>
             </select>
-
 
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
             <button type="button" class="btn btn-danger ms-2 shadow-lg p-2 mb-3 rounded"
@@ -80,20 +76,18 @@
                 <tbody class="align-middle p-3">
                     @forelse ($documents as $key => $document)
                         <tr class="text-center" style="cursor: pointer;"
-                            @can('admin-or-branch-or-officer')
-                                onclick="window.location='{{ route('document.edit', $document->id) }}'"
-                            @endcan>
+                            onclick="window.location='{{ route('document.edit', $document->id) }}'">
                             <td onclick="event.stopPropagation();">
-                                @can('officer')
-                                    @if ($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
-                                        <input type="checkbox" class="document-checkbox" name="selected_documents[]"
-                                            value="{{ $document->id }}">
-                                    @endif
-                                @endcan
-                                @can('admin-or-branch')
+                                @if (
+                                    !(Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์' ||
+                                        (Auth::user()->user_type == 'เจ้าหน้าที่พัสดุ' &&
+                                            $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด') ||
+                                            (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' &&
+                                            ($document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี' || $document->document_type == 'โอนครุภัณฑ์'))
+                                    ))
                                     <input type="checkbox" class="document-checkbox" name="selected_documents[]"
                                         value="{{ $document->id }}">
-                                @endcan
+                                @endif
                             </td>
                             <td>{{ $loop->iteration + ($documents->currentPage() - 1) * $documents->perPage() }}</td>
                             <td>{{ $document->document_type }}</td>

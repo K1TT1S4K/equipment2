@@ -7,13 +7,14 @@
             <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded"
                 placeholder="ค้นหาจากข้อมูลเอกสาร" value="{{ request('search') }}">
             {{-- <label for="document_type" class="form-label">ประเภทเอกสาร</label> --}}
-            <select id="document_type" name="document_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
+                  <select id="document_type" name="document_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
                 <option value="">-- เลือกประเภทเอกสาร --</option>
-                <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
-                    {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
-                    ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                <option value="แทงจำหน่ายครุภัณฑ์"
-                    {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
+                <option value="สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี"
+                    {{ request('document_type') == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี' ? 'selected' : '' }}>
+                    สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี</option>
+                <option value="รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด"
+                    {{ request('document_type') == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด' ? 'selected' : '' }}>
+                    รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด
                 </option>
                 <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
                     โอนครุภัณฑ์</option>

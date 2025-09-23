@@ -259,31 +259,31 @@ class UserController extends Controller
 
         // แสดงข้อความสำเร็จ
         if ($passwordChanged) {
-            activity()
-                ->tap(function ($activity) {
-                    $activity->menu = 'แก้ไขข้อมูล';
-                })
-                ->useLog(auth()->user()->full_name)
-                ->performedOn($user)
-                ->withProperties([
-                    'ข้อมูลก่อนแก้ไข' => array_merge($oldValues->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]),
-                    'ข้อมูลหลังแก้ไข' => array_merge($newValues->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]),
-                ])
-                ->log('บุคลากร');
+            // activity()
+            //     ->tap(function ($activity) {
+            //         $activity->menu = 'แก้ไขข้อมูล';
+            //     })
+            //     ->useLog(auth()->user()->full_name)
+            //     ->performedOn($user)
+            //     ->withProperties([
+            //         'ข้อมูลก่อนแก้ไข' => array_merge($oldValues->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]),
+            //         'ข้อมูลหลังแก้ไข' => array_merge($newValues->only(['username', 'firstname', 'lastname', 'user_type']), ['prefix' => optional($user->prefix)->name]),
+            //     ])
+            //     ->log('บุคลากร');
 
             return redirect()->route('profile')->with('success', 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว');
         } else {
-            activity()
-                ->tap(function ($activity) {
-                    $activity->menu = 'แก้ไขข้อมูล';
-                })
-                ->useLog(auth()->user()->full_name)
-                ->performedOn($user)
-                ->withProperties([
-                    'ข้อมูลก่อนแก้ไข' => $oldValues->only(['username', 'firstname', 'lastname', 'user_type']),
-                    'ข้อมูลหลังแก้ไข' => $newValues->only(['username', 'firstname', 'lastname', 'user_type'])
-                ])
-                ->log('บุคลากร');
+            // activity()
+            //     ->tap(function ($activity) {
+            //         $activity->menu = 'แก้ไขข้อมูล';
+            //     })
+            //     ->useLog(auth()->user()->full_name)
+            //     ->performedOn($user)
+            //     ->withProperties([
+            //         'ข้อมูลก่อนแก้ไข' => $oldValues->only(['username', 'firstname', 'lastname', 'user_type']),
+            //         'ข้อมูลหลังแก้ไข' => $newValues->only(['username', 'firstname', 'lastname', 'user_type'])
+            //     ])
+            //     ->log('บุคลากร');
 
             return redirect()->route('profile')->with('success', 'อัปเดตข้อมูลเรียบร้อยแล้ว');
         }

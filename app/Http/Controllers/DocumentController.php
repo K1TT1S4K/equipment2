@@ -137,12 +137,12 @@ class DocumentController extends Controller
     // ฟังก์ชันเพิ่มข้อมูลเอกสาร
     public function store(Request $request)
     {
-    //     $file = $request->file('document');
-    //     $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        //     $file = $request->file('document');
+        //     $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
-    // dd($request);
+        // dd($request);
 
-         $request->validate([ // ตรวจสอบความถูกต้องของข้อมูล
+        $request->validate([ // ตรวจสอบความถูกต้องของข้อมูล
             'document_type' => 'required|string', // ประเภทเอกสาร
             'date' => 'required|date', // วันที่
             'document' => 'required|file|mimes:pdf' // ขนาดไฟล์ไม่เกิน 2MB
@@ -152,7 +152,7 @@ class DocumentController extends Controller
         // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
         $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
         // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
-        $filePath = $file->store('', 'public'); 
+        $filePath = $file->store('', 'public');
 
         Document::create([ // สร้างเอกสารใหม่ในฐานข้อมูล
             // dd('99'),
@@ -189,34 +189,22 @@ class DocumentController extends Controller
             'newFile' => 'nullable|file|mimes:pdf',
         ]);
 
+        $file = $request->file('newFile'); // รับไฟล์เอกสาร
+        // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
+        $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
+        // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
+        $filePath = $file->store('', 'public');
+
         $document = Document::findOrFail($id);
 
         $oldValues = $document->toArray();
 
-        if ($request->hasFile('newFile')) {
-            // ลบไฟล์เก่าออก
-            if ($document->path) {
-                Storage::delete('public/' . $document->path);
-            }
-
-            // ดึงชื่อไฟล์เดิม + ต่อ timestamp เพื่อกันซ้ำ
-            $file = $request->file('newFile');
-            $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $extension = $file->getClientOriginalExtension();
-            $uniqueName = $filename . '.' . $extension;
-
-            // เก็บไฟล์ใหม่
-            $filePath = $file->storeAs('documents', $uniqueName, 'public');
-
-            // อัปเดต path ใหม่ลงใน model
-            $document->path = $filePath;
-        }
-
         // อัปเดตข้อมูลอื่น
-        $document->update([
+              $document->update([
             'document_type' => $request->document_type,
             'date' => $request->date,
-            'path' => $document->path, // เผื่อไม่ได้อัปโหลดไฟล์ใหม่ จะใช้ path เดิม
+            'original_name' => $originalName,
+            'stored_name' => $filePath
         ]);
 
         $newValues = $document->toArray();

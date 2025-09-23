@@ -8,28 +8,19 @@
                 <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
                 <div class="mb-3">
                     <label for="document_type" class="form-label">เอกสาร <span class="text-danger">*</span></label>
-                    <select name="document_type" class="form-select" required>
-                        <option value="">-- เลือกประเภทเอกสาร --</option>
-                        @can('admin-or-branch')
-                            <option value="แทงจำหน่ายครุภัณฑ์"
-                                {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
-                            </option>
-                            <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
-                                {{ request('document_type') == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
-                                ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                            <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
-                                โอนครุภัณฑ์</option>
-                            <option value="ไม่พบ" {{ request('document_type') == 'ไม่พบ' ? 'selected' : '' }}>
-                                ไม่พบ</option>
-                            <option value="ชำรุด" {{ request('document_type') == 'ชำรุด' ? 'selected' : '' }}>
-                                ชำรุด</option>
-                        @endcan
-                        @can('officer')
-                            <option value="แทงจำหน่ายครุภัณฑ์"
-                                {{ request('document_type') == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>แทงจำหน่ายครุภัณฑ์
-                            </option>
-                        @endcan
-                    </select>
+                               <select id="document_type" name="document_type" class="form-select">
+                <option value="">-- เลือกประเภทเอกสาร --</option>
+                <option value="สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี"
+                    {{ request('document_type') == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี' ? 'selected' : '' }}>
+                    สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี</option>
+                    @can('admin-or-officer')
+                <option value="รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด"
+                    {{ request('document_type') == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด' ? 'selected' : '' }}>รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด
+                </option>
+                @endcan
+                <option value="โอนครุภัณฑ์" {{ request('document_type') == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
+                    โอนครุภัณฑ์</option>
+            </select>
                 </div>
                 <div class="mb-3">
                     <label for="date" class="form-label">วันที่ดำเนินการ <span class="text-danger">*</span></label>

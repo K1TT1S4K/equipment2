@@ -127,9 +127,6 @@
                             <div class="p-2">
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <div>
-                                        <a href="{{ url()->full() }}&check=1" class="btn btn-primary mb-3">
-                                            ตรวจสอบครุภัณฑ์ประจำปีส่งออกข้อมูล
-                                        </a>
                                         <button type="submit" class="btn btn-danger" id="delete-all-btn"
                                             style="display:none;">ย้ายรายการทั้งหมดไปที่ถังขยะ</button>
                                     </div>
@@ -179,11 +176,14 @@
                                 <th class="align-middle" style="width: 6%">ไม่พบ</th>
                                 <th class="align-middle" style="width: 6%">ชำรุด</th>
                                 <th class="align-middle" style="width: 6%">จำ<br>หน่าย</th>
-                                <th class="align-middle" style="width: 6%">โอน</th>
+                                <th class="align-middle" style="width: 6%">โอน</th> 
                             </tr>
                         </thead>
                         <tbody class="align-middle p-3">
-
+@php // จะบอกว่ามันเป็น Collection หรือ Builder หรือ array
+ if(Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์') $equipmentsNoPaginate = collect($equipmentsNoPaginate) // ถ้ายังไม่เป็น Collection ให้ wrap
+    ->where('user_id', Auth::id())
+    ->values();@endphp
                             @forelse ($equipmentsNoPaginate as $key => $equipment)
                                 @continue($equipment->title_id != request('title_filter') && $equipment->is_locked == 1)
                                 <tr class="text-center" style="cursor: pointer;">

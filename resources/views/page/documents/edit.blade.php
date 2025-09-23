@@ -20,21 +20,20 @@
         </li>
     </ul> --}}
 
-    @can('admin-or-branch')
-        <div class="tab-pane fade {{ request()->get('page') < 1 ? 'show active' : '' }}" id="edit-document" role="tabpanel"
-            aria-labelledby="edit-tab">
-            {{-- card สำหรับฟอร์มแก้ไขข้อมูลเอกสาร --}}
-            <div class="card w-auto mx-auto shadow-lg p-3 mb-4 bg-body rounded border border-dark mt-4">
-                <div class="card-body">
-                    <!-- ฟอร์มแก้ไขข้อมูล -->
-                    <form action="{{ route('document.update', $document->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
-                        <div class="mb-3">
-                            <label for="document_type" class="form-label">ประเภทเอกสาร <span
-                                    class="text-danger">*</span></label>
-                            <select name="document_type" class="form-select" required>
+    <div class="tab-pane fade {{ request()->get('page') < 1 ? 'show active' : '' }}" id="edit-document" role="tabpanel"
+        aria-labelledby="edit-tab">
+        {{-- card สำหรับฟอร์มแก้ไขข้อมูลเอกสาร --}}
+        <div class="card w-auto mx-auto shadow-lg p-3 mb-4 bg-body rounded border border-dark mt-4">
+            <div class="card-body">
+                <!-- ฟอร์มแก้ไขข้อมูล -->
+                <form action="{{ route('document.update', $document->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
+                    <div class="mb-3">
+                        <label for="document_type" class="form-label">ประเภทเอกสาร <span
+                                class="text-danger">*</span></label>
+                        {{-- <select name="document_type" class="form-select" required>
                                 <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
                                     {{ $document->document_type == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
                                     ยื่นแทงจำหน่ายครุภัณฑ์</option>
@@ -49,113 +48,62 @@
                                     ไม่พบ</option>
                                 <option value="ชำรุด" {{ request('document_type') == 'ชำรุด' ? 'selected' : '' }}>
                                     ชำรุด</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="date" class="form-label">วันที่ดำเนินการ <span
-                                    class="text-danger">*</span></label>
-                            <input type="date" name="date" class="form-control" value="{{ $document->date }}"
-                                required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="newFile" class="form-label">เอกสารอ้างอิง
-                                pdf</label>
-                            <input type="file" name="newFile" class="form-control" accept=".pdf">
-                            @if ($document && $document->path)
-                                <small class="form-text text-muted">ไฟล์เดิม: <a
-                                        href="{{ url('storage/' . $document->path) }}"
-                                        download>{{ basename($document->path) }}</a></small>
-                            @endif
-                        </div>
-                        @can('admin-or-branch')
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-primary">บันทึก</button>
-                                <a href="{{ url()->previous() }}" class="btn btn-secondary">ยกเลิก</a>
-                            </div>
-                        @endcan
-
-                        @if ($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
-                            @can('officer')
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-primary">บันทึก</button>
-                                    <a href="{{ url()->previous() }}" class="btn btn-secondary">ยกเลิก</a>
-                                </div>
+                            </select> --}}
+                        <select id="document_type" name="document_type" class="form-select"
+                            {{ Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์' || (Auth::user()->user_type == 'เจ้าหน้าที่พัสดุ' && $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด') || (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' && ($document->document_type == 'โอนครุภัณฑ์' || $document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี')) ? 'disabled' : '' }}>
+                            <option value="">-- เลือกประเภทเอกสาร --</option>
+                            @can('admin-or-branch')
+                                <option value="สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี"
+                                    {{ $document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี' ? 'selected' : '' }}>
+                                    สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี</option>
                             @endcan
-                        @endif
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endcan
-
-    @can('officer')
-        <div class="tab-pane fade {{ request()->get('page') < 1 ? 'show active' : '' }}" id="edit-document" role="tabpanel"
-            aria-labelledby="edit-tab">
-            {{-- card สำหรับฟอร์มแก้ไขข้อมูลเอกสาร --}}
-            <div class="card w-auto mx-auto shadow-lg p-3 mb-4 bg-body rounded border border-dark mt-4">
-                <div class="card-body">
-                    <!-- ฟอร์มแก้ไขข้อมูล -->
-                    <form action="{{ route('document.update', $document->id) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
-                        {{-- <div class="mb-3">
-                            <label for="document_type" class="form-label">ประเภทเอกสาร <span
-                                    class="text-danger">*</span></label>
-                            <select name="document_type" class="form-select" required
-                                @if ($document->document_type != 'แทงจำหน่ายครุภัณฑ์') disabled @endif>
-                                <option value="ยื่นแทงจำหน่ายครุภัณฑ์"
-                                    {{ $document->document_type == 'ยื่นแทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
-                                    ยื่นแทงจำหน่ายครุภัณฑ์</option>
-                                <option value="แทงจำหน่ายครุภัณฑ์"
-                                    {{ $document->document_type == 'แทงจำหน่ายครุภัณฑ์' ? 'selected' : '' }}>
-                                    แทงจำหน่ายครุภัณฑ์
+                            @can('admin-or-officer')
+                                <option value="รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด"
+                                    {{ $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด' ? 'selected' : '' }}>
+                                    รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด
                                 </option>
+                            @endcan
+                            @can('admin-or-branch')
                                 <option value="โอนครุภัณฑ์"
                                     {{ $document->document_type == 'โอนครุภัณฑ์' ? 'selected' : '' }}>
                                     โอนครุภัณฑ์</option>
-                                <option value="ไม่พบ" {{ request('document_type') == 'ไม่พบ' ? 'selected' : '' }}>
-                                    ไม่พบ</option>
-                                <option value="ชำรุด" {{ request('document_type') == 'ชำรุด' ? 'selected' : '' }}>
-                                    ชำรุด</option>
-                            </select>
-                        </div> --}}
-
-                        <div class="mb-3">
-                            <label for="date" class="form-label">วันที่ดำเนินการ <span
-                                    class="text-danger">*</span></label>
-                            <input type="date" name="date" class="form-control" value="{{ $document->date }}"
-                                @if ($document->document_type != 'แทงจำหน่ายครุภัณฑ์') disabled @endif required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="newFile" class="form-label">เอกสารอ้างอิง
-                                pdf</label>
-                            <input type="file" name="newFile" class="form-control" accept=".pdf"
-                                @if ($document->document_type != 'แทงจำหน่ายครุภัณฑ์') disabled @endif>
-                            @if ($document && $document->path)
-                                <small class="form-text text-muted">ไฟล์เดิม: <a
-                                        href="{{ url('storage/' . $document->path) }}"
-                                        download>{{ basename($document->path) }}</a></small>
-                            @endif
-                        </div>
-
-                        @if ($document->document_type == 'แทงจำหน่ายครุภัณฑ์')
-                            @can('officer')
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-primary">บันทึก</button>
-                                    <a href="{{ url()->previous() }}" class="btn btn-secondary">ยกเลิก</a>
-                                </div>
                             @endcan
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date" class="form-label">วันที่ดำเนินการ <span
+                                class="text-danger">*</span></label>
+                        <input type="date" name="date" class="form-control" value="{{ $document->date }}" required
+                            {{ Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์' || (Auth::user()->user_type == 'เจ้าหน้าที่พัสดุ' && $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด') || (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' && ($document->document_type == 'โอนครุภัณฑ์' || $document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี')) ? 'disabled' : '' }}>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="newFile" class="form-label">เอกสารอ้างอิง
+                            pdf</label>
+                        <input type="file" name="newFile" class="form-control" accept=".pdf"
+                            {{ Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์' || (Auth::user()->user_type == 'เจ้าหน้าที่พัสดุ' && $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด') || (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' && ($document->document_type == 'โอนครุภัณฑ์' || $document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี')) ? 'disabled' : '' }}>
+                        @if ($document && $document->path)
+                            <small class="form-text text-muted">ไฟล์เดิม: <a
+                                    href="{{ url('storage/' . $document->path) }}"
+                                    download>{{ basename($document->path) }}</a></small>
                         @endif
-                    </form>
-                </div>
+                    </div>
+
+                    @if (
+                        !(Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์' ||
+                            (Auth::user()->user_type == 'เจ้าหน้าที่พัสดุ' &&
+                                $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด') || (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' && ($document->document_type == 'โอนครุภัณฑ์' || $document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี'))
+                        ))
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">บันทึก</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-secondary">ยกเลิก</a>
+                        </div>
+                    @endif
+                </form>
             </div>
         </div>
-    @endcan
+    </div>
 
     <script>
         // เพิ่มครุภัณฑ์ที่เกี่ยวข้อง

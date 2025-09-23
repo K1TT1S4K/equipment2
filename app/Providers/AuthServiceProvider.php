@@ -42,6 +42,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->user_type === 'เจ้าหน้าที่พัสดุ' || $user->user_type === 'ผู้ดูแลระบบ';
         });
 
+        Gate::define('admin-or-officer', function ($user) {
+            return $user->user_type === 'ผู้ปฏิบัติงานบริหาร' || $user->user_type === 'ผู้ดูแลระบบ';
+        });
+
         Gate::define('admin-or-branch-or-officer', function ($user) {
             return $user->user_type === 'เจ้าหน้าที่พัสดุ' || $user->user_type === 'ผู้ดูแลระบบ' || $user->user_type === 'ผู้ปฏิบัติงานบริหาร';
         });
