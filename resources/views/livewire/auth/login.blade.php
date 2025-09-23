@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Auth\Events\Lockout;
+use App\Models\Title;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
@@ -44,7 +45,19 @@ new #[Layout('components.layouts.auth')] class extends Component {
 
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
-        $this->redirectIntended(default: route('dashboard.index', absolute: false), navigate: true);
+        // $this->redirectIntended(default: route('equipment.index', absolute: false), navigate: true);
+
+
+$this->redirectIntended(
+    default: route('equipment.index', [
+        'title_filter'    => \App\Models\Title::max('id'),
+        'unit_filter'     => 'all',
+        'location_filter' => 'all',
+        'user_filter'     => 'all',
+    ], absolute: false),
+    navigate: true
+);
+
 
         // dd(now());
         Auth::user()->update([
