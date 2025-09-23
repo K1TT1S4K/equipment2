@@ -17,7 +17,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\Exportable;
 
-class EquipmentsExport implements FromCollection, WithHeadings, WithColumnWidths, WithEvents, WithStyles
+class EquipmentsExport implements FromCollection, WithColumnWidths
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -39,167 +39,165 @@ class EquipmentsExport implements FromCollection, WithHeadings, WithColumnWidths
         $search = null;
         if (!empty($request['query'])) $search = $request['query'];
         $title = $request['title_filter'];
-        $unit = $request['unit_filter'];
-        $location = $request['location_filter'];
-        $user = $request['user_filter'];
         $count = 1;
-
-        //ดึงค่าจากตาราง Equipment_unit โดยให้ id เป็น key และให้ name เป็น value
-        // หลังจากนั้นเปลี่ยนจาก collection เป็น array ปกติด้วย toArray()
         $unitMap = Equipment_unit::pluck('name', 'id')->toArray();
-        $typeNameMap = Equipment_type::pluck('name', 'id')->toArray();
-        $typeUnitMap = Equipment_type::pluck('equipment_unit_id', 'id')->toArray();
-        $typeAmountMap = Equipment_type::pluck('amount', 'id')->toArray();
-        $typePriceMap = Equipment_type::pluck('price', 'id')->toArray();
-        $typeTotalPriceMap = Equipment_type::pluck('total_price', 'id')->toArray();
         $userPrefixMap = User::pluck('prefix_id', 'id')->toArray();
         $userFirstnameMap = User::pluck('firstname', 'id')->toArray();
         $userLastnameMap = User::pluck('lastname', 'id')->toArray();
         $prefixMap = Prefix::pluck('name', 'id');
         $locationMap = Location::pluck('name', 'id');
-        $data = Equipment::when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('number', 'like', "%{$search}%")
-                        ->orWhere('name', 'like', "%{$search}%")
-                        ->orWhere('price', 'like', "%{$search}%")
-                        ->orWhere('total_price', 'like', "%{$search}%")
-                        ->orWhere('status_found', 'like', "%{$search}%")
-                        ->orWhere('status_not_found', 'like', "%{$search}%")
-                        ->orWhere('status_broken', 'like', "%{$search}%")
-                        ->orWhere('status_disposal', 'like', "%{$search}%")
-                        ->orWhere('status_transfer', 'like', "%{$search}%")
-                        ->orWhere('created_at', 'like', "%{$search}%")
-                        ->orWhere('updated_at', 'like', "%{$search}%");
-                });
-        })
-            ->when($title, function ($query, $title) {
-                $query->where('title_id', $title); // กรองตามหัวข้อ
-            })
-            ->when($unit, function ($query, $unit) {
-                if ($unit != 'all') $query->where('equipment_unit_id', $unit); // กรองตามหน่วยนับ
-            })
-            ->when($location, function ($query, $location) {
-                if ($location != 'all') $query->where('location_id', $location); // กรองตามที่อยู่
-            })
-            ->when($user, function ($query, $user) {
-                if ($user != 'all') $query->where('user_id', $user); // กรองตามผู้ดูแล
-            })->get();
+        $data = Equipment::where('title_id', $title)->get();
 
-        $displayedTypes = [];
+        $headerAdded = [
+            'broken' => false,
+            'disposal' => false,
+            'not_found' => false,
+        ];
 
-        $dataWithExtra = $data->flatMap(function ($item, $key) use (&$count, $data, $typeNameMap, $typeUnitMap, $typeAmountMap, $typePriceMap, $typeTotalPriceMap, $unitMap, $userPrefixMap, $userFirstnameMap, $userLastnameMap, $prefixMap, $locationMap, &$displayedTypes) {
-            $firstname = $userFirstnameMap[$item->user_id] ?? '';
-            $firstname = $firstname ? $firstname . " " : $firstname;
-
-            $location = $locationMap[$item->location_id] ?? '';
-            $location = ($location && $item->user_id) ? "\n" . $location : $location;
-
-            $description = $item->description ?? '';
-            $description = ($description && $item->location_id) ? "\n" . $description : $description;
-
-            $type = $item->equipment_type_id;
-
+        $dataWithExtra = $data->flatMap(function ($item, $key) use (&$count, $unitMap, $userPrefixMap, $userFirstnameMap, $userLastnameMap, $prefixMap, $locationMap, &$headerAdded) {
             $result = [];
 
-            // if #111
-            if (($item->equipment_type_id !== null && !(in_array($item->equipment_type_id, $displayedTypes))) && $item->title_id == $this->title->id) {
+            // เพิ่ม header Excel แถวแรก
+            if ($key === 0) {
                 $result[] = (object)[
-                    'index' => '',
-                    'number' => '',
-                    'name' => $typeNameMap[$item->equipment_type_id] ?? null,
-                    'unit_name' => ($unitMap[$typeUnitMap[$item->equipment_type_id] ?? null] ?? ''),
-                    'amount' => $typeAmountMap[$item->equipment_type_id] ?? null,
-                    'price' => $typePriceMap[$item->equipment_type_id] ?? null,
-                    'total_price' => $typeTotalPriceMap[$item->equipment_type_id] ?? null
+                    'index' => 'ลำดับ',
+                    'number' => 'หมายเลขครุภัณฑ์',
+                    'name' => 'ชื่อครุภัณฑ์',
+                    'unit_name' => 'หน่วยนับครุภัณฑ์',
+                    'status' => 'จำนวนที่ดำเนินการ',
+                    'price' => 'ราคาต่อหน่วย',
+                    'total_price' => 'ราคารวม',
+                    'description' => 'คำอธิบาย'
                 ];
+            }
 
-                foreach ($data->where('equipment_type_id', $type) as $key => $itemList) {
-                    // dd($data);
+            // 1️⃣ กลุ่ม "ตรวจพบและชำรุด/เสื่อมสภาพ"
+            if ($item->status_broken >= 1 && $item->status_disposal < $item->status_broken) {
+                if (!$headerAdded['broken']) {
                     $result[] = (object)[
-                        'index' => $count,
-                        'number' => $itemList->number,
-                        'name' => $itemList->name,
-                        'unit_name' => $unitMap[$itemList->equipment_unit_id] ?? null,
-                        'amount' => $itemList->amount,
-                        'price' => $itemList->price,
-                        'total_price' => $itemList->total_price,
-                        'status_found' => $itemList->status_found,
-                        'status_not_found' => $itemList->status_not_found,
-                        'status_broken' => $itemList->status_broken,
-                        'status_disposal' => $itemList->status_disposal,
-                        'description' => ($prefixMap[$userPrefixMap[$itemList->user_id] ?? null] ?? '')
-                            . ($firstname)
-                            . ($userLastnameMap[$itemList->user_id] ?? '')
-                            . ($location)
-                            . ($description),
+                        'index' => '',
+                        'number' => '',
+                        'name' => 'รายการพัสดุที่ตรวจพบและชำรุด/เสื่อมสภาพ',
                     ];
-                    $count++;
+                    $headerAdded['broken'] = true;
                 }
-                $displayedTypes[] = $type;
-                return $result;
-            } elseif ((!(in_array($item->equipment_type_id, $displayedTypes))) && $item->title_id == $this->title->id) {
+
+                $firstname = ($userFirstnameMap[$item->user_id] ?? '') ? ($userFirstnameMap[$item->user_id] . ' ') : '';
+                $location = ($locationMap[$item->location_id] ?? '') && $item->user_id ? "\n" . $locationMap[$item->location_id] : '';
+                $description = ($item->description ?? '') && $item->location_id ? "\n" . $item->description : '';
+
                 $result[] = (object)[
                     'index' => $count,
                     'number' => $item->number,
                     'name' => $item->name,
                     'unit_name' => $unitMap[$item->equipment_unit_id] ?? null,
-                    'amount' => $item->amount,
+                    'status' => $item->status_broken - $item->status_disposal,
                     'price' => $item->price,
                     'total_price' => $item->total_price,
-                    'status_found' => $item->status_found,
-                    'status_not_found' => $item->status_not_found,
-                    'status_broken' => $item->status_broken,
-                    'status_disposal' => $item->status_disposal,
                     'description' => ($prefixMap[$userPrefixMap[$item->user_id] ?? null] ?? '')
-                        // . ($userFirstnameMap[$item->user_id] ?? '')
-                        . ($firstname)
+                        . $firstname
                         . ($userLastnameMap[$item->user_id] ?? '')
-                        // . ($locationMap[$item->location_id] ?? '')
-                        . ($location)
-                        // . ($item->description ?? '')
-                        . ($description),
+                        . $location
+                        . $description,
+                ];
+                $count++;
+            }
+
+            // 2️⃣ กลุ่ม "ตรวจพบและชำรุด/เสื่อมสภาพ ต้องการจำหน่าย"
+            if ($item->status_disposal >= 1) {
+                if (!$headerAdded['disposal']) {
+                    $result[] = (object)[
+                        'index' => '',
+                        'number' => '',
+                        'name' => 'รายการพัสดุที่ตรวจพบและชำรุด/เสื่อมสภาพ ต้องการจำหน่าย',
+                    ];
+                    $headerAdded['disposal'] = true;
+                }
+
+                $firstname = ($userFirstnameMap[$item->user_id] ?? '') ? ($userFirstnameMap[$item->user_id] . ' ') : '';
+                $location = ($locationMap[$item->location_id] ?? '') && $item->user_id ? "\n" . $locationMap[$item->location_id] : '';
+                $description = ($item->description ?? '') && $item->location_id ? "\n" . $item->description : '';
+
+                $result[] = (object)[
+                    'index' => $count,
+                    'number' => $item->number,
+                    'name' => $item->name,
+                    'unit_name' => $unitMap[$item->equipment_unit_id] ?? null,
+                    'status' => $item->status_disposal,
+                    'price' => $item->price,
+                    'total_price' => $item->total_price,
+                    'description' => ($prefixMap[$userPrefixMap[$item->user_id] ?? null] ?? '')
+                        . $firstname
+                        . ($userLastnameMap[$item->user_id] ?? '')
+                        . $location
+                        . $description,
+                ];
+                $count++;
+            }
+
+            // 3️⃣ กลุ่ม "ขึ้นทะเบียนแล้วตรวจไม่พบ"
+            if ($item->status_not_found >= 1) {
+                if (!$headerAdded['not_found']) {
+                    $result[] = (object)[
+                        'index' => '',
+                        'number' => '',
+                        'name' => 'รายการพัสดุที่ขึ้นทะเบียนแล้วตรวจไม่พบ',
+                    ];
+                    $headerAdded['not_found'] = true;
+                }
+
+                $firstname = ($userFirstnameMap[$item->user_id] ?? '') ? ($userFirstnameMap[$item->user_id] . ' ') : '';
+                $location = ($locationMap[$item->location_id] ?? '') && $item->user_id ? "\n" . $locationMap[$item->location_id] : '';
+                $description = ($item->description ?? '') && $item->location_id ? "\n" . $item->description : '';
+
+                $result[] = (object)[
+                    'index' => $count,
+                    'number' => $item->number,
+                    'name' => $item->name,
+                    'unit_name' => $unitMap[$item->equipment_unit_id] ?? null,
+                    'status' => $item->status_not_found,
+                    'price' => $item->price,
+                    'total_price' => $item->total_price,
+                    'description' => ($prefixMap[$userPrefixMap[$item->user_id] ?? null] ?? '')
+                        . $firstname
+                        . ($userLastnameMap[$item->user_id] ?? '')
+                        . $location
+                        . $description,
                 ];
                 $count++;
             }
 
             return $result;
         });
+
+
         return $dataWithExtra;
     }
 
-    public function headings(): array
-    {
-        return [
-            // แถวที่ 1
-            ['ลำดับ', 'หมายเลข', 'ชื่อ', 'หน่วยนับ', 'จำนวน', 'ราคาต่อหน่วย', 'จำนวนเงิน', 'สถานะ', '', '', '', 'หมายเหตุและหรือใช้ประจำที่'],
-            // แถวที่ 2
-            ['', '', '', '', '', '', '', 'พบ', 'ไม่พบ', 'ชำรุด', 'จำหน่าย', '']
-        ];
-    }
 
-    public function registerEvents(): array
-    {
-        return [
-            \Maatwebsite\Excel\Events\AfterSheet::class => function (\Maatwebsite\Excel\Events\AfterSheet $event) {
-                $sheet = $event->sheet->getDelegate();
+    // public function registerEvents(): array
+    // {
+    //     return [
+    //         \Maatwebsite\Excel\Events\AfterSheet::class => function (\Maatwebsite\Excel\Events\AfterSheet $event) {
+    //             $sheet = $event->sheet->getDelegate();
 
-                // ผสานเซลหัวข้อ "สถานะ"
-                $sheet->mergeCells('H1:K1'); // สถานะ
-                $sheet->mergeCells('A1:A2'); // ลำดับ
-                $sheet->mergeCells('B1:B2'); // หมายเลข
-                $sheet->mergeCells('C1:C2'); // ชื่อ
-                $sheet->mergeCells('D1:D2'); // หน่วยนับ
-                $sheet->mergeCells('E1:E2'); // จำนวน
-                $sheet->mergeCells('F1:F2'); // ราคาต่อหน่วย
-                $sheet->mergeCells('G1:G2'); // จำนวนเงิน
-                $sheet->mergeCells('L1:L2'); // หมายเหตุ
+    //             // ผสานเซลหัวข้อ "สถานะ"
+    //             $sheet->mergeCells('H1:K1'); // สถานะ
+    //             $sheet->mergeCells('A1:A2'); // ลำดับ
+    //             $sheet->mergeCells('B1:B2'); // หมายเลข
+    //             $sheet->mergeCells('C1:C2'); // ชื่อ
+    //             $sheet->mergeCells('D1:D2'); // หน่วยนับ
+    //             $sheet->mergeCells('E1:E2'); // จำนวน
+    //             $sheet->mergeCells('F1:F2'); // ราคาต่อหน่วย
+    //             $sheet->mergeCells('G1:G2'); // จำนวนเงิน
+    //             $sheet->mergeCells('L1:L2'); // หมายเหตุ
 
-                // จัดกึ่งกลางข้อความ
-                $sheet->getStyle('A1:L2')->getAlignment()->setHorizontal('center')->setVertical('center');
-                $sheet->getStyle('A1:L2')->getFont()->setBold(true);
-            },
-        ];
-    }
+    //             // จัดกึ่งกลางข้อความ
+    //             $sheet->getStyle('A1:L2')->getAlignment()->setHorizontal('center')->setVertical('center');
+    //             $sheet->getStyle('A1:L2')->getFont()->setBold(true);
+    //         },
+    //     ];
+    // }
 
     public function columnWidths(): array
     {
@@ -213,20 +211,6 @@ class EquipmentsExport implements FromCollection, WithHeadings, WithColumnWidths
             'J' => 7,
             'K' => 7,
             'L' => 20
-        ];
-    }
-
-
-    public function styles(Worksheet $sheet)
-    {
-        // กำหนด style ทั้ง column B และ C
-        $sheet->getStyle('A:ZZ')->getAlignment()->setWrapText(true); // ไม่ตัดบรรทัดใหม่
-
-        $sheet->getDefaultRowDimension()->setRowHeight(-1);
-
-        return [ // ตั้งค่าความสูงแถวหัวตาราง
-            1 => ['font' => ['bold' => true]],
-            2 => ['font' => ['bold' => true]],
         ];
     }
 }

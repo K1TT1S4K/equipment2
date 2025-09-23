@@ -17,10 +17,10 @@ class Equipment extends Model
         'amount',
         'price',
         'total_price',
-        // 'status_found',
-        // 'status_not_found',
-        // 'status_broken',
-        // 'status_disposal',
+        'status_found',
+        'status_not_found',
+        'status_broken',
+        'status_disposal',
         'status_transfer',
         'equipment_unit_id',
         'location_id',
@@ -29,7 +29,7 @@ class Equipment extends Model
         'user_id',
         'stored_image_name',
         'original_image_name',
-        'original_id',
+        'is_locked',
         'created_at',
         'updated_at'
     ];

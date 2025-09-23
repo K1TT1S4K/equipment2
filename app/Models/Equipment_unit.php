@@ -10,6 +10,8 @@ class Equipment_unit extends Model
     //
     protected $fillable = [
         'name',
+        'is_locked',
+
     ];
 
     public function equipments(): HasMany

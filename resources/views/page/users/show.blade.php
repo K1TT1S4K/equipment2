@@ -66,6 +66,7 @@
                 </thead>
                 <tbody class="align-middle p-3">
                     @forelse ($users as $key => $user)
+                        @continue($user->is_locked == 1)
                         <tr class="text-center" style="cursor: pointer;"
                             onclick="window.location='{{ route('user.edit', $user->id) }}'">
                             <td onclick="event.stopPropagation();">

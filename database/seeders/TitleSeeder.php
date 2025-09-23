@@ -16,25 +16,10 @@ class TitleSeeder extends Seeder
         //
         DB::table('titles')->insert([
             [
-                'name' => 'สาขาเทคโนโลยีคอมพิวเตอร์ 58',
+                'name' => 'สาขาเทคโนโลยีคอมพิวเตอร์ 65',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'name' => 'สาขาเทคโนโลยีคอมพิวเตอร์ 59',
-                'create_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'name' => 'สาขาเทคโนโลยีคอมพิวเตอร์ 58',
-                'create_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'name' => 'สาขาเทคโนโลยีคอมพิวเตอร์ 59',
-                'create_at' => now(),
-                'updated_at' => now()
-            ]
             ]);
     }
 }

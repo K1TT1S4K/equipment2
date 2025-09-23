@@ -18,11 +18,11 @@ return new class extends Migration
             $table->integer('amount');
             $table->decimal('price', 10, 2)->nullable();
             $table->decimal('total_price', 10, 2)->nullable();
-            $table->integer('status_found')->nullable();
-            $table->integer('status_not_found')->nullable();
-            $table->integer('status_broken')->nullable();
-            $table->integer('status_disposal')->nullable();
-            $table->integer('status_transfer')->nullable();
+            $table->integer('status_found')->default(0);
+            $table->integer('status_not_found')->default(0);
+            $table->integer('status_broken')->default(0);
+            $table->integer('status_disposal')->default(0);
+            $table->integer('status_transfer')->default(0);
             $table->integer('equipment_unit_id')->nullable()->constrained('equipment_unit')->onDelete('set null');
             $table->integer('location_id')->nullable()->constrained('locations')->onDelete('set null');
             $table->integer('title_id')->nullable()->constrained('titles')->onDelete('set null');
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('original_image_name')->nullable();
             $table->string('stored_image_name')->nullable();
-            $table->integer('original_id')->nullable();
+            $table->boolean('is_locked')->default(false);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้สร้าง
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้แก้ไขล่าสุด
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('set null'); // ผู้ลบ

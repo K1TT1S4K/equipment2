@@ -29,7 +29,9 @@ class User extends Authenticatable
         'user_type',
         'email',
         'password',
-        'last_login_at'
+        'last_login_at',
+        'is_locked'
+
     ];
     protected $dates = ['deleted_at'];
 
@@ -39,7 +41,6 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 

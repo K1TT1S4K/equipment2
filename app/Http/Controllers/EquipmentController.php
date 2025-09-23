@@ -138,10 +138,11 @@ class EquipmentController extends Controller
         }
 
         $equipments = Equipment::whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->paginate(10);
+        $equipmentsNoPaginate = Equipment::whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->get();
 
         $equipments->appends($request->all());
 
-        return view('page.equipments.show', compact('fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'locations', 'users', 'titles'));
+        return view('page.equipments.show', compact('equipmentsNoPaginate', 'fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'locations', 'users', 'titles'));
     }
 
     // หน้ากู้คืนข้อมูล
@@ -249,24 +250,9 @@ class EquipmentController extends Controller
 
         // dd($statusFilter);
 
-        foreach ($statusFilter as $key => $value) {
-            $found = $statusFilter[$key]->amount - $statusFilter[$key]->getStatusBroken->sum('amount') - $statusFilter[$key]->getStatusNotFound->sum('amount') - $statusFilter[$key]->getStatusDisposal->sum('amount') - $statusFilter[$key]->getStatusTransfer->sum('amount');
-            $notFound = $statusFilter[$key]->getStatusNotFound->sum('amount');
-            $broken = $statusFilter[$key]->getStatusBroken->sum('amount');
-            $disposal = $statusFilter[$key]->getStatusDisposal->sum('amount');
-            $transfer = $statusFilter[$key]->getStatusTransfer->sum('amount');
-            $result = str_contains($found, $search) || str_contains($notFound, $search) || str_contains($broken, $search) || str_contains($disposal, $search) || str_contains($transfer, $search);
-
-            // if($key == 2){
-            //     dd($found, $notFound, $broken, $disposal, $transfer, $result);
-            // }
-
-            if ($result) {
-                $idFilterd[] = $value->id;
-            }
-        }
         // dd($idFilterd);
         $equipments = Equipment::onlyTrashed()->whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->paginate(10);
+        $equipmentsNoPaginate = Equipment::onlyTrashed()->whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->get();
         // dd($equipments);
         $equipments->appends($request->all());
 
@@ -294,10 +280,9 @@ class EquipmentController extends Controller
         $equipments = Equipment::all();
         $locations = Location::all();
         $titles = Title::all();
-        $equipment_documents = Equipment_document::all();
         $documents = ModelsDocument::all();
 
-        return view('page.equipments.edit', compact('equipments', 'equipment_documents', 'equipment', 'equipment_units', 'locations', 'users', 'titles')) . $id;
+        return view('page.equipments.edit', compact('equipments',  'equipment', 'equipment_units', 'locations', 'users', 'titles')) . $id;
     }
 
     // ฟังก์ชันสร้างข้อมูล
@@ -377,6 +362,43 @@ class EquipmentController extends Controller
         return redirect($request->input('redirect_to', route('equipment.index')))->with('success', 'เพิ่มครุภัณฑ์สำเร็จ');
     }
 
+    public function updateStatus(Request $request)
+    {
+        $data = $request->input('status', []);
+        $this->update_status($data);
+
+        return redirect()->route('equipment.index', [
+            'title_filter'    => Title::max('id'),
+            'unit_filter'     => 'all',
+            'location_filter' => 'all',
+            'user_filter'     => 'all',
+        ]);
+    }
+
+    public function update_status(array $data)
+    {
+        foreach ($data as $equipmentId => $statuses) {
+            // หา equipment ตาม id
+            $equipment = Equipment::find($equipmentId);
+
+            if (!$equipment) {
+                // ถ้าไม่พบให้ข้าม
+                continue;
+            }
+
+            // อัปเดตสถานะแต่ละฟิลด์
+            $equipment->status_found = $statuses['status_found'] ?? $equipment->status_found;
+            $equipment->status_not_found = $statuses['status_not_found'] ?? $equipment->status_not_found;
+            $equipment->status_broken = $statuses['status_broken'] ?? $equipment->status_broken;
+            $equipment->status_disposal = $statuses['status_disposal'] ?? $equipment->status_disposal;
+            $equipment->status_transfer = $statuses['status_transfer'] ?? $equipment->status_transfer;
+
+            // บันทึกการเปลี่ยนแปลง
+            $equipment->save();
+        }
+        // return
+    }
+
     // ฟังก์ชันแก้ไขข้อมุล
     public function update(Request $request, $id)
     {
@@ -424,17 +446,6 @@ class EquipmentController extends Controller
 
             $data['original_image_name'] = $originalName;
             $data['stored_image_name']   = $filePath;
-
-            if ($equipment->stored_image_name) {
-                Storage::disk('public')->delete($equipment->stored_image_name);
-            }
-
-            $equipments = Equipment::where('id', $equipment->original_id ?? $equipment->id)
-                ->orWhere('original_id', $equipment->original_id ?? $equipment->id)->get();
-
-            foreach ($equipments as $q) {
-                $q->update(['original_image_name' => $originalName, 'stored_image_name' => $filePath]);
-            }
         }
 
         $equipment->update($data);

@@ -4,7 +4,9 @@
 <head>
     @include('partials.head')
 </head>
-
+@php
+use App\Models\Title;
+@endphp
 <body class="min-vh-100 bg-white text-light">
 
     <!-- Navbar -->
@@ -31,7 +33,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active"
-                            href="{{ route('equipment.index') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">
+                            href="{{ route('equipment.index') }}?title_filter={{Title::max('id')}}&unit_filter=all&location_filter=all&user_filter=all">
                             ครุภัณฑ์
                         </a>
                     </li>
@@ -79,7 +81,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
                                 <li><a class="dropdown-item"
-                                        href="{{ route('equipment.trash') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">กู้คืนครุภัณฑ์</a>
+                                        href="{{ route('equipment.trash') }}?title_filter={{Title::max('id')}}&unit_filter=all&location_filter=all&user_filter=all">กู้คืนครุภัณฑ์</a>
                                 </li>
                                 <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
                                 <li><a class="dropdown-item" href="{{ route('user.trashed') }}">กู้คืนบุคลากร</a></li>
@@ -95,7 +97,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="recoveryDropdown">
                                 <li><a class="dropdown-item"
-                                        href="{{ route('equipment.trash') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all">กู้คืนครุภัณฑ์</a>
+                                        href="{{ route('equipment.trash') }}?title_filter={{Title::max('id')}}&unit_filter=all&location_filter=all&user_filter=all">กู้คืนครุภัณฑ์</a>
                                 </li>
                                 <li><a class="dropdown-item" href="{{ route('document.trash') }}">กู้คืนเอกสาร</a></li>
                             </ul>

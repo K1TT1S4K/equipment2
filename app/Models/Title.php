@@ -9,7 +9,9 @@ class Title extends Model
 {
     //
     protected $fillable = [
-        'name'
+        'name',
+                'is_locked',
+
     ];
     // public function equipments() : HasMany {
     //     return $this->hasMany(Equipment::class);

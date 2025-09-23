@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('prefixes', function (Blueprint $table) {
             $table->id();
             $table->string("name");
+            $table->boolean('is_locked')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

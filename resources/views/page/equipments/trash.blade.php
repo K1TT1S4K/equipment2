@@ -15,7 +15,7 @@
             <select class="form-control shadow-lg p-2 mb-1 rounded" id="title_filter" name="title_filter">
                 @foreach ($titles as $t)
                     <option value="{{ $t->id }}" {{ request('title_filter') == $t->id ? 'selected' : '' }}>
-                        {{ $t->group }} - {{ $t->name }}
+                        {{ $t->name }}
                     </option>
                 @endforeach
             </select>
@@ -27,6 +27,7 @@
                     ---หน่วยนับ---
                 </option>
                 @foreach ($equipment_units as $unit)
+                    @continue(optional($fullEquipments->where('equipment_unit_id', $unit->id)->first())->title_id != request('title_filter') && $unit->is_locked == 1)
                     <option value="{{ $unit->id }}" {{ request('unit_filter') == $unit->id ? 'selected' : '' }}>
                         {{ $unit->name }}
                     </option>
@@ -38,6 +39,7 @@
                     ---สถานที่ทั้งหมด---
                 </option>
                 @foreach ($locations as $location)
+                    @continue(optional($fullEquipments->where('location_id', $location->id)->first())->title_id != request('title_filter') && $location->is_locked == 1)
                     <option value="{{ $location->id }}"
                         {{ request('location_filter') == $location->id ? 'selected' : '' }}>
                         @if ($location->id == null)
@@ -55,6 +57,7 @@
                 </option>
 
                 @foreach ($users as $user)
+                    @continue(optional($fullEquipments->where('user_id', $user->id)->first())->title_id != request('title_filter') && $user->is_locked == 1)
                     <option value="{{ $user->id }}" {{ request('user_filter') == $user->id ? 'selected' : '' }}>
                         @if ($user->id == null)
                             ---ไม่ได้กำหนดผู้ดูแล---
@@ -71,104 +74,107 @@
                 placeholder="ค้นหาจากข้อมูลครุภัณฑ์" value="{{ request('query') }}">
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
             <button type="button" class="btn btn-danger ms-2 shadow-lg p-2 mb-3 rounded"
-                onclick="window.location='{{ route('equipment.trash') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all'" style="width: 10%">ล้างการค้นหา</button>
+                onclick="window.location='{{ route('equipment.trash') }}?title_filter={{Title::max('id')}}&unit_filter=all&location_filter=all&user_filter=all'"
+                style="width: 10%">ล้างการค้นหา</button>
         </div>
     </form>
 
     <div class="card shadow-lg p-3 bg-body">
-<div class="row mb-2">        <div class="col-4">
-            <h3>รายการครุภัณฑ์</h3>
+        <div class="row mb-2">
+            <div class="col-4">
+                <h3>รายการครุภัณฑ์</h3>
+            </div>
+            <div class="col-8 d-flex justify-content-end gap-2">
+                <!-- ปุ่ม Bulk Actions (กู้คืน, ลบถาวร) ซ่อนไว้ก่อน -->
+                <div id="bulk-restore-all" style="display: none;">
+                    <form id="bulk-restore-form" action="{{ route('equipment.restoreMultiple') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
+                        <input type="hidden" name="selected_equipments" id="selected_equipments_json_restore">
+                        <button type="submit" class="btn btn-warning"
+                            onclick="return confirm('คุณต้องการกู้คืนเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
+                            กู้คืนทั้งหมด
+                        </button>
+                    </form>
+                </div>
+
+                <div id="bulk-restore-selected" style="display: none;">
+                    <form id="bulk-restore-selected-form" action="{{ route('equipment.restoreMultiple') }}"
+                        method="POST">
+                        @csrf
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
+                        <input type="hidden" name="selected_equipments" id="selected_equipments_json_restore_selected">
+                        <button type="submit" class="btn btn-warning"
+                            onclick="return confirm('คุณต้องการกู้คืนเอกสารที่เลือกใช่หรือไม่?')">
+                            กู้คืนที่เลือก
+                        </button>
+                    </form>
+                </div>
+
+                <div id="bulk-delete-all" style="display: none;">
+                    <form id="bulk-force-delete-all-form" action="{{ route('equipment.forceDeleteMultiple') }}"
+                        method="POST">
+                        @csrf
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
+                        <input type="hidden" name="selected_equipments" id="selected_equipments_json_force_delete_all">
+                        <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('คุณต้องการลบถาวรเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
+                            ลบถาวรทั้งหมด
+                        </button>
+                    </form>
+                </div>
+
+                <div id="bulk-delete-selected" style="display: none;">
+                    <form id="bulk-force-delete-selected-form" action="{{ route('equipment.forceDeleteMultiple') }}"
+                        method="POST">
+                        @csrf
+                        <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
+                        <input type="hidden" name="selected_equipments"
+                            id="selected_equipments_json_force_delete_selected">
+                        <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('คุณต้องการลบถาวรเอกสารที่เลือกใช่หรือไม่?')">
+                            ลบถาวรที่เลือก
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="col-8 d-flex justify-content-end gap-2">
-            <!-- ปุ่ม Bulk Actions (กู้คืน, ลบถาวร) ซ่อนไว้ก่อน -->
-            <div id="bulk-restore-all" style="display: none;">
-                <form id="bulk-restore-form" action="{{ route('equipment.restoreMultiple') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
-                    <input type="hidden" name="selected_equipments" id="selected_equipments_json_restore">
-                    <button type="submit" class="btn btn-warning"
-                        onclick="return confirm('คุณต้องการกู้คืนเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
-                        กู้คืนทั้งหมด
-                    </button>
-                </form>
-            </div>
 
-            <div id="bulk-restore-selected" style="display: none;">
-                <form id="bulk-restore-selected-form" action="{{ route('equipment.restoreMultiple') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
-                    <input type="hidden" name="selected_equipments" id="selected_equipments_json_restore_selected">
-                    <button type="submit" class="btn btn-warning"
-                        onclick="return confirm('คุณต้องการกู้คืนเอกสารที่เลือกใช่หรือไม่?')">
-                        กู้คืนที่เลือก
-                    </button>
-                </form>
-            </div>
-
-            <div id="bulk-delete-all" style="display: none;">
-                <form id="bulk-force-delete-all-form" action="{{ route('equipment.forceDeleteMultiple') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
-                    <input type="hidden" name="selected_equipments" id="selected_equipments_json_force_delete_all">
-                    <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('คุณต้องการลบถาวรเอกสารทั้งหมดที่เลือกใช่หรือไม่?')">
-                        ลบถาวรทั้งหมด
-                    </button>
-                </form>
-            </div>
-
-            <div id="bulk-delete-selected" style="display: none;">
-                <form id="bulk-force-delete-selected-form" action="{{ route('equipment.forceDeleteMultiple') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
-                    <input type="hidden" name="selected_equipments" id="selected_equipments_json_force_delete_selected">
-                    <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('คุณต้องการลบถาวรเอกสารที่เลือกใช่หรือไม่?')">
-                        ลบถาวรที่เลือก
-                    </button>
-                </form>
-            </div>
-        </div></div>
-
-         <table class="table table-hover w-full">
-                <thead class="text-center table-dark align-middle">
-                    <tr class="text-center">
-                        <th rowspan="2">
-                            {{-- <div class="form-check d-flex justify-content-center align-items-center"
-                                    style="height: 100%;"> --}}
-                            {{-- <input class="form-check-input" type="checkbox" id="select-all"
-                                    style="transform: scale(1.5);"> --}}
-                            @if ('admin-or-branch-or-officer')
-                                <input type="checkbox" id="select-all">
-                            @endif
-                                {{-- </div> --}}
-                        </th>
-                        <th class="align-middle" rowspan="2">ลำดับ</th>
-                        <th class="align-middle" rowspan="2" style="width: 9%">รหัสครุภัณฑ์</th>
-                        <th class="align-middle" rowspan="2" style="width: 20%;">รายการ <br>( ยี่ห้อ,
-                            ชนิด,
-                            แบบ,
-                            ขนาดและลักษณะ )</th>
-                        <th class="align-middle" rowspan="2">หน่วยนับ</th>
-                        <th class="align-middle" rowspan="2">จำนวน<br>คงเหลือ</th>
-                        <th class="align-middle" rowspan="2">ราคาต่อหน่วย <br>(บาท)</th>
-                        <th class="align-middle" rowspan="2">ราคารวม</th>
-                        <th class="align-middle" colspan="5" style="width:10%">สถานะ</th>
-                        <th class="align-middle" rowspan="2" style="width: 16%">หมายเหตุ</th>
-                        <th class="align-middle" rowspan="2">วันที่แก้ไข</th>
-                        <th class="align-middle" rowspan="2">วันที่สร้าง</th>
-                        {{-- <th class="align-middle" rowspan="2">จัดการ</th> --}}
-                    </tr>
-                    <tr class="text-center">
-                        <th class="align-middle" style="width: 2%">พบ</th>
-                        <th class="align-middle" style="width: 2%">ไม่พบ</th>
-                        <th class="align-middle" style="width: 2%">ชำรุด</th>
-                        <th class="align-middle" style="width: 2%">จำ<br>หน่าย</th>
-                        <th class="align-middle" style="width: 2%">โอน</th>
-                    </tr>
-                </thead>
-                <tbody class="align-middle p-3">
-                    @php
+        <table class="table table-hover w-full">
+            <thead class="text-center table-dark align-middle">
+                <tr class="text-center">
+                    <th rowspan="2">
+                        @can('admin-or-branch-or-officer')
+                            <input type="checkbox" id="select-all">
+                        @endcan
+                        {{-- </div> --}}
+                    </th>
+                    <th class="align-middle" rowspan="2">ลำดับ</th>
+                    <th class="align-middle" rowspan="2" style="width: 9%">รหัสครุภัณฑ์</th>
+                    <th class="align-middle" rowspan="2" style="width: 20%;">รายการ <br>( ยี่ห้อ,
+                        ชนิด,
+                        แบบ,
+                        ขนาดและลักษณะ )</th>
+                    <th class="align-middle" rowspan="2">หน่วยนับ</th>
+                    <th class="align-middle" rowspan="2">จำนวน<br>คงเหลือ</th>
+                    <th class="align-middle" rowspan="2">ราคาต่อหน่วย <br>(บาท)</th>
+                    <th class="align-middle" rowspan="2">ราคารวม</th>
+                    <th class="align-middle" colspan="5" style="width:10%">สถานะ</th>
+                    <th class="align-middle" rowspan="2" style="width: 16%">หมายเหตุ</th>
+                    <th class="align-middle" rowspan="2">วันที่แก้ไข</th>
+                    <th class="align-middle" rowspan="2">วันที่สร้าง</th>
+                    {{-- <th class="align-middle" rowspan="2">จัดการ</th> --}}
+                </tr>
+                <tr class="text-center">
+                    <th class="align-middle" style="width: 2%">พบ</th>
+                    <th class="align-middle" style="width: 2%">ไม่พบ</th>
+                    <th class="align-middle" style="width: 2%">ชำรุด</th>
+                    <th class="align-middle" style="width: 2%">จำ<br>หน่าย</th>
+                    <th class="align-middle" style="width: 2%">โอน</th>
+                </tr>
+            </thead>
+            <tbody class="align-middle p-3">
+                {{-- @php
                         $displayedTypes = [];
                     @endphp
                     @forelse ($equipments as $key => $equipment)
@@ -181,8 +187,8 @@
                             @endphp
                         @endif
 
-                        @if ($type == null)
-                            <tr class="text-center" style="cursor: pointer;">
+                        @if ($type == null) --}}
+                {{-- <tr class="text-center" style="cursor: pointer;">
                                 <td colspan="3" class="bg-secondary text-white">
                                 </td>
                                 <td class="bg-secondary text-white">
@@ -213,8 +219,8 @@
                                 <td class="bg-secondary text-white">
                                 </td>
                             </tr>
-                        @else
-                            <tr class="text-center" style="cursor: pointer;">
+                        @else --}}
+                {{-- <tr class="text-center" style="cursor: pointer;">
                                 <td colspan="3" class="bg-secondary text-white">
                                 </td>
                                 <td class="bg-secondary text-white">
@@ -243,116 +249,107 @@
                                 </td>
                                 <td class="bg-secondary text-white">
                                 </td>
-                                <td class="bg-secondary text-white">
-                                    {{-- {{ $equipment->equipmentType->updated_at }} --}}
-                                    {{ $equipment->equipmentType->updated_at->format('j') }}
+                                <td class="bg-secondary text-white"> --}}
+                {{-- {{ $equipment->equipmentType->updated_at }} --}}
+                {{-- {{ $equipment->equipmentType->updated_at->format('j') }}
                                     {{ $equipment->equipmentType->updated_at->locale('th')->translatedFormat('M') }}
                                     {{ $equipment->equipmentType->updated_at->year + 543 }}
                                     {{ $equipment->equipmentType->updated_at->format('H:i:s') }}
 
                                 </td>
-                                <td class="bg-secondary text-white">
-                                    {{-- {{ $equipment->equipmentType->created_at }} --}}
-                                    {{ $equipment->equipmentType->created_at->format('j') }}
+                                <td class="bg-secondary text-white"> --}}
+                {{-- {{ $equipment->equipmentType->created_at }} --}}
+                {{-- {{ $equipment->equipmentType->created_at->format('j') }}
                                     {{ $equipment->equipmentType->created_at->locale('th')->translatedFormat('M') }}
                                     {{ $equipment->equipmentType->created_at->year + 543 }}
                                     {{ $equipment->equipmentType->created_at->format('H:i:s') }}
 
                                 </td>
                             </tr>
-                        @endif
+                        @endif --}}
 
-                        @forelse ($equipments as $key => $equipment)
-                            @if ($equipment->equipment_type_id === $type)
-                                <tr class="text-center" style="cursor: pointer;">
-                                    <td>
-                                        @if ('admin-or-branch-or-officer')
-                                            <input type="checkbox" class="equipment-checkbox"
-                                                name="selected_equipments[]" value="{{ $equipment->id }}">
-                                        @endif
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ ++$count }}<br>
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->number }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->name }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->equipmentUnit->name }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->amount }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->price }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->total_price }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->amount - $equipment->getStatusBroken->sum('amount') - $equipment->getStatusNotFound->sum('amount') - $equipment->getStatusDisposal->sum('amount') - $equipment->getStatusTransfer->sum('amount') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->getStatusNotFound->sum('amount') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->getStatusBroken->sum('amount') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->getStatusDisposal->sum('amount') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{ $equipment->getStatusTransfer->sum('amount') }}
-                                    </td>
-                                    <td class="text-start"
-                                        onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        <p><span class="text-muted">ผู้ดูแล:</span>
-                                            {{$equipment->user ? $equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-' : 'สาขาเทคโนโลยีคอมพิวเตอร์'}}
-                                        </p>
-                                        <hr>
-                                        <p><span class="text-muted">ที่อยู่:
-                                            </span>{{ $equipment->location?->name ?? '-' }}</p>
-                                        <hr>
-                                        <p class="mb-0"><span class="text-muted">คำอธิบาย:
-                                            </span>{{ $equipment->description ?? '-' }}
-                                        </p>
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{-- {{ $equipment->updated_at }} --}}
-                                        {{ $equipment->updated_at->format('j') }}
-                                        {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
-                                        {{ $equipment->updated_at->year + 543 }}
-                                        {{ $equipment->updated_at->format('H:i:s') }}
-                                    </td>
-                                    <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
-                                        {{-- {{ $equipment->created_at }} --}}
-                                        {{ $equipment->created_at->format('j') }}
-                                        {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
-                                        {{ $equipment->created_at->year + 543 }}
-                                        {{ $equipment->created_at->format('H:i:s') }}
-                                    </td>
-                                </tr>
-                            @endif
-                        @empty
-                            <tr>
-                                <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
-                            </tr>
-                        @endforelse
+                @forelse ($equipments as $key => $equipment)
+                    @continue($equipment->title_id != request('title_filter') && $equipment->is_locked == 1)
+                    <tr class="text-center" style="cursor: pointer;">
+                        <td>
+                            @can('admin-or-branch-or-officer')
+                                <input type="checkbox" class="equipment-checkbox" name="selected_equipments[]"
+                                    value="{{ $equipment->id }}">
+                            @endcan
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ ++$count }}<br>
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->number }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->name }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->equipmentUnit->name }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->amount }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->price }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->total_price }}
+                            {{-- {{dd($equipment->original_id, $fullEquipments)}} --}}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->status_found }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->status_not_found }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->status_broken }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->status_disposal }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{ $equipment->status_transfer }}
+                        </td>
+                        <td class="text-start"
+                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            <p><span class="text-muted">ผู้ดูแล:</span>
+                                {{ $equipment->user ? ($equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-') : 'สาขาเทคโนโลยีคอมพิวเตอร์' }}
+                            </p>
+                            <hr>
+                            <p><span class="text-muted">ที่อยู่:
+                                </span>{{ $equipment->location?->name ?? '-' }}</p>
+                            <hr>
+                            <p class="mb-0"><span class="text-muted">คำอธิบาย:
+                                </span>{{ $equipment->description ?? '-' }}
+                            </p>
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{-- {{ $equipment->updated_at }} --}}
+                            {{ $equipment->updated_at->format('j') }}
+                            {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
+                            {{ $equipment->updated_at->year + 543 }}
+                            {{ $equipment->updated_at->format('H:i:s') }}
+                        </td>
+                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                            {{-- {{ $equipment->created_at }} --}}
+                            {{ $equipment->created_at->format('j') }}
+                            {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
+                            {{ $equipment->created_at->year + 543 }}
+                            {{ $equipment->created_at->format('H:i:s') }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
+                    </tr>
+                @endforelse
 
-                        @php
-                            $displayedTypes[] = $type;
-                        @endphp
-                    @empty
-                        <tr>
-                            <td colspan="100%" class="text-center">ไม่พบข้อมูล</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-
+            </tbody>
+        </table>
         {{-- ตัวแบ่งหน้า --}}
         <div class="d-flex justify-content-center">
             {{ $equipments->links() }}
@@ -404,7 +401,7 @@
                 form.addEventListener('submit', function(e) {
                     const selectedIds = Array.from(document.querySelectorAll('.equipment-checkbox:checked'))
                         .map(cb => cb.value);
-                            // console.log("Selected IDs:", selectedIds); // ✅ debug
+                    // console.log("Selected IDs:", selectedIds); // ✅ debug
                     if (selectedIds.length === 0) {
                         e.preventDefault();
                         alert('กรุณาเลือกเอกสารที่ต้องการ');
