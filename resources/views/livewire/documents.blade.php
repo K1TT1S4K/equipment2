@@ -41,7 +41,7 @@
                 <td>{{ $document->date }}</td>
                 <td>
                     @if ($document->path)
-                        <a href="{{ asset('storage/' . $document->path) }}" download>ดาวน์โหลด</a>
+                        <a href="{{ asset('storage/app/public/documents/' . $document->path) }}" download>ดาวน์โหลด</a>
                     @else
                         -
                     @endif

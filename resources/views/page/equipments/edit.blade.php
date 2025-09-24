@@ -39,10 +39,10 @@
                                         style="display:none">@endif
                                 <!-- ใช้ img เป็นตัวแทน input -->
                                 <img id="preview"
-                                    src="{{ $equipment->stored_image_name ? asset('storage/' . $equipment->stored_image_name) : asset('storage/img/please_upload_image.png') }}"
+                                    src="{{ $equipment->stored_image_name ? asset('storage/app/private/images/' . $equipment->stored_image_name) : asset('images/please_upload_image.png') }}"
                                     alt="คลิกเพื่อเปลี่ยนรูป" class="inputImage p-3">
                                 <img id="hoverPreview"
-                                    src="{{ $equipment->stored_image_name ? asset('storage/' . $equipment->stored_image_name) : asset('storage/img/please_upload_image.png') }}"
+                                    src="{{ $equipment->stored_image_name ? asset('storage/app/private/images/' . $equipment->stored_image_name) : asset('images/img/please_upload_image.png') }}"
                                     class="bigImage">
                             </div>
                         </div>

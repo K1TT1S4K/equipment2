@@ -15,7 +15,7 @@
         <div class="container-fluid">
             <!-- Logo -->
             <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <img src="{{ asset('image/RMUTI.png') }}" style="width: 30px; height: auto; display: block; margin: auto;" class="d-inline-block align-text-top">
+                <img src="{{ asset('images/RMUTI.png') }}" style="width: 30px; height: auto; display: block; margin: auto;" class="d-inline-block align-text-top">
             </a>
 
             <!-- Navbar Toggle (Mobile) -->

@@ -13,9 +13,9 @@
                             <input type="file" name="image" id="image" accept="image/*" style="display:none">
 
                             <!-- ใช้ img เป็นตัวแทน input -->
-                            <img id="preview" src="{{ asset('storage/img/please_upload_image.png') }}"
+                            <img id="preview" src="{{ asset('images/please_upload_image.png') }}"
                                 alt="คลิกเพื่อเปลี่ยนรูป" class="inputImage p-3">
-                            <img id="hoverPreview" src="{{ asset('storage/img/please_upload_image.png') }}"
+                            <img id="hoverPreview" src="{{ asset('images/please_upload_image.png') }}"
                                 class="bigImage">
                         </div>
                     </div>

@@ -110,7 +110,7 @@ $this->redirectIntended(
         <div class="col-md-6 col-lg-4">
             <div class="card shadow-lg p-3 mb-5 bg-body rounded">
                 <div class="card-body">
-                    <img src="{{ asset('image/RMUTI.png') }}"
+                    <img src="{{ asset('images/RMUTI.png') }}"
                         style="width: 64px; height: auto; display: block; margin: auto;">
 
                     <h5 class="card-title text-center mt-3">

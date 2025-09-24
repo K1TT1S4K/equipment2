@@ -152,7 +152,7 @@ class DocumentController extends Controller
         // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
         $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
         // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
-        $filePath = $file->store('', 'public');
+        $filePath = $file->store('documents', 'public');
 
         Document::create([ // สร้างเอกสารใหม่ในฐานข้อมูล
             // dd('99'),
@@ -193,14 +193,14 @@ class DocumentController extends Controller
         // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
         $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
         // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
-        $filePath = $file->store('', 'public');
+        $filePath = $file->store('documents', 'public');
 
         $document = Document::findOrFail($id);
 
         $oldValues = $document->toArray();
 
         // อัปเดตข้อมูลอื่น
-              $document->update([
+        $document->update([
             'document_type' => $request->document_type,
             'date' => $request->date,
             'original_name' => $originalName,

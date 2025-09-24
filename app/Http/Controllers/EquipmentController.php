@@ -290,7 +290,7 @@ class EquipmentController extends Controller
         if ($request->file('image')) {
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
-            $filePath = $file->store('', 'public');
+            $filePath = $file->store('images', 'public');
         }
 
         $total_price = $request->price * $request->amount;
@@ -428,7 +428,7 @@ class EquipmentController extends Controller
         if ($request->file('image')) {
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
-            $filePath = $file->store('', 'public');
+            $filePath = $file->store('images', 'public');
 
             $data['original_image_name'] = $originalName;
             $data['stored_image_name']   = $filePath;

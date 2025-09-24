@@ -57,7 +57,7 @@
                     {{-- <td class="align-middle border border-dark">-</td> --}}
                     <td class="align-middle border border-dark">
                         @if ($document->path)
-                            <a href="{{ asset('storage/' . $document->path) }}" download="{{ $document->path }}">
+                            <a href="{{ asset('storage/app/public/documents/' . $document->path) }}" download="{{ $document->path }}">
                                 {{ $document->path }}
                             </a>
                         @else

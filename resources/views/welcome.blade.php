@@ -5,18 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>ระบบแทงจำหน่ายครุภัณฑ์</title>
-    <link rel="icon" href="{{ asset('storage/RMUTI.png') }}" type="image/png">
-
     <!-- Bootstrap CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
-
-
     <!-- Fonts -->
     <link rel="stylesheet" href="{{ asset('css/instrument-sans.css') }}">
-
-
 </head>
 
 <body class="bg-secondary text-dark d-flex align-items-center justify-content-center min-vh-100">

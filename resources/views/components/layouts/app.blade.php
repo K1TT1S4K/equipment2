@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ระบบแทงจำหน่ายครุภัณฑ์</title>
-    <link rel="icon" href="{{ asset('storage/RMUTI.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/RMUTI-logo.png') }}" type="image/png">
 
     <!-- Bootstrap CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
