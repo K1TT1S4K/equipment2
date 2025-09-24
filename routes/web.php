@@ -19,7 +19,6 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/debug', [Controller:: class, 'debug'])->name('debug.index');
     Route::post('/equipment/update-status', [EquipmentController::class, 'updateStatus'])->name('equipment.update_status');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
