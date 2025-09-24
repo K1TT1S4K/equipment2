@@ -132,10 +132,10 @@
         console.log('ทั้งสอง script โหลดเรียบร้อย ✅');
 
         (function() {
-            var xValues = ["พบ", "ไม่พบ", "ชำรุด", "จำหน่าย", "โอน"];
-            var yValues = [{{ $totals['total_found'] }}, {{ $totals['total_not_found'] }},
-                {{ $totals['total_broken'] }},
-                {{ $totals['total_disposal'] }}, {{ $totals['total_transfer'] }}
+            var xValues = ["พบ", "ไม่พบ", "ชำรุด", "แทงจำหน่าย", "โอน"];
+            var yValues = [{{ $totals->total_found}}, {{ $totals->total_not_found }},
+                {{ $totals->total_broken }},
+                {{ $totals->total_disposal }}, {{ $totals->total_transfer }}
             ];
             var barColors = [
                 "#28a745",
@@ -145,7 +145,6 @@
                 "#17a2b8"
             ];
             console.log(document.getElementById('myChart'));
-            console.log(new Chart("myChart3"));
             new Chart("myChart", {
                 type: "pie",
                 data: {

@@ -26,11 +26,11 @@ use App\Models\Title;
             <!-- Navbar Menu -->
             <div class="collapse navbar-collapse" id="navbarMenu">
                 <ul class="navbar-nav me-auto">
-                    {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link active" href="{{ route('dashboard.index') }}">
                             แดชบอร์ด
                         </a>
-                    </li> --}}
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link active"
                             href="{{ route('equipment.index') }}?title_filter={{Title::max('id')}}&unit_filter=all&location_filter=all&user_filter=all">

@@ -11,6 +11,7 @@ use App\Http\Controllers\TitleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EquipmentDocumentController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +19,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/debug', [Controller:: class, 'debug'])->name('debug.index');
     Route::post('/equipment/update-status', [EquipmentController::class, 'updateStatus'])->name('equipment.update_status');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('equipment/', [EquipmentController::class, 'index'])->name('equipment.index');
