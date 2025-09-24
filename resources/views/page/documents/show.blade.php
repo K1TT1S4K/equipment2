@@ -82,8 +82,9 @@
                                     !(Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์' ||
                                         (Auth::user()->user_type == 'เจ้าหน้าที่พัสดุ' &&
                                             $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด') ||
-                                            (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' &&
-                                            ($document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี' || $document->document_type == 'โอนครุภัณฑ์'))
+                                        (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' &&
+                                            ($document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี' ||
+                                                $document->document_type == 'โอนครุภัณฑ์'))
                                     ))
                                     <input type="checkbox" class="document-checkbox" name="selected_documents[]"
                                         value="{{ $document->id }}">
@@ -98,8 +99,9 @@
                             <td class="text-center">{{ $date->isoFormat('D MMM') }} {{ $date->year + 543 }}</td>
                             <td class="text-center" onclick="event.stopPropagation();">
                                 @if ($document->stored_name)
-                                    <a href="{{ asset('storage/app/public/documents/' . $document->stored_name) }}"
-                                        download="{{ $document->original_name }}">{{ $document->original_name }}</a>
+                                    <a href="{{ route('documents.download', $document->stored_name) }}">
+                                        {{ $document->original_name }}
+                                    </a>
                                 @else
                                     -
                                 @endif

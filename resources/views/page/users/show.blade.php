@@ -1,10 +1,10 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">จัดการบัญชีผู้ใช้</h3>
+    <h3 class="text-dark mb-4">จัดการบุคลากร</h3>
 
     <form method="GET" action="{{ route('user.search') }}" class="mb-3">
         <div class="d-flex">
             <input type="text" name="search" class="form-control shadow-lg p-2 mb-3 rounded"
-                placeholder="ค้นหาจากข้อมูลบัญชีผู้ใช้" value="{{ request()->get('search') }}">
+                placeholder="ค้นหาจากข้อมูลบุคลากร" value="{{ request()->get('search') }}">
             <select name="user_type" class="form-control ms-2 shadow-lg p-2 mb-3 rounded">
                 <option value="">-- เลือกระดับผู้ใช้ --</option>
                 <option value="ผู้ดูแลระบบ" {{ request()->get('user_type') == 'ผู้ดูแลระบบ' ? 'selected' : '' }}>

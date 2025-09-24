@@ -152,12 +152,14 @@ class DocumentController extends Controller
         // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
         $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
         // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
-        $filePath = $file->store('documents', 'public');
+        $filePath = $file->store('documents', 'private');
+
+        // dd(basename($filePath));
 
         Document::create([ // สร้างเอกสารใหม่ในฐานข้อมูล
             // dd('99'),
             'original_name' => $originalName,
-            'stored_name' => $filePath,
+            'stored_name' => basename($filePath),
             'document_type' => $request->document_type, // ประเภทเอกสาร
             'date' => $request->date, // วันที่
             // 'path' => $filePath, // ที่อยู่ไฟล์ใน storage
@@ -193,7 +195,7 @@ class DocumentController extends Controller
         // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
         $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
         // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
-        $filePath = $file->store('documents', 'public');
+        $filePath = $file->store('', 'private');
 
         $document = Document::findOrFail($id);
 
@@ -387,5 +389,18 @@ class DocumentController extends Controller
         $documents->appends($request->all());
 
         return view('page.documents.trash', compact('documents'));
+    }
+
+    public function download($filename)
+    {
+        $filePath = 'documents/' . $filename;
+        $document = Document::where('stored_name', $filename)->first();
+        // dd($filePath, Storage::exists($filePath), $document->original_name);
+
+        if (!Storage::disk('private')->exists($filePath)) {
+            abort(404);
+        }
+
+return Storage::disk('private')->download($filePath, $document->original_name);
     }
 }

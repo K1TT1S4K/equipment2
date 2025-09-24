@@ -11,8 +11,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(
             [
-                LocationSeeder
-                ::class,
+                DocumentSeeder::class,
+                LocationSeeder::class,
                 TitleSeeder::class,
                 PrefixSeeder::class,
                 Equipment_unitSeeder::class,

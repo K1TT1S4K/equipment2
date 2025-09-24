@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <h3 class="text-dark mb-4">สืบค้นกิจกรรม</h3>
+    <h3 class="text-dark mb-4">บันทึกกิจกรรม</h3>
     <form action="{{ route('activity.search') }}" method="GET" class="mb-3">
         <div class="d-flex">
             <div class="flex-grow-1"><input type="text" id="query" name="query"
