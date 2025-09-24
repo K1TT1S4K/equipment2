@@ -1,0 +1,78 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+class UserSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+
+    protected static ?string $password;
+
+    public function run(): void
+    {
+        DB::table('users')->insert([
+            [
+                'username' => 'Sakchan',
+                'prefix_id' => 8,
+                'firstname' => 'ศักดิ์ชาญ',
+                'lastname' => 'เหลืองมณีโรจน์',
+                'user_type' => 'ผู้ดูแลระบบ',
+                'password' => static::$password ??= Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ],
+            [
+                'username' => 'Suchetta',
+                'prefix_id' => 1,
+                'firstname' => 'สุเชษฐา',
+                'lastname' => 'พรหมประเสริฐ',
+                'user_type' => 'เจ้าหน้าที่พัสดุ',
+                'password' => static::$password ??= Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ],
+            [
+                'username' => 'Suhunsa',
+                'prefix_id' => 2,
+                'firstname' => 'สุหรรษา',
+                'lastname' => 'ใจหนึ่ง',
+                'user_type' => 'ผู้ปฏิบัติงานบริหาร',
+                'password' => static::$password ??= Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ],
+            [
+                'username' => 'Boonlueo',
+                'prefix_id' => 4,
+                'firstname' => 'บุญเหลือ',
+                'lastname' => 'นาบำรุง',
+                'user_type' => 'ผู้ดูแลครุภัณฑ์',
+                'password' => static::$password ??= Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ],
+            [
+                'username' => 'Narasuk',
+                'prefix_id' => 7,
+                'firstname' => 'นราศักดิ์',
+                'lastname' => 'วงษ์วาสน์',
+                'user_type' => 'ผู้ดูแลครุภัณฑ์',
+                'password' => static::$password ??= Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ],
+            [
+                'username' => 'user1',
+                'prefix_id' => 1,
+                'firstname' => 'กิตติศักดิ์',
+                'lastname' => 'ผาทอง',
+                'user_type' => 'ผู้ดูแลระบบ',
+                'password' => static::$password ??= Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ],
+        ]);
+    }
+}
