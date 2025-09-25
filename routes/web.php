@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EquipmentDocumentController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Controller;
+use App\Models\Equipment;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +20,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/images/{filename}', [EquipmentController::class, 'showImage'])->name('equipment.showImage');
     Route::get('/documents/download/{document}', [DocumentController::class, 'download'])->name('documents.download');
     Route::post('/equipment/update-status', [EquipmentController::class, 'updateStatus'])->name('equipment.update_status');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');

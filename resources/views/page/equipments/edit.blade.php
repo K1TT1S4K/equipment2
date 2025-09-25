@@ -1,4 +1,3 @@
-{{-- {{phpinfo()}} --}}
 <x-layouts.app>
     <h3 class="text-dark">แก้ไขข้อมูลครุภัณฑ์</h3>
     <!-- Nav tabs -->
@@ -34,15 +33,17 @@
                         <div class="col-3 mb-3">
                             <div class="h-100 p-2 text-center" style="height:100%;">
                                 <!-- ซ่อน input ปกติ -->
-                                @if(!$equipment->is_locked)
+                                @if (!$equipment->is_locked)
                                     <input type="file" name="image" id="image" accept="image/*"
-                                        style="display:none">@endif
+                                        style="display:none">
+                                @endif
                                 <!-- ใช้ img เป็นตัวแทน input -->
-                                <img id="preview"
-                                    src="{{ $equipment->stored_image_name ? asset('storage/app/private/images/' . $equipment->stored_image_name) : asset('images/please_upload_image.png') }}"
-                                    alt="คลิกเพื่อเปลี่ยนรูป" class="inputImage p-3">
+                                <img id="preview" class="inputImage p-3"
+                                    src="{{ $equipment->stored_image_name ? route('equipment.showImage', $equipment->stored_image_name) : asset('images/please_upload_image.png') }}"
+                                    alt="คลิกเพื่อเปลี่ยนรูป">
+
                                 <img id="hoverPreview"
-                                    src="{{ $equipment->stored_image_name ? asset('storage/app/private/images/' . $equipment->stored_image_name) : asset('images/please_upload_image.png') }}"
+                                    src="{{ $equipment->stored_image_name ? route('equipment.showImage', $equipment->stored_image_name) : asset('images/please_upload_image.png') }}"
                                     class="bigImage">
                             </div>
                         </div>
@@ -51,22 +52,27 @@
                             <div class="mb-3"> <label class="form-label">หมายเลขครุภัณฑ์ <span
                                         class="text-danger">*</span></label>
                                 <input type="text" name="number" class="form-control"
-                                    value="{{ $equipment->number }}" required @if($equipment->is_locked) disabled @endif>
+                                    value="{{ $equipment->number }}" required
+                                    @if ($equipment->is_locked) disabled @endif>
                             </div>
                             <div class="mb-3"><label class="form-label">ชื่อครุภัณฑ์ <span
                                         class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control" required
-                                    value="{{ $equipment->name }}" @if($equipment->is_locked) disabled @endif>
+                                    value="{{ $equipment->name }}" @if ($equipment->is_locked) disabled @endif>
                             </div>
                             <div class="row">
-                                <div class="mb-3 col-4">  <label for="equipment_unit_id" class="form-label">หน่วยนับ
+                                <div class="mb-3 col-4"> <label for="equipment_unit_id" class="form-label">หน่วยนับ
                                         <span class="text-danger">*</span>
-                                     @if(!$equipment->is_locked)   <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
-                                            data-bs-toggle="modal" data-bs-target="#unitModal">
-                                            <i class="bi bi-gear"></i>
-                                        </button> @endif
-                                    </label> 
-                                    <select name="equipment_unit_id" id="unitSelect" class="form-control" required @if($equipment->is_locked) disabled @endif>
+                                        @if (!$equipment->is_locked)
+                                            <button type="button"
+                                                class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
+                                                data-bs-toggle="modal" data-bs-target="#unitModal">
+                                                <i class="bi bi-gear"></i>
+                                            </button>
+                                        @endif
+                                    </label>
+                                    <select name="equipment_unit_id" id="unitSelect" class="form-control" required
+                                        @if ($equipment->is_locked) disabled @endif>
                                         @foreach ($equipment_units as $unit)
                                             @continue($unit->is_locked == 1)
                                             <option value="{{ $unit->id }}"
@@ -78,13 +84,15 @@
                                 </div>
                                 <div class="col-4"><label class="form-label">จำนวน <span
                                             class="text-danger">*</span></label>
-                                    <input type="number" name="amount" class="form-control" required @if($equipment->is_locked) disabled @endif
+                                    <input type="number" name="amount" class="form-control" required
+                                        @if ($equipment->is_locked) disabled @endif
                                         value="{{ $equipment->amount }}">
                                 </div>
                                 <div class="col-4"><label class="form-label">ราคา <span
                                             class="text-danger">*</span></label>
                                     <input type="number" name="price" class="form-control"
-                                        value="{{ $equipment->price }}" @if($equipment->is_locked) disabled @endif>
+                                        value="{{ $equipment->price }}"
+                                        @if ($equipment->is_locked) disabled @endif>
                                 </div>
                             </div>
 
@@ -95,13 +103,16 @@
                         <div class="col-4"> <label for="title_id" class="form-label">หัวข้อ <span
                                     class="text-danger">*</span>
                                 @can('admin-or-branch')
-                                   @if(!$equipment->is_locked) <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
-                                        data-bs-toggle="modal" data-bs-target="#titleModal">
-                                        <i class="bi bi-gear"></i>
-                                    </button> @endif
+                                    @if (!$equipment->is_locked)
+                                        <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
+                                            data-bs-toggle="modal" data-bs-target="#titleModal">
+                                            <i class="bi bi-gear"></i>
+                                        </button>
+                                    @endif
                                 @endcan
                             </label>
-                            <select name="title_id" id="titleSelect" class="form-control" required @if($equipment->is_locked) disabled @endif>
+                            <select name="title_id" id="titleSelect" class="form-control" required
+                                @if ($equipment->is_locked) disabled @endif>
                                 {{-- <option value="">-- เลือกหัวข้อ --</option> --}}
                                 @foreach ($titles as $t)
                                     <option value="{{ $t->id }}"
@@ -111,7 +122,8 @@
                             </select>
                         </div>
                         <div class="col-4"> <label for="user_id" class="form-label">ผู้ดูแล</label>
-                            <select name="user_id" class="form-control" @if($equipment->is_locked) disabled @endif>
+                            <select name="user_id" class="form-control"
+                                @if ($equipment->is_locked) disabled @endif>
                                 {{-- <option value="">-- เลือกผู้ดูแล --</option> --}}
                                 <option value="" {{ $equipment->user_id == null ? 'selected' : '' }}>
                                     สาขาเทคโนโลยีคอมพิวเตอร์</option>
@@ -125,13 +137,16 @@
                             </select>
                         </div>
                         <div class="col-4"> <label class="form-label">ที่อยู่@can('admin-or-branch')
-                                   @if(!$equipment->is_locked) <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
-                                        data-bs-toggle="modal" data-bs-target="#locationModal">
-                                        <i class="bi bi-gear"></i>
-                                    </button> @endif
+                                    @if (!$equipment->is_locked)
+                                        <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
+                                            data-bs-toggle="modal" data-bs-target="#locationModal">
+                                            <i class="bi bi-gear"></i>
+                                        </button>
+                                    @endif
                                 @endcan
                             </label>
-                            <select name="location_id" id="locationSelect" class="form-control" @if($equipment->is_locked) disabled @endif>
+                            <select name="location_id" id="locationSelect" class="form-control"
+                                @if ($equipment->is_locked) disabled @endif>
                                 <option value="" {{ $equipment->location_id == null ? 'selected' : '' }}>--
                                     เลือกที่อยู่ --</option>
                                 @foreach ($locations as $l)
@@ -147,13 +162,16 @@
 
                     <div class="row mb-3">
                         <div class="col"> <label class="form-label">คำอธิบาย</label>
-                            <textarea rows="1" cols="20" type="text" name="description" class="form-control" @if($equipment->is_locked) disabled @endif>{{ $equipment->description }}</textarea>
-                        </div> @if(!$equipment->is_locked)
-                        <div class="col-2 text-end" style="padding-top: 30px"> @can('admin-or-branch')
-                                <button type="submit" class="btn btn-primary">บันทึก</button>
-                                <a href="{{ url()->previous() }}" class="btn btn-secondary">ยกเลิก</a>
-                            @endcan
-                        </div> @endif
+                            <textarea rows="1" cols="20" type="text" name="description" class="form-control"
+                                @if ($equipment->is_locked) disabled @endif>{{ $equipment->description }}</textarea>
+                        </div>
+                        @if (!$equipment->is_locked)
+                            <div class="col-2 text-end" style="padding-top: 30px"> @can('admin-or-branch')
+                                    <button type="submit" class="btn btn-primary">บันทึก</button>
+                                    <a href="{{ url()->previous() }}" class="btn btn-secondary">ยกเลิก</a>
+                                @endcan
+                            </div>
+                        @endif
                     </div>
                 </form>
             </div>

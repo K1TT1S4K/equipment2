@@ -137,11 +137,6 @@ class DocumentController extends Controller
     // ฟังก์ชันเพิ่มข้อมูลเอกสาร
     public function store(Request $request)
     {
-        //     $file = $request->file('document');
-        //     $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-
-        // dd($request);
-
         $request->validate([ // ตรวจสอบความถูกต้องของข้อมูล
             'document_type' => 'required|string', // ประเภทเอกสาร
             'date' => 'required|date', // วันที่
@@ -149,12 +144,8 @@ class DocumentController extends Controller
         ]);
 
         $file = $request->file('document'); // รับไฟล์เอกสาร
-        // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
         $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
-        // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
         $filePath = $file->store('documents', 'private');
-
-        // dd(basename($filePath));
 
         Document::create([ // สร้างเอกสารใหม่ในฐานข้อมูล
             // dd('99'),
@@ -162,9 +153,6 @@ class DocumentController extends Controller
             'stored_name' => basename($filePath),
             'document_type' => $request->document_type, // ประเภทเอกสาร
             'date' => $request->date, // วันที่
-            // 'path' => $filePath, // ที่อยู่ไฟล์ใน storage
-            // 'path' => 'documents/' . $originalName, // ที่อยู่ไฟล์ใน storage
-
         ]);
 
         $document = Document::latest('id')->first();
@@ -190,23 +178,30 @@ class DocumentController extends Controller
             'date' => 'required|date',
             'newFile' => 'nullable|file|mimes:pdf',
         ]);
-
-        $file = $request->file('newFile'); // รับไฟล์เอกสาร
-        // $filePath = $file->store('documents', 'public'); // เก็บไฟล์ใน storage/app/public/documents
-        $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
-        // $filePath = $file->storeAs('documents', $originalName, 'public'); // เก็บด้วยชื่อเดิม
-        $filePath = $file->store('', 'private');
-
         $document = Document::findOrFail($id);
 
         $oldValues = $document->toArray();
 
+        if ($request->newFile) {
+            $file = $request->file('newFile'); // รับไฟล์เอกสาร
+            $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
+            $filePath = $file->store('documents', 'private');
+            $oldFilePath = 'images/' . $document->stored_name;
+
+            if (Storage::disk('private')->exists($oldFilePath)) {
+                Storage::disk('private')->delete($oldFilePath);
+            }
+
+            $document->update([
+                'original_name' => $originalName,
+                'stored_name' => basename($filePath)
+            ]);
+        }
+
         // อัปเดตข้อมูลอื่น
         $document->update([
             'document_type' => $request->document_type,
-            'date' => $request->date,
-            'original_name' => $originalName,
-            'stored_name' => $filePath
+            'date' => $request->date
         ]);
 
         $newValues = $document->toArray();
@@ -287,6 +282,8 @@ class DocumentController extends Controller
 
         LogBatch::startBatch();
         foreach ($documents as $document) {
+            $filePath = 'documents/' . $document->stored_name;
+
             activity()
                 ->tap(function ($activity) {
                     $activity->menu = 'ลบข้อมูลถาวร';
@@ -295,6 +292,10 @@ class DocumentController extends Controller
                 ->performedOn($document)
                 ->withProperties($document->only(['original_name', 'stored_name', 'document_type', 'date']))
                 ->log('เอกสาร');
+
+            if (Storage::disk('private')->exists($filePath)) {
+                Storage::disk('private')->delete($filePath);
+            }
         }
         LogBatch::endBatch();
 
@@ -394,13 +395,13 @@ class DocumentController extends Controller
     public function download($filename)
     {
         $filePath = 'documents/' . $filename;
-        $document = Document::where('stored_name', $filename)->first();
+        $document = Document::withTrashed()->where('stored_name', $filename)->first();
         // dd($filePath, Storage::exists($filePath), $document->original_name);
 
         if (!Storage::disk('private')->exists($filePath)) {
             abort(404);
         }
 
-return Storage::disk('private')->download($filePath, $document->original_name);
+        return Storage::disk('private')->download($filePath, $document->original_name);
     }
 }

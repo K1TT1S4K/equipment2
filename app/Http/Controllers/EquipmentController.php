@@ -16,6 +16,7 @@ use App\Models\Equipment_document;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 
 
@@ -287,12 +288,6 @@ class EquipmentController extends Controller
             'description'  => 'nullable|string|max:255',
         ]);
 
-        if ($request->file('image')) {
-            $file = $request->file('image');
-            $originalName = $file->getClientOriginalName();
-            $filePath = $file->store('images', 'public');
-        }
-
         $total_price = $request->price * $request->amount;
 
         $data = [
@@ -312,10 +307,10 @@ class EquipmentController extends Controller
         if ($request->file('image')) {
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
-            $filePath = $file->store(); // เก็บไว้ใน storage/app/public/img
+            $filePath = $file->store('images', 'private'); // เก็บไว้ใน storage/app/public/img
 
             $data['original_image_name'] = $originalName;
-            $data['stored_image_name']   = $filePath;
+            $data['stored_image_name']   = basename($filePath);
         }
 
         Equipment::create($data);
@@ -428,10 +423,10 @@ class EquipmentController extends Controller
         if ($request->file('image')) {
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
-            $filePath = $file->store('images', 'public');
+            $filePath = $file->store('images', 'private');
 
             $data['original_image_name'] = $originalName;
-            $data['stored_image_name']   = $filePath;
+            $data['stored_image_name']   = basename($filePath);
         }
 
         $equipment->update($data);
@@ -573,6 +568,8 @@ class EquipmentController extends Controller
 
         LogBatch::startBatch();
         foreach ($equipments as $equipment) {
+                        $filePath = 'images/' . $equipment->stored_image_name;
+
             activity()
                 ->tap(function ($activity) {
                     $activity->menu = 'ลบข้อมูลถาวร';
@@ -595,6 +592,10 @@ class EquipmentController extends Controller
                     'user' => optional($equipment->user)->full_name
                 ]))
                 ->log('ครุภัณฑ์');
+
+            if (Storage::disk('private')->exists($filePath)) {
+                Storage::disk('private')->delete($filePath);
+            }
         }
         LogBatch::endBatch();
 
@@ -631,5 +632,19 @@ class EquipmentController extends Controller
             ->log('ครุภัณฑ์');
 
         return Excel::download(new EquipmentsExport($title), 'equipments.xlsx');
+    }
+
+    public function showImage($filename)
+    {
+        $path = 'images/' . $filename; // ไฟล์อยู่ใน storage/app/private/images
+
+        if (!Storage::disk('private')->exists($path)) {
+            abort(404);
+        }
+
+        $file = Storage::disk('private')->get($path);
+        $mimeType = Storage::disk('private')->mimeType($path);
+
+        return response($file, 200)->header('Content-Type', $mimeType);
     }
 }

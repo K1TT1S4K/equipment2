@@ -149,8 +149,9 @@
                         <td class="text-center">{{ $date->isoFormat('D MMM YYYY') }}</td>
                         <td class="text-center" onclick="event.stopPropagation();">
                             @if ($document->stored_name)
-                                <a href="{{ asset('storage/app/public/documents/' . $document->stored_name) }}"
-                                    download="{{ $document->original_name }}">{{ $document->original_name }}</a>
+                                <a href="{{ route('documents.download', $document->stored_name) }}">
+                                        {{ $document->original_name }}
+                                    </a>
                             @else
                                 -
                             @endif

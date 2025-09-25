@@ -83,17 +83,24 @@
                             pdf</label>
                         <input type="file" name="newFile" class="form-control" accept=".pdf"
                             {{ Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์' || (Auth::user()->user_type == 'เจ้าหน้าที่พัสดุ' && $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด') || (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' && ($document->document_type == 'โอนครุภัณฑ์' || $document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี')) ? 'disabled' : '' }}>
-                        @if ($document && $document->path)
-                            <small class="form-text text-muted">ไฟล์เดิม: <a
-                                    href="{{ url('storage/app/public/documents/' . $document->path) }}"
-                                    download>{{ basename($document->path) }}</a></small>
+                        <label>ไฟล์ปัจจุบัน: </label>
+
+                        @if ($document && $document->stored_name)
+                            <a href="{{ route('documents.download', $document->stored_name) }}">
+                                {{ $document->original_name }}
+                            </a>
+                        @else
+                            -
                         @endif
                     </div>
 
                     @if (
                         !(Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์' ||
                             (Auth::user()->user_type == 'เจ้าหน้าที่พัสดุ' &&
-                                $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด') || (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' && ($document->document_type == 'โอนครุภัณฑ์' || $document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี'))
+                                $document->document_type == 'รายการจำหน่ายก่อนประเมินพัสดุครุภัณฑ์ชำรุด') ||
+                            (Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร' &&
+                                ($document->document_type == 'โอนครุภัณฑ์' ||
+                                    $document->document_type == 'สรุปรายงานผลการตรวจสอบครุภัณฑ์ประจำปี'))
                         ))
                         <div class="text-end">
                             <button type="submit" class="btn btn-primary">บันทึก</button>
