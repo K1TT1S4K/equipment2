@@ -31,7 +31,6 @@ class UserController extends Controller
             if ($search)
                 $query->where(function ($q) use ($search) {
                     $q->where('username', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
                         ->orWhere('user_type', 'like', "%{$search}%")
                         ->orWhereHas('prefix', function ($q2) use ($search) {
                             $q2->whereRaw("CONCAT(prefixes.name, ' ', users.firstname, ' ', users.lastname) LIKE ?", ["%{$search}%"]);
@@ -92,21 +91,15 @@ class UserController extends Controller
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่พัสดุ,ผู้ปฏิบัติงานบริหาร,ผู้ดูแลครุภัณฑ์',
-            // 'email' => 'required|email|max:100|unique:users,email',
-            // 'email' => Str::random(15) . "@gmail.com",
             'password' => 'required|string|min:8',
         ]);
 
-        $email = Str::random(15) . "@gmail.com";
-        // dd($email);
         User::create([
             'username' => $request->username,
             'prefix_id' => $request->prefix,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'user_type' => $request->user_type,
-            // 'email' => $request->email,
-            'email' => $email,
             'password' => Hash::make($request->password), // เข้ารหัสรหัสผ่าน
         ]);
 
@@ -150,7 +143,6 @@ class UserController extends Controller
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
             'user_type' => 'required|string|in:ผู้ดูแลระบบ,เจ้าหน้าที่พัสดุ,ผู้ปฏิบัติงานบริหาร,ผู้ดูแลครุภัณฑ์',
-            // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8', // ถ้าไม่กรอก จะไม่เปลี่ยนรหัสผ่าน
         ]);
 
@@ -162,7 +154,6 @@ class UserController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'user_type' => $request->user_type,
-            // 'email' => $request->email,
             'password' => $request->password ? Hash::make($request->password) : $user->password, // เปลี่ยนรหัสผ่านถ้ามีการกรอก
         ]);
 
@@ -224,7 +215,6 @@ class UserController extends Controller
 
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
-            // 'email' => ['required', 'email', 'max:100', Rule::unique('users')->ignore($user->id)],
             'old_password' => [function ($attribute, $value, $fail) {
                 if (!\Hash::check($value, auth()->user()->password)) {
                     $fail('รหัสผ่านเก่าไม่ถูกต้อง');
@@ -251,7 +241,6 @@ class UserController extends Controller
             'username' => $request->username,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            // 'email' => $request->email,
             'password' => $user->password,
         ]);
 
