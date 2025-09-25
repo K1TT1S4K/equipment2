@@ -4,12 +4,12 @@
             <div class="container">
                 <div class="d-flex" style="max-height: 500px">
                     <div class="left row d-flex justify-content-start">
-                        <h2 class="text-center mb-0 pb-0">ครุภัณฑ์ที่ดำเนินการ</h2>
+                        <h3 class="text-center mb-1 pb-0">ข้อมูลการตรวจสอบครุภัณฑ์ 3 ปีย้อนหลัง</h3>
                         <canvas class="pt-0 mt-0" id="myChart2" style="max-width:800px; max-height:500px;"></canvas>
                     </div>
                     <div class="left row d-flex justify-content-center">
-                        <h2 class="text-center mb-0 pb-0">ครุภัณฑ์ทั้งหมด</h2>
-                        <canvas class="pt-0 mt-0" id="myChart" style="max-width:500px; max-height:500px;"></canvas>
+                        <h3 class="text-center mb-5 pb-0">ข้อมูลการตรวจสอบครุภัณฑ์ทั้งหมด</h3>
+                        <canvas class="pt-0 mt-0" id="myChart" style="max-width:400px; max-height:400px;"></canvas>
                     </div>
                 </div>
 
@@ -167,18 +167,18 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true, // ทำให้สัดส่วนไม่เพี้ยน
+                    maintainAspectRatio: false, // ทำให้สัดส่วนไม่เพี้ยน
                     aspectRatio: 1, // 1:1 สำหรับ pie/donut chart
                     layout: {
                         padding: 0 // กำหนด padding รอบกราฟเป็น 0
                     },
                     legend: {
                         display: true,
-                        position: "right",
+                        position: "top",
                         labels: {
-                            fontSize: 20, // << ขนาดตัวอักษร
-                            boxWidth: 30, // << ขนาดสี่เหลี่ยมสีด้านหน้า
-                            padding: 30
+                            fontSize: 13, // << ขนาดตัวอักษร
+                            boxWidth: 25, // << ขนาดสี่เหลี่ยมสีด้านหน้า
+                            padding: 10
                         }
                     },
                     title: {
@@ -219,7 +219,7 @@
             let currentYearAD = new Date().getFullYear();
             // แปลงเป็น พ.ศ.
             let currentYearBE = currentYearAD + 543;
-            const xValues = [currentYearBE - 2, currentYearBE - 1,
+            const xValues = [{!! json_encode($totalsByYear[$twoYearsAgo]->name ?? 'idk') !!}, {!! json_encode($totalsByYear[$lastYear]->name ?? 'idk') !!},
                 {!! json_encode($totalsByYear[$currentYear]->name ?? 'idk') !!}
             ]; // 3 แท่งในแต่ละชุด
 
@@ -302,6 +302,7 @@
                     ]
                 },
                 options: {
+                    
                     plugins: {
                         legend: {
                             display: true

@@ -186,7 +186,7 @@ class DocumentController extends Controller
             $file = $request->file('newFile'); // รับไฟล์เอกสาร
             $originalName = $file->getClientOriginalName(); // ดึงชื่อไฟล์เดิม
             $filePath = $file->store('documents', 'private');
-            $oldFilePath = 'images/' . $document->stored_name;
+            $oldFilePath = 'documents/' . $document->stored_name;
 
             if (Storage::disk('private')->exists($oldFilePath)) {
                 Storage::disk('private')->delete($oldFilePath);

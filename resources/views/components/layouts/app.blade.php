@@ -98,10 +98,10 @@
             function loadtitles() {
                 let equipmentTitleId = $("#currentEquipmentTitleId").val();
                 $.get("{{ route('titles.index') }}", function(data) {
-                    $("#titleSelect").html("")
+                    // $("#titleSelect").html("")
 
                     // เพิ่ม option เริ่มต้น
-                    $("#titleSelect").append(`<option value="">-- เลือกหัวข้อ --</option>`);
+                    // $("#titleSelect").append(`<option value="">-- เลือกหัวข้อ --</option>`);
 
                     let rows = '';
                     data.forEach(loc => {
@@ -114,9 +114,9 @@
                                 <button class="btn btn-sm btn-danger deleteBtntitle">ลบ</button>
                             </td>
                         </tr>`;
-                            $("#titleSelect").append(
-                                `<option value="${loc.id}" ${(equipmentTitleId && equipmentTitleId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
-                            );
+                            // $("#titleSelect").append(
+                            //     `<option value="${loc.id}" ${(equipmentTitleId && equipmentTitleId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
+                            // );
                         }
                     });
                     $('#titleTableBody').html(rows);

@@ -97,10 +97,13 @@ class TitleController extends Controller
             ) {
 
                 if ($equipment->stored_image_name) {
-                    $name = Str::beforeLast($equipment->stored_image_name, '.'); // name
+                    // $name = Str::beforeLast($equipment->stored_image_name, '.'); // name
                     $ext  = Str::afterLast($equipment->stored_image_name, '.');  // pdf
+                    $filename = Str::random(40) . '.' . $ext;
 
-                    Storage::disk('public')->copy($equipment->stored_image_name, $name . '-copy' . $ext);
+
+                    Storage::disk('private')->copy('images/'.$equipment->stored_image_name, 'images/'.$filename);
+                    // Storage::copy('private/images/'.$equipment->stored_image_name, 'new/file.jpg');
                 }
 
                 Equipment::create([
@@ -125,7 +128,7 @@ class TitleController extends Controller
                     'user_id' => $equipment->user_id ? $userMap[$equipment->user_id] : null,
                     'description' => $equipment->description,
                     'original_image_name' => $equipment->original_image_name ? $equipment->original_image_name : null,
-                    'stored_image_name' => $equipment->stored_image_name ? $name . '-copy' . $ext : null,
+                    'stored_image_name' => $equipment->stored_image_name ? $filename : null,
                     'created_at' => $equipment->created_at,
                     'updated_at' => $equipment->updated_at
                 ]);

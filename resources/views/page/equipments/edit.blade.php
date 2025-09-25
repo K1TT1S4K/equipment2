@@ -53,17 +53,17 @@
                                         class="text-danger">*</span></label>
                                 <input type="text" name="number" class="form-control"
                                     value="{{ $equipment->number }}" required
-                                    @if ($equipment->is_locked) disabled @endif>
+                                    @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif>
                             </div>
                             <div class="mb-3"><label class="form-label">ชื่อครุภัณฑ์ <span
                                         class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control" required
-                                    value="{{ $equipment->name }}" @if ($equipment->is_locked) disabled @endif>
+                                    value="{{ $equipment->name }}" @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif>
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-4"> <label for="equipment_unit_id" class="form-label">หน่วยนับ
                                         <span class="text-danger">*</span>
-                                        @if (!$equipment->is_locked)
+                                        @if (!$equipment->is_locked && !Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร')
                                             <button type="button"
                                                 class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
                                                 data-bs-toggle="modal" data-bs-target="#unitModal">
@@ -72,7 +72,7 @@
                                         @endif
                                     </label>
                                     <select name="equipment_unit_id" id="unitSelect" class="form-control" required
-                                        @if ($equipment->is_locked) disabled @endif>
+                                        @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif>
                                         @foreach ($equipment_units as $unit)
                                             @continue($unit->is_locked == 1)
                                             <option value="{{ $unit->id }}"
@@ -85,14 +85,14 @@
                                 <div class="col-4"><label class="form-label">จำนวน <span
                                             class="text-danger">*</span></label>
                                     <input type="number" name="amount" class="form-control" required
-                                        @if ($equipment->is_locked) disabled @endif
+                                        @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif
                                         value="{{ $equipment->amount }}">
                                 </div>
                                 <div class="col-4"><label class="form-label">ราคา <span
                                             class="text-danger">*</span></label>
                                     <input type="number" name="price" class="form-control"
                                         value="{{ $equipment->price }}"
-                                        @if ($equipment->is_locked) disabled @endif>
+                                        @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif>
                                 </div>
                             </div>
 
@@ -112,7 +112,7 @@
                                 @endcan
                             </label>
                             <select name="title_id" id="titleSelect" class="form-control" required
-                                @if ($equipment->is_locked) disabled @endif>
+                                @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif>
                                 {{-- <option value="">-- เลือกหัวข้อ --</option> --}}
                                 @foreach ($titles as $t)
                                     <option value="{{ $t->id }}"
@@ -123,7 +123,7 @@
                         </div>
                         <div class="col-4"> <label for="user_id" class="form-label">ผู้ดูแล</label>
                             <select name="user_id" class="form-control"
-                                @if ($equipment->is_locked) disabled @endif>
+                                @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif>
                                 {{-- <option value="">-- เลือกผู้ดูแล --</option> --}}
                                 <option value="" {{ $equipment->user_id == null ? 'selected' : '' }}>
                                     สาขาเทคโนโลยีคอมพิวเตอร์</option>
@@ -137,7 +137,7 @@
                             </select>
                         </div>
                         <div class="col-4"> <label class="form-label">ที่อยู่@can('admin-or-branch')
-                                    @if (!$equipment->is_locked)
+                                    @if (!$equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร')
                                         <button type="button" class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
                                             data-bs-toggle="modal" data-bs-target="#locationModal">
                                             <i class="bi bi-gear"></i>
@@ -146,7 +146,7 @@
                                 @endcan
                             </label>
                             <select name="location_id" id="locationSelect" class="form-control"
-                                @if ($equipment->is_locked) disabled @endif>
+                                @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif>
                                 <option value="" {{ $equipment->location_id == null ? 'selected' : '' }}>--
                                     เลือกที่อยู่ --</option>
                                 @foreach ($locations as $l)
@@ -163,7 +163,7 @@
                     <div class="row mb-3">
                         <div class="col"> <label class="form-label">คำอธิบาย</label>
                             <textarea rows="1" cols="20" type="text" name="description" class="form-control"
-                                @if ($equipment->is_locked) disabled @endif>{{ $equipment->description }}</textarea>
+                                @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif>{{ $equipment->description }}</textarea>
                         </div>
                         @if (!$equipment->is_locked)
                             <div class="col-2 text-end" style="padding-top: 30px"> @can('admin-or-branch')

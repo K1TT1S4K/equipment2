@@ -424,6 +424,12 @@ class EquipmentController extends Controller
             $file = $request->file('image');
             $originalName = $file->getClientOriginalName();
             $filePath = $file->store('images', 'private');
+            $oldFilePath = 'images/' . $equipment->stored_image_name;
+
+
+            if (Storage::disk('private')->exists($oldFilePath)) {
+                Storage::disk('private')->delete($oldFilePath);
+            }
 
             $data['original_image_name'] = $originalName;
             $data['stored_image_name']   = basename($filePath);
@@ -568,7 +574,7 @@ class EquipmentController extends Controller
 
         LogBatch::startBatch();
         foreach ($equipments as $equipment) {
-                        $filePath = 'images/' . $equipment->stored_image_name;
+            $filePath = 'images/' . $equipment->stored_image_name;
 
             activity()
                 ->tap(function ($activity) {

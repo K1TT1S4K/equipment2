@@ -149,7 +149,7 @@
                         <thead class="text-center table-dark align-middle">
                             <tr class="text-center">
                                 <th rowspan="2">
-                                    @can('admin-or-branch-or-officer')
+                                    @can('admin-or-branch')
                                         @if (!$equipments[0]->is_locked)
                                             <input type="checkbox" id="select-all">
                                         @endif
@@ -176,19 +176,22 @@
                                 <th class="align-middle" style="width: 6%">ไม่พบ</th>
                                 <th class="align-middle" style="width: 6%">ชำรุด</th>
                                 <th class="align-middle" style="width: 6%">จำ<br>หน่าย</th>
-                                <th class="align-middle" style="width: 6%">โอน</th> 
+                                <th class="align-middle" style="width: 6%">โอน</th>
                             </tr>
                         </thead>
                         <tbody class="align-middle p-3">
-@php // จะบอกว่ามันเป็น Collection หรือ Builder หรือ array
- if(Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์') $equipmentsNoPaginate = collect($equipmentsNoPaginate) // ถ้ายังไม่เป็น Collection ให้ wrap
-    ->where('user_id', Auth::id())
-    ->values();@endphp
+                            @php
+                                if (Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์') {
+                                    $equipmentsNoPaginate = collect($equipmentsNoPaginate) // ถ้ายังไม่เป็น Collection ให้ wrap
+                                        ->where('user_id', Auth::id())
+                                        ->values();
+                                }
+                            @endphp
                             @forelse ($equipmentsNoPaginate as $key => $equipment)
                                 @continue($equipment->title_id != request('title_filter') && $equipment->is_locked == 1)
                                 <tr class="text-center" style="cursor: pointer;">
                                     <td>
-                                        @can('admin-or-branch-or-officer')
+                                        @can('admin-or-branch')
                                             @if (!$equipment->is_locked)
                                                 <input type="checkbox" class="equipment-checkbox"
                                                     name="selected_equipments[]" value="{{ $equipment->id }}">
@@ -279,21 +282,21 @@
                                 style="display:none;">ย้ายรายการที่เลือกไปที่ถังขยะ</button>
                         </div>
                     </div>
-
-                    @if (isset($equipments[0]) && !$equipments[0]->is_locked)
-                        @if (!request('check') == 1)
-                            <div class="p-2">
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    <div>
-                                        <a href="{{ url()->full() }}&check=1" class="btn btn-warning mb-3">
-                                            ตรวจสอบครุภัณฑ์ประจำปี
-                                        </a>
+                    @can('admin-or-branch')
+                        @if (!$titles->where('id', request('title_filter'))->first()->is_locked)
+                            @if (!request('check') == 1)
+                                <div class="p-2">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <div>
+                                            <a href="{{ url()->full() }}&check=1" class="btn btn-warning mb-3">
+                                                ตรวจสอบครุภัณฑ์ประจำปี
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         @endif
-                    @endif
-
+                    @endcan
 
                     <div class="p-2">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -307,7 +310,8 @@
                     </div>
 
                     @can('admin-or-branch')
-                        @if (isset($equipments[0]) && !$equipments[0]->is_locked)
+                        {{-- {{dd($titles->where('id',request('title_filter'))->first()->is_locked)}} --}}
+                        @if (!$titles->where('id', request('title_filter'))->first()->is_locked)
                             <div class="p-2">
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <div>
@@ -326,7 +330,7 @@
                     <thead class="text-center table-dark align-middle">
                         <tr class="text-center">
                             <th rowspan="2">
-                                @can('admin-or-branch-or-officer')
+                                @can('admin-or-branch')
                                     @if (isset($equipments[0]) && !$equipments[0]->is_locked)
                                         <input type="checkbox" id="select-all">
                                     @endif
@@ -456,7 +460,7 @@
                             @continue($equipment->title_id != request('title_filter') && $equipment->is_locked == 1)
                             <tr class="text-center" style="cursor: pointer;">
                                 <td>
-                                    @can('admin-or-branch-or-officer')
+                                    @can('admin-or-branch')
                                         @if (!$equipment->is_locked)
                                             <input type="checkbox" class="equipment-checkbox"
                                                 name="selected_equipments[]" value="{{ $equipment->id }}">
