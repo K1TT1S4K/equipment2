@@ -15,7 +15,7 @@
 
 
                 {{-- <div id="pie-chart"></div> --}}
-                <div class="row">
+                {{-- <div class="row">
                     <!-- ตารางที่ 1 -->
                     <div class="col-md-6">
                         <table class="table table-bordered table-striped table-hover">
@@ -103,7 +103,7 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -132,11 +132,22 @@
         console.log('ทั้งสอง script โหลดเรียบร้อย ✅');
 
         (function() {
-            var xValues = ["พบ", "ไม่พบ", "ชำรุด", "แทงจำหน่าย", "โอน"];
-            var yValues = [{{ $totals->total_found}}, {{ $totals->total_not_found }},
-                {{ $totals->total_broken }},
-                {{ $totals->total_disposal }}, {{ $totals->total_transfer }}
-            ];
+            if ({{ $totals->total_found }} || {{ $totals->total_not_found }} ||
+                {{ $totals->total_broken }} ||
+                {{ $totals->total_disposal }} || {{ $totals->total_transfer }}) {
+                var xValues = ["พบ", "ไม่พบ", "ชำรุด", "แทงจำหน่าย", "โอน"];
+                var yValues = [{{ $totals->total_found }}, {{ $totals->total_not_found }},
+                    {{ $totals->total_broken }},
+                    {{ $totals->total_disposal }}, {{ $totals->total_transfer }}
+                ];
+            } else {
+                var xValues = ["ครุภัณฑ์ทั้งหมด"];
+                var yValues = [{{ $totals->total_amount }}];
+            }
+
+
+
+
             var barColors = [
                 "#28a745",
                 "#dc3545",
@@ -208,14 +219,20 @@
             let currentYearAD = new Date().getFullYear();
             // แปลงเป็น พ.ศ.
             let currentYearBE = currentYearAD + 543;
-
-            const xValues = [currentYearBE - 2, currentYearBE - 1, currentYearBE]; // 3 แท่งในแต่ละชุด
+            const xValues = [currentYearBE - 2, currentYearBE - 1,
+                {!! json_encode($totalsByYear[$currentYear]->name ?? 'idk') !!}
+            ]; // 3 แท่งในแต่ละชุด
 
             // ข้อมูล 5 ชุด
+            const dataset0 = [
+                {{ $totalsByYear[$twoYearsAgo]->total_amount ?? 0 }},
+                {{ $totalsByYear[$lastYear]->total_amount ?? 0 }},
+                {{ $totalsByYear[$currentYear]->total_amount ?? 0 }}
+            ];
             const dataset1 = [
-                {{ $totalsByYear[$twoYearsAgo]->total_disposal_request ?? 0 }},
-                {{ $totalsByYear[$lastYear]->total_disposal_request ?? 0 }},
-                {{ $totalsByYear[$currentYear]->total_disposal_request ?? 0 }}
+                {{ $totalsByYear[$twoYearsAgo]->total_found ?? 0 }},
+                {{ $totalsByYear[$lastYear]->total_found ?? 0 }},
+                {{ $totalsByYear[$currentYear]->total_found ?? 0 }}
             ];
             const dataset2 = [
                 {{ $totalsByYear[$twoYearsAgo]->total_not_found ?? 0 }},
@@ -240,11 +257,12 @@
 
             // สีของแต่ละชุด
             const colors = [
-                "#28a745",
-                "#dc3545",
-                "#ffc107",
-                "#6c757d",
-                "#17a2b8"
+                '#4CAF50', // คงเหลือ
+                '#2196F3', // พบ
+                '#F44336', // ไม่พบ
+                '#FF9800', // ชำรุด
+                '#9C27B0', // แทงจำหน่าย
+                '#00BCD4', // โอน
             ];
 
             const ctx = document.getElementById("myChart2").getContext("2d");
@@ -253,28 +271,32 @@
                 data: {
                     labels: xValues,
                     datasets: [{
-                            label: "ยื่นแทงจำหน่าย",
+                            label: "ครุภัณฑ์คงเหลือ",
                             backgroundColor: colors[0],
+                            data: dataset0
+                        }, {
+                            label: "พบ",
+                            backgroundColor: colors[1],
                             data: dataset1
                         },
                         {
                             label: "ไม่พบ",
-                            backgroundColor: colors[1],
+                            backgroundColor: colors[2],
                             data: dataset2
                         },
                         {
                             label: "ชำรุด",
-                            backgroundColor: colors[2],
+                            backgroundColor: colors[3],
                             data: dataset3
                         },
                         {
                             label: "แทงจำหน่าย",
-                            backgroundColor: colors[3],
+                            backgroundColor: colors[4],
                             data: dataset4
                         },
                         {
                             label: "โอน",
-                            backgroundColor: colors[4],
+                            backgroundColor: colors[5],
                             data: dataset5
                         }
                     ]

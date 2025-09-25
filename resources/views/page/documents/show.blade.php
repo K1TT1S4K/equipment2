@@ -41,7 +41,7 @@
                             style="display:none;">ย้ายรายการทั้งหมดไปที่ถังขยะ</button>
                         <!-- ปุ่มลบที่เลือก -->
                         <button type="submit" class="btn btn-danger mb-3" id="delete-selected-btn"
-                            style="display:none;">ย้ายไปที่ถังขยะ</button>
+                            style="display:none;">ย้ายรายการที่เลือกไปที่ถังขยะ</button>
                     </div>
                 </div>
                 <div class="col-4"></div>
