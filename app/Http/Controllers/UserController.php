@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Arr;
 
-
+///
 class UserController extends Controller
 {
     // หน้าแสดงข้อมูลผู้ใช้
@@ -373,7 +373,7 @@ class UserController extends Controller
     // ฟังก์ชันค้นหาข้อมูลผู้ใช้ในหน้ากู้ข้อมูล
     public function searchTrash(Request $request)
     {
-                // รับค่าค้นหาจาก request
+        // รับค่าค้นหาจาก request
         $search = $request->get('search');
         $userType = $request->get('user_type');  // รับค่าระดับผู้ใช้
 
