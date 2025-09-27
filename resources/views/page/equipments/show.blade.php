@@ -282,7 +282,7 @@
                                 style="display:none;">ย้ายรายการที่เลือกไปที่ถังขยะ</button>
                         </div>
                     </div>
-                        @if (!$titles->where('id', request('title_filter'))->first()->is_locked)
+                        @if (!$titles->where('id', request('title_filter'))->first()->is_locked && Auth::user()->user_type != "ผู้ปฏิบัติงานบริหาร")
                             @if (!request('check') == 1)
                                 <div class="p-2">
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
