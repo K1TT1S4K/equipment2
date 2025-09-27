@@ -47,17 +47,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         Session::regenerate();
         // $this->redirectIntended(default: route('equipment.index', absolute: false), navigate: true);
 
-
-$this->redirectIntended(
-    default: route('equipment.index', [
-        'title_filter'    => \App\Models\Title::max('id'),
-        'unit_filter'     => 'all',
-        'location_filter' => 'all',
-        'user_filter'     => 'all',
-    ], absolute: false),
-    navigate: true
-);
-
+        $this->redirect(route('dashboard.index'), navigate: true);
 
         // dd(now());
         Auth::user()->update([

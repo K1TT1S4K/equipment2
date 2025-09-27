@@ -14,7 +14,8 @@
                 <option value="ผู้ปฏิบัติงานบริหาร"
                     {{ request()->get('user_type') == 'ผู้ปฏิบัติงานบริหาร' ? 'selected' : '' }}>ผู้ปฏิบัติงานบริหาร
                 </option>
-                <option value="ผู้ดูแลครุภัณฑ์" {{ request()->get('user_type') == 'ผู้ดูแลครุภัณฑ์' ? 'selected' : '' }}>ผู้ดูแลครุภัณฑ์
+                <option value="ผู้ดูแลครุภัณฑ์"
+                    {{ request()->get('user_type') == 'ผู้ดูแลครุภัณฑ์' ? 'selected' : '' }}>ผู้ดูแลครุภัณฑ์
                 </option>
             </select>
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
@@ -55,7 +56,9 @@
             <table class="table mt-3 table-hover w-full">
                 <thead class="text-center table-dark align-middle">
                     <tr class="text-center">
-                        <th><input type="checkbox" id="select-all"></th>
+                        <th>
+                            <input type="checkbox" id="select-all">
+                        </th>
                         <th class="align-middle">ลำดับ</th>
                         <th class="align-middle">ชื่อผู้ใช้</th>
                         <th class="align-middle">ชื่อ-นามสกุล</th>
@@ -70,8 +73,10 @@
                         <tr class="text-center" style="cursor: pointer;"
                             onclick="window.location='{{ route('user.edit', $user->id) }}'">
                             <td onclick="event.stopPropagation();">
-                                <input type="checkbox" class="document-checkbox" name="selected_users[]"
-                                    value="{{ $user->id }}">
+                                @if (Auth::user()->id != $user->id)
+                                    <input type="checkbox" class="document-checkbox" name="selected_users[]"
+                                        value="{{ $user->id }}">
+                                @endif
                             </td>
                             {{-- <td class="text-center" style="width: 3%">{{ $key + 1 }}</td> --}}
                             <td>

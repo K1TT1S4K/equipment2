@@ -67,6 +67,7 @@
                         <select name="title_id" id="titleSelect" class="form-control" required>
                             <option value="">-- เลือกหัวข้อ --</option>
                             @foreach ($titles as $t)
+                            @continue($t->is_locked)
                                 <option value="{{ $t->id }}">{{ $t->name }}</option>
                             @endforeach
                         </select>

@@ -125,12 +125,17 @@ class TitleController extends Controller
                     'equipment_unit_id' => $equipment->equipment_unit_id ? $unitMap[$equipment->equipment_unit_id] : null,
                     'location_id' => $equipment->location_id ? $locationMap[$equipment->location_id] : null,
                     'title_id' => Title::latest('id')->first()->id,
-                    'user_id' => $equipment->user_id ? $userMap[$equipment->user_id] : null,
+                    'user_id' => $equipment->user_id ? $equipment->user_id : null,
                     'description' => $equipment->description,
                     'original_image_name' => $equipment->original_image_name ? $equipment->original_image_name : null,
                     'stored_image_name' => $equipment->stored_image_name ? $filename : null,
                     'created_at' => $equipment->created_at,
                     'updated_at' => $equipment->updated_at
+                ]);
+
+
+                $equipment->update([
+                    'user_id' => $equipment->user_id ? $userMap[$equipment->user_id] : null
                 ]);
             }
         }

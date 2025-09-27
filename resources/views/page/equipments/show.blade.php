@@ -34,7 +34,7 @@
                     ---หน่วยนับ---
                 </option>
                 @foreach ($equipment_units as $unit)
-                    @continue(optional($fullEquipments->where('equipment_unit_id', $unit->id)->first())->title_id != request('title_filter') && $unit->is_locked == 1)
+                    @continue(optional($fullEquipments->where('equipment_unit_id', $unit->id)->first())->title_id != request('title_filter'))
                     <option value="{{ $unit->id }}" {{ request('unit_filter') == $unit->id ? 'selected' : '' }}>
                         {{ $unit->name }}
                     </option>
@@ -46,7 +46,7 @@
                     ---สถานที่ทั้งหมด---
                 </option>
                 @foreach ($locations as $location)
-                    @continue(optional($fullEquipments->where('location_id', $location->id)->first())->title_id != request('title_filter') && $location->is_locked == 1)
+                    @continue(optional($fullEquipments->where('location_id', $location->id)->first())->title_id != request('title_filter'))
                     <option value="{{ $location->id }}"
                         {{ request('location_filter') == $location->id ? 'selected' : '' }}>
                         @if ($location->id == null)
@@ -65,7 +65,7 @@
                     สาขาเทคโนโลยีคอมพิวเตอร์
                 </option>
                 @foreach ($users as $user)
-                    @continue(optional($fullEquipments->where('user_id', $user->id)->first())->title_id != request('title_filter') && $user->is_locked == 1)
+                    @continue(optional($fullEquipments->where('user_id', $user->id)->first())->title_id != request('title_filter'))
                     <option value="{{ $user->id }}" {{ request('user_filter') == $user->id ? 'selected' : '' }}>
                         @if ($user->id == null)
                             ---ไม่ได้กำหนดผู้ดูแล---
@@ -282,7 +282,6 @@
                                 style="display:none;">ย้ายรายการที่เลือกไปที่ถังขยะ</button>
                         </div>
                     </div>
-                    @can('admin-or-branch')
                         @if (!$titles->where('id', request('title_filter'))->first()->is_locked)
                             @if (!request('check') == 1)
                                 <div class="p-2">
@@ -296,7 +295,6 @@
                                 </div>
                             @endif
                         @endif
-                    @endcan
 
                     <div class="p-2">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">

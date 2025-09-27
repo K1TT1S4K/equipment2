@@ -115,6 +115,7 @@
                                 @if ($equipment->is_locked || Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร') disabled @endif>
                                 {{-- <option value="">-- เลือกหัวข้อ --</option> --}}
                                 @foreach ($titles as $t)
+                                @continue($t->is_locked)
                                     <option value="{{ $t->id }}"
                                         {{ $equipment->title_id == $t->id ? 'selected' : '' }}>{{ $t->name }}
                                     </option>
@@ -128,7 +129,7 @@
                                 <option value="" {{ $equipment->user_id == null ? 'selected' : '' }}>
                                     สาขาเทคโนโลยีคอมพิวเตอร์</option>
                                 @foreach ($users as $u)
-                                    @continue($u->is_locked == 1)
+                                    @continue($u->is_locked)
                                     <option value="{{ $u->id }}"
                                         {{ $equipment->user_id == $u->id ? 'selected' : '' }}>
                                         {{ $u->prefix->name }}{{ $u->firstname }}
@@ -150,7 +151,7 @@
                                 <option value="" {{ $equipment->location_id == null ? 'selected' : '' }}>--
                                     เลือกที่อยู่ --</option>
                                 @foreach ($locations as $l)
-                                    @continue($l->is_locked == 1)
+                                    @continue($l->is_locked)
                                     <option value="{{ $l->id }}"
                                         {{ $equipment->location_id == $l->id ? 'selected' : '' }}>
                                         {{ $l->name }}

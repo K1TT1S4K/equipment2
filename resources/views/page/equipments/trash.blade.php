@@ -28,7 +28,7 @@
                     ---หน่วยนับ---
                 </option>
                 @foreach ($equipment_units as $unit)
-                    @continue(optional($fullEquipments->where('equipment_unit_id', $unit->id)->first())->title_id != request('title_filter') && $unit->is_locked == 1)
+                    @continue(optional($fullEquipments->where('equipment_unit_id', $unit->id)->first())->title_id != request('title_filter'))
                     <option value="{{ $unit->id }}" {{ request('unit_filter') == $unit->id ? 'selected' : '' }}>
                         {{ $unit->name }}
                     </option>
@@ -40,7 +40,7 @@
                     ---สถานที่ทั้งหมด---
                 </option>
                 @foreach ($locations as $location)
-                    @continue(optional($fullEquipments->where('location_id', $location->id)->first())->title_id != request('title_filter') && $location->is_locked == 1)
+                    @continue(optional($fullEquipments->where('location_id', $location->id)->first())->title_id != request('title_filter'))
                     <option value="{{ $location->id }}"
                         {{ request('location_filter') == $location->id ? 'selected' : '' }}>
                         @if ($location->id == null)
@@ -51,6 +51,7 @@
                     </option>
                 @endforeach
             </select>
+
             <select class="form-control shadow-lg p-2 mb-1 rounded" id="user_filter" name="user_filter">
                 <option value="all"
                     {{ request('user_filter') == 'all' || !request('user_filter') ? 'selected' : '' }}>
@@ -58,7 +59,7 @@
                 </option>
 
                 @foreach ($users as $user)
-                    @continue(optional($fullEquipments->where('user_id', $user->id)->first())->title_id != request('title_filter') && $user->is_locked == 1)
+                    @continue(optional($fullEquipments->where('user_id', $user->id)->first())->title_id != request('title_filter'))
                     <option value="{{ $user->id }}" {{ request('user_filter') == $user->id ? 'selected' : '' }}>
                         @if ($user->id == null)
                             ---ไม่ได้กำหนดผู้ดูแล---
@@ -75,7 +76,7 @@
                 placeholder="ค้นหาจากข้อมูลครุภัณฑ์" value="{{ request('query') }}">
             <button type="submit" class="btn btn-primary ms-2 shadow-lg p-2 mb-3 rounded">ค้นหา</button>
             <button type="button" class="btn btn-danger ms-2 shadow-lg p-2 mb-3 rounded"
-                onclick="window.location='{{ route('equipment.trash') }}?title_filter=1&unit_filter=all&location_filter=all&user_filter=all'"
+                onclick="window.location='{{ route('equipment.trash') }}?title_filter={{ request('title_filter') }}&unit_filter=all&location_filter=all&user_filter=all'"
                 style="width: 10%">ล้างการค้นหา</button>
         </div>
     </form>

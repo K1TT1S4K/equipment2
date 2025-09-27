@@ -140,7 +140,7 @@ class EquipmentController extends Controller
         $locations = Location::all();
         $titles = Title::all();
         $equipment_trash = Equipment::onlyTrashed()->get();
-        $fullEquipments = Equipment::all();
+        $fullEquipments = Equipment::onlyTrashed()->get();
 
 
         $search = null;
