@@ -199,6 +199,7 @@ class UserController extends Controller
     // ฟังก์ชันแก้ไขข้อมูลตนเอง
     public function updateProfile(Request $request)
     {
+
         $user = auth()->user();
 
         // dd(($user->id));
@@ -215,20 +216,27 @@ class UserController extends Controller
 
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
-            'old_password' => [function ($attribute, $value, $fail) {
-                if (!\Hash::check($value, auth()->user()->password)) {
-                    $fail('รหัสผ่านเก่าไม่ถูกต้อง');
-                }
-            }],
-            'password' => 'nullable|string|min:8|confirmed', // เพิ่ม validated แบบ Laravel
         ]);
+
+        if ($request->old_password && $request->password) {
+            $request->validate([
+                'old_password' => ['nullable', function ($attribute, $value, $fail) {
+                    if (!\Hash::check($value, auth()->user()->password)) {
+                        $fail('รหัสผ่านเก่าไม่ถูกต้อง');
+                    }
+                }],
+                'password' => 'nullable|string|min:8|confirmed'
+            ]);
+        };
 
         $passwordChanged = false;
 
-        if ($request->filled('password')) {
-            if (!$request->filled('old_password') || !Hash::check($request->old_password, $user->password)) {
+        if ($request->old_password) {
+            if (!Hash::check($request->old_password, $user->password)) {
                 // เก็บข้อความผิดพลาดลง session
                 return back()->with('error', 'เปลี่ยนรหัสผ่านไม่สำเร็จ: รหัสผ่านเก่าไม่ถูกต้อง');
+            } elseif (!$request->filled('password') || !$request->filled('password_confirmation') || $request->password !== $request->password_confirmation) {
+                return back()->with('error', 'เปลี่ยนรหัสผ่านไม่สำเร็จ: กรุณากรอกรหัสผ่านใหม่และยืนยันรหัสผ่านให้ตรงกัน');
             }
 
             $user->password = Hash::make($request->password);
@@ -241,8 +249,16 @@ class UserController extends Controller
             'username' => $request->username,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            'password' => $user->password,
+            'prefix_id' => $request->prefix,
         ]);
+
+        if ($request->old_password && $request->password) {
+            $user->update([
+                'password' => $user->password,
+            ]);
+        }
+
+        // dd($user, $user->prefix_id, $request->prefix);
 
         $newValues = $user->toArray();
 

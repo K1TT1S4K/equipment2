@@ -6,6 +6,10 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
         <form action="{{ route('profile.update') }}" method="POST">
             @csrf
             @method('PUT')
@@ -23,7 +27,7 @@
                     <label class="form-label">คำนำหน้า <span class="text-danger">*</span></label>
                     <select name="prefix" class="form-control border border-dark" required>
                         @foreach ($prefixes as $prefix)
-                            <option value="{{ $prefix->id }}">{{ $prefix->name }}</option>
+                            <option value="{{ $prefix->id }}" {{Auth::user()->prefix_id == $prefix->id ? 'selected' : ''}}>{{ $prefix->name }}</option>
                         @endforeach
                     </select>
                 </div>
