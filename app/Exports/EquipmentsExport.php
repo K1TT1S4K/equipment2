@@ -4,17 +4,12 @@ namespace App\Exports;
 
 use App\Models\Equipment;
 use App\Models\Equipment_unit;
-use App\Models\Equipment_type;
 use App\Models\User;
 use App\Models\Location;
 use App\Models\Prefix;
 use App\Models\Title;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\Exportable;
 
 class EquipmentsExport implements FromCollection, WithColumnWidths
@@ -82,9 +77,9 @@ class EquipmentsExport implements FromCollection, WithColumnWidths
                     $headerAdded['broken'] = true;
                 }
 
-                $firstname = ($userFirstnameMap[$item->user_id] ?? '') ? ($userFirstnameMap[$item->user_id] . ' ') : '';
-                $location = ($locationMap[$item->location_id] ?? '') && $item->user_id ? "\n" . $locationMap[$item->location_id] : '';
-                $description = ($item->description ?? '') && $item->location_id ? "\n" . $item->description : '';
+                $firstname = ($userFirstnameMap[$item->user_id] ?? '') ? 'ผู้ดูแล: ' . ($userFirstnameMap[$item->user_id] . ' ') : 'ผู้ดูแล: สาขาเทคโนโลยีคอมพิวเตอร์ ';
+                $location = ($locationMap[$item->location_id] ?? '') ? 'ที่อยู่: ' . $locationMap[$item->location_id] : 'ที่อยู่: - ';
+                $description = ($item->description ?? '') ? 'คำอธิบาย: ' . $item->description : 'คำอธิบาย: -';
 
                 $result[] = (object)[
                     'index' => $count,
@@ -114,9 +109,9 @@ class EquipmentsExport implements FromCollection, WithColumnWidths
                     $headerAdded['disposal'] = true;
                 }
 
-                $firstname = ($userFirstnameMap[$item->user_id] ?? '') ? ($userFirstnameMap[$item->user_id] . ' ') : '';
-                $location = ($locationMap[$item->location_id] ?? '') && $item->user_id ? "\n" . $locationMap[$item->location_id] : '';
-                $description = ($item->description ?? '') && $item->location_id ? "\n" . $item->description : '';
+                $firstname = ($userFirstnameMap[$item->user_id] ?? '') ? 'ผู้ดูแล: ' . ($userFirstnameMap[$item->user_id] . ' ') : 'ผู้ดูแล: สาขาเทคโนโลยีคอมพิวเตอร์ ';
+                $location = ($locationMap[$item->location_id] ?? '') ? 'ที่อยู่: ' . $locationMap[$item->location_id] : 'ที่อยู่: - ';
+                $description = ($item->description ?? '') ? 'คำอธิบาย: ' . $item->description : 'คำอธิบาย: -';
 
                 $result[] = (object)[
                     'index' => $count,
@@ -146,9 +141,9 @@ class EquipmentsExport implements FromCollection, WithColumnWidths
                     $headerAdded['not_found'] = true;
                 }
 
-                $firstname = ($userFirstnameMap[$item->user_id] ?? '') ? ($userFirstnameMap[$item->user_id] . ' ') : '';
-                $location = ($locationMap[$item->location_id] ?? '') && $item->user_id ? "\n" . $locationMap[$item->location_id] : '';
-                $description = ($item->description ?? '') && $item->location_id ? "\n" . $item->description : '';
+                $firstname = ($userFirstnameMap[$item->user_id] ?? '') ? 'ผู้ดูแล: ' . ($userFirstnameMap[$item->user_id] . ' ') : 'ผู้ดูแล: สาขาเทคโนโลยีคอมพิวเตอร์ ';
+                $location = ($locationMap[$item->location_id] ?? '') ? 'ที่อยู่: ' . $locationMap[$item->location_id] : 'ที่อยู่: - ';
+                $description = ($item->description ?? '') ? 'คำอธิบาย: ' . $item->description : 'คำอธิบาย: -';
 
                 $result[] = (object)[
                     'index' => $count,
@@ -173,31 +168,6 @@ class EquipmentsExport implements FromCollection, WithColumnWidths
 
         return $dataWithExtra;
     }
-
-
-    // public function registerEvents(): array
-    // {
-    //     return [
-    //         \Maatwebsite\Excel\Events\AfterSheet::class => function (\Maatwebsite\Excel\Events\AfterSheet $event) {
-    //             $sheet = $event->sheet->getDelegate();
-
-    //             // ผสานเซลหัวข้อ "สถานะ"
-    //             $sheet->mergeCells('H1:K1'); // สถานะ
-    //             $sheet->mergeCells('A1:A2'); // ลำดับ
-    //             $sheet->mergeCells('B1:B2'); // หมายเลข
-    //             $sheet->mergeCells('C1:C2'); // ชื่อ
-    //             $sheet->mergeCells('D1:D2'); // หน่วยนับ
-    //             $sheet->mergeCells('E1:E2'); // จำนวน
-    //             $sheet->mergeCells('F1:F2'); // ราคาต่อหน่วย
-    //             $sheet->mergeCells('G1:G2'); // จำนวนเงิน
-    //             $sheet->mergeCells('L1:L2'); // หมายเหตุ
-
-    //             // จัดกึ่งกลางข้อความ
-    //             $sheet->getStyle('A1:L2')->getAlignment()->setHorizontal('center')->setVertical('center');
-    //             $sheet->getStyle('A1:L2')->getFont()->setBold(true);
-    //         },
-    //     ];
-    // }
 
     public function columnWidths(): array
     {

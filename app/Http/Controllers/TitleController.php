@@ -142,6 +142,14 @@ class TitleController extends Controller
 
         Equipment::where('title_id', $title->id)->update(['is_locked' => 1]);
 
+          activity()
+            ->tap(function ($activity) {
+                $activity->menu = 'โคลน';
+            })
+            ->useLog(auth()->user()->full_name)
+            ->performedOn($title)
+            ->log('ครุภัณฑ์');
+
         return redirect()->route('equipment.index', 'title_filter=1&unit_filter=all&location_filter=all&user_filter=all');
     }
 }

@@ -213,8 +213,8 @@ class DocumentController extends Controller
             ->useLog(auth()->user()->full_name)
             ->performedOn($document)
             ->withProperties([
-                'ข้อมูลก่อนแก้' => Arr::only($oldValues, ['original_name', 'stored_name', 'document_type', 'date']),
-                'ข้อมูลหลังแก้' => Arr::only($newValues, ['original_name', 'stored_name', 'document_type', 'date'])
+                'ข้อมูลก่อนแก้ไข' => Arr::only($oldValues, ['original_name', 'stored_name', 'document_type', 'date']),
+                'ข้อมูลหลังแก้ไข' => Arr::only($newValues, ['original_name', 'stored_name', 'document_type', 'date'])
             ])
             ->log('เอกสาร');
 

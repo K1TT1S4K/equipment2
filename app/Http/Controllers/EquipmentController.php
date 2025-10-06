@@ -12,11 +12,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EquipmentsExport;
 
 use App\Models\Document as ModelsDocument;
-use App\Models\Equipment_document;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\Response;
 
 
 
@@ -110,9 +108,12 @@ class EquipmentController extends Controller
             ->when($location, function ($query, $location) {
                 if ($location != 'all') $query->where('location_id', $location); // กรองตามที่อยู่
             })
-            ->when($user, function ($query, $user) {
-                if ($user != 'all') $query->where('user_id', $user); // กรองตามผู้ดูแล
-                if ($user == null) $query->where('user_id', null);
+            ->when(1, function ($query) use ($user) {
+                if ($user == null) {
+                    $query->where('user_id', null);
+                } elseif ($user != 'all') {
+                    $query->where('user_id', $user);
+                }
             })
             ->get('id');
 
@@ -125,11 +126,11 @@ class EquipmentController extends Controller
         $statusFilter = Equipment::all();
 
         $equipments = Equipment::whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->paginate(10);
-        $equipmentsNoPaginate = Equipment::whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->get();
+        // $equipmentsNoPaginate = Equipment::whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->get();
 
         $equipments->appends($request->all());
 
-        return view('page.equipments.show', compact('equipmentsNoPaginate', 'fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'locations', 'users', 'titles'));
+        return view('page.equipments.show', compact('fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'locations', 'users', 'titles'));
     }
 
     // หน้ากู้คืนข้อมูล
@@ -221,9 +222,12 @@ class EquipmentController extends Controller
             ->when($location, function ($query, $location) {
                 if ($location != 'all') $query->where('location_id', $location); // กรองตามที่อยู่
             })
-            ->when($user, function ($query, $user) {
-                if ($user != 'all') $query->where('user_id', $user); // กรองตามผู้ดูแล
-                if ($user == null) $query->where('user_id', null);
+            ->when(1, function ($query) use ($user) {
+                if ($user == null) {
+                    $query->where('user_id', null);
+                } elseif ($user != 'all') {
+                    $query->where('user_id', $user);
+                }
             })
             ->get('id');
 

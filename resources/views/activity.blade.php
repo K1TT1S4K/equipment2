@@ -110,10 +110,11 @@
                                 ) {
                                     $ordered = $log->orderUserProperties();
                                 } elseif ($log->description == 'เอกสาร') {
+                                    // dd($log);
                                     $ordered = $log->orderDocumentProperties();
                                 } elseif ($log->description == 'ครุภัณฑ์' && $log->menu == 'ส่งออกข้อมูล') {
                                     $ordered = $log->orderExportProperties();
-                                } elseif ($log->description == 'ครุภัณฑ์') {
+                                } elseif ($log->description == 'ครุภัณฑ์' && $log->menu != 'โคลน') {
                                     $ordered = $log->orderEquipmentProperties();
                                 } else {
                                     $ordered = $log->properties;

@@ -182,12 +182,12 @@
                         <tbody class="align-middle p-3">
                             @php
                                 if (Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์') {
-                                    $equipmentsNoPaginate = collect($equipmentsNoPaginate) // ถ้ายังไม่เป็น Collection ให้ wrap
+                                    $equipments = collect($equipments) // ถ้ายังไม่เป็น Collection ให้ wrap
                                         ->where('user_id', Auth::id())
                                         ->values();
                                 }
                             @endphp
-                            @forelse ($equipmentsNoPaginate as $key => $equipment)
+                            @forelse ($equipments as $key => $equipment)
                                 @continue($equipment->title_id != request('title_filter') && $equipment->is_locked == 1)
                                 <tr class="text-center" style="cursor: pointer;">
                                     <td>
@@ -263,6 +263,10 @@
                         </tbody>
                     </table>
                 </form>
+                {{-- ตัวแบ่งหน้า --}}
+            <div class="d-flex justify-content-center">
+                {{ $equipments->links() }}
+            </div>
             @endif
         @endif
         @if (!request('check') == 1)
@@ -360,100 +364,6 @@
                         </tr>
                     </thead>
                     <tbody class="align-middle p-3">
-                        {{-- @php
-                        $displayedTypes = [];
-                    @endphp
-                    @forelse ($equipments as $key => $equipment)
-                        @php
-                            $type = $equipment->equipment_type_id;
-                        @endphp
-                        @if (in_array($type, $displayedTypes))
-                            @php
-                                continue;
-                            @endphp
-                        @endif
-
-                        @if ($type == null) --}}
-                        {{-- <tr class="text-center" style="cursor: pointer;">
-                                <td colspan="3" class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                    ไม่มีประเภท
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                            </tr>
-                        @else --}}
-                        {{-- <tr class="text-center" style="cursor: pointer;">
-                                <td colspan="3" class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                    {{ $equipment->equipmentType->name }}
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                    {{ number_format($equipment->equipmentType->amount) }}
-                                </td>
-                                <td class="bg-secondary text-white">
-                                    {{ number_format($equipment->equipmentType->price, 2) }}
-                                </td>
-                                <td class="bg-secondary text-white">
-                                    {{ number_format($equipment->equipmentType->total_price, 2) }}
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white">
-                                </td>
-                                <td class="bg-secondary text-white"> --}}
-                        {{-- {{ $equipment->equipmentType->updated_at }} --}}
-                        {{-- {{ $equipment->equipmentType->updated_at->format('j') }}
-                                    {{ $equipment->equipmentType->updated_at->locale('th')->translatedFormat('M') }}
-                                    {{ $equipment->equipmentType->updated_at->year + 543 }}
-                                    {{ $equipment->equipmentType->updated_at->format('H:i:s') }}
-
-                                </td>
-                                <td class="bg-secondary text-white"> --}}
-                        {{-- {{ $equipment->equipmentType->created_at }} --}}
-                        {{-- {{ $equipment->equipmentType->created_at->format('j') }}
-                                    {{ $equipment->equipmentType->created_at->locale('th')->translatedFormat('M') }}
-                                    {{ $equipment->equipmentType->created_at->year + 543 }}
-                                    {{ $equipment->equipmentType->created_at->format('H:i:s') }}
-
-                                </td>
-                            </tr>
-                        @endif --}}
-
                         @forelse ($equipments as $key => $equipment)
                             @continue($equipment->title_id != request('title_filter') && $equipment->is_locked == 1)
                             <tr class="text-center" style="cursor: pointer;">
