@@ -279,45 +279,45 @@
                                     value="{{ $equipment->id }}">
                             @endcan
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ ++$count }}<br>
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->number }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->name }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->equipmentUnit->name }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->amount }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->price }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->total_price }}
                             {{-- {{dd($equipment->original_id, $fullEquipments)}} --}}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->status_found }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->status_not_found }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->status_broken }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->status_disposal }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{ $equipment->status_transfer }}
                         </td>
                         <td class="text-start"
-                            onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                           >
                             <p><span class="text-muted">ผู้ดูแล:</span>
                                 {{ $equipment->user ? ($equipment->user?->prefix?->name && $equipment->user?->firstname ? $equipment->user?->prefix?->name . ' ' . $equipment->user?->firstname : '-') : 'สาขาเทคโนโลยีคอมพิวเตอร์' }}
                             </p>
@@ -329,14 +329,14 @@
                                 </span>{{ $equipment->description ?? '-' }}
                             </p>
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{-- {{ $equipment->updated_at }} --}}
                             {{ $equipment->updated_at->format('j') }}
                             {{ $equipment->updated_at->locale('th')->translatedFormat('M') }}
                             {{ $equipment->updated_at->year + 543 }}
                             {{ $equipment->updated_at->format('H:i:s') }}
                         </td>
-                        <td onclick="window.location='{{ route('equipment.edit', $equipment->id) }}'">
+                        <td>
                             {{-- {{ $equipment->created_at }} --}}
                             {{ $equipment->created_at->format('j') }}
                             {{ $equipment->created_at->locale('th')->translatedFormat('M') }}
