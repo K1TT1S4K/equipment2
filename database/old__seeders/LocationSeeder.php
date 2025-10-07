@@ -6,17 +6,18 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class Equipment_unitSeeder extends Seeder
+
+class LocationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('equipment_units')->insert([
+        DB::table('locations')->insert([
             [
                 'id' => 1,
-                'name' => 'จ.1/1/50 จอ',
+                'name' => 'ห้องเก็บของ 1',
                 'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
@@ -27,7 +28,7 @@ class Equipment_unitSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'name' => 'จ.1/12/51',
+                'name' => 'อท.505',
                 'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
@@ -38,7 +39,7 @@ class Equipment_unitSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'name' => 'เครื่อง',
+                'name' => 'ตู้ อท.505',
                 'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
@@ -49,7 +50,7 @@ class Equipment_unitSeeder extends Seeder
             ],
             [
                 'id' => 4,
-                'name' => 'ตู้',
+                'name' => 'อท.507',
                 'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
@@ -60,7 +61,7 @@ class Equipment_unitSeeder extends Seeder
             ],
             [
                 'id' => 5,
-                'name' => 'ตัว',
+                'name' => 'อท.501',
                 'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
@@ -71,7 +72,7 @@ class Equipment_unitSeeder extends Seeder
             ],
             [
                 'id' => 6,
-                'name' => 'ชุด',
+                'name' => 'ชั้น 5',
                 'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
@@ -82,7 +83,7 @@ class Equipment_unitSeeder extends Seeder
             ],
             [
                 'id' => 7,
-                'name' => 'บอร์ด',
+                'name' => 'อท.601',
                 'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
@@ -93,101 +94,57 @@ class Equipment_unitSeeder extends Seeder
             ],
             [
                 'id' => 8,
-                'name' => 'จ.1/1/50 จอ',
-                'is_locked' => 1,
+                'name' => 'อท 507',
+                'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
                 'deleted_by' => null,
-                'created_at' => '2025-09-25 13:00:24',
-                'updated_at' => '2025-09-25 13:00:24',
+                'created_at' => '2025-09-25 12:54:50',
+                'updated_at' => '2025-09-25 12:54:50',
                 'deleted_at' => null,
             ],
             [
                 'id' => 9,
-                'name' => 'เครื่อง',
-                'is_locked' => 1,
+                'name' => 'ห้องแม่บ้าน',
+                'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
                 'deleted_by' => null,
-                'created_at' => '2025-09-25 13:00:24',
-                'updated_at' => '2025-09-25 13:00:24',
+                'created_at' => '2025-09-25 12:54:50',
+                'updated_at' => '2025-09-25 12:54:50',
                 'deleted_at' => null,
             ],
             [
                 'id' => 10,
-                'name' => 'เครื่อง',
-                'is_locked' => 1,
+                'name' => 'อท 509',
+                'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
                 'deleted_by' => null,
-                'created_at' => '2025-09-25 13:00:24',
-                'updated_at' => '2025-09-25 13:00:24',
+                'created_at' => '2025-09-25 12:54:50',
+                'updated_at' => '2025-09-25 12:54:50',
                 'deleted_at' => null,
             ],
             [
                 'id' => 11,
-                'name' => 'จ.1/1/50 จอ',
-                'is_locked' => 1,
+                'name' => 'อ วาทการ',
+                'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
                 'deleted_by' => null,
-                'created_at' => '2025-09-25 13:01:40',
-                'updated_at' => '2025-09-25 13:01:40',
+                'created_at' => '2025-09-25 12:54:50',
+                'updated_at' => '2025-09-25 12:54:50',
                 'deleted_at' => null,
             ],
             [
                 'id' => 12,
-                'name' => 'เครื่อง',
-                'is_locked' => 1,
+                'name' => 'อท 503',
+                'is_locked' => 0,
                 'created_by' => null,
                 'updated_by' => null,
                 'deleted_by' => null,
-                'created_at' => '2025-09-25 13:01:40',
-                'updated_at' => '2025-09-25 13:01:40',
-                'deleted_at' => null,
-            ],
-            [
-                'id' => 13,
-                'name' => 'เครื่อง',
-                'is_locked' => 1,
-                'created_by' => null,
-                'updated_by' => null,
-                'deleted_by' => null,
-                'created_at' => '2025-09-25 13:01:40',
-                'updated_at' => '2025-09-25 13:01:40',
-                'deleted_at' => null,
-            ],
-            [
-                'id' => 14,
-                'name' => 'จ.1/1/50 จอ',
-                'is_locked' => 1,
-                'created_by' => null,
-                'updated_by' => null,
-                'deleted_by' => null,
-                'created_at' => '2025-09-25 13:26:39',
-                'updated_at' => '2025-09-25 13:26:39',
-                'deleted_at' => null,
-            ],
-            [
-                'id' => 15,
-                'name' => 'เครื่อง',
-                'is_locked' => 1,
-                'created_by' => null,
-                'updated_by' => null,
-                'deleted_by' => null,
-                'created_at' => '2025-09-25 13:26:39',
-                'updated_at' => '2025-09-25 13:26:39',
-                'deleted_at' => null,
-            ],
-            [
-                'id' => 16,
-                'name' => 'เครื่อง',
-                'is_locked' => 1,
-                'created_by' => null,
-                'updated_by' => null,
-                'deleted_by' => null,
-                'created_at' => '2025-09-25 13:26:39',
-                'updated_at' => '2025-09-25 13:26:39',
+                'created_at' => '2025-09-25 12:54:50',
+                'updated_at' => '2025-09-25 12:54:50',
                 'deleted_at' => null,
             ],
         ]);

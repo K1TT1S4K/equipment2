@@ -1,4 +1,12 @@
 <x-layouts.app>
+
+      @php
+        if (request('page')) {
+            $count = (request('page') - 1) * 10;
+        } else {
+            $count = 0;
+        }
+    @endphp
     <h3 class="text-dark mb-4">จัดการบุคลากร</h3>
 
     <form method="GET" action="{{ route('user.search') }}" class="mb-3">
@@ -79,8 +87,11 @@
                                 @endif
                             </td>
                             {{-- <td class="text-center" style="width: 3%">{{ $key + 1 }}</td> --}}
-                            <td>
-                                {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
+                            {{-- <td>
+                                {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td> --}}
+                                 <td>
+                                    {{ ++$count }}<br>
+                                </td>
                             <td>{{ $user->username }}</td>
                             <td>{{ $user->prefix->name }} {{ $user->firstname }}
                                 {{ $user->lastname }}</td>
