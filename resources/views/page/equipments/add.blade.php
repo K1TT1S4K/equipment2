@@ -145,7 +145,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <button id="addtitleRow" class="btn btn-success mb-3">เพิ่มหัวข้อ</button>
+                    {{-- <button id="addtitleRow" class="btn btn-success mb-3">เพิ่มหัวข้อ</button> --}}
                     <table class="table table-bordered">
                         <thead>
                             <tr>

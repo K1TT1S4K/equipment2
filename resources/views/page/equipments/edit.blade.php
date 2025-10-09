@@ -63,7 +63,7 @@
                             <div class="row">
                                 <div class="mb-3 col-4"> <label for="equipment_unit_id" class="form-label">หน่วยนับ
                                         <span class="text-danger">*</span>
-                                        @if (!$equipment->is_locked && !Auth::user()->user_type == 'ผู้ปฏิบัติงานบริหาร')
+                                        @if (!$equipment->is_locked && Auth::user()->user_type != 'ผู้ปฏิบัติงานบริหาร')
                                             <button type="button"
                                                 class="btn btn-sm btn-secondary ms-2 pt-0 pb-0 ps-1 pe-1"
                                                 data-bs-toggle="modal" data-bs-target="#unitModal">
@@ -213,7 +213,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <button id="addtitleRow" class="btn btn-success mb-3">เพิ่มหัวข้อ</button>
+                        {{-- <button id="addtitleRow" class="btn btn-success mb-3">เพิ่มหัวข้อ</button> --}}
                         <table class="table table-bordered">
                             <thead>
                                 <tr>

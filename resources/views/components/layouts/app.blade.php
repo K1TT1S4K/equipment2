@@ -45,20 +45,20 @@
                     // เพิ่ม option เริ่มต้น
                     // $("#locationSelect").append(`<option value="">-- เลือกที่อยู่ --</option>`);
 
-                    // let rows = '';
+                    let rows = '';
                     data.forEach(loc => {
                         if (loc.is_locked == 0) {
                             rows += `
                         <tr data-id="${loc.id}">
                             <td class="location-name">${loc.name}</td>
-                            <td>
+                            <td class="text-center">
                                 <button class="btn btn-sm btn-primary editBtnlocation">แก้ไข</button>
                                 <button class="btn btn-sm btn-danger deleteBtnlocation">ลบ</button>
                             </td>
                         </tr>`;
-                            // $("#locationSelect").append(
-                            //     `<option value="${loc.id}" ${(equipmentLocationId && equipmentLocationId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
-                            // );
+                            $("#locationSelect").append(
+                                `<option value="${loc.id}" ${(equipmentLocationId && equipmentLocationId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
+                            );
                         }
                     });
                     $('#locationTableBody').html(rows);
@@ -74,20 +74,20 @@
                     // เพิ่ม option เริ่มต้น
                     // $("#unitSelect").append(`<option value="">-- เลือกหน่วยนับ --</option>`);
 
-                    // let rows = '';
+                    let rows = '';
                     data.forEach(loc => {
                         if (loc.is_locked == 0) {
                             rows += `
                         <tr data-id="${loc.id}">
                             <td class="unit-name">${loc.name}</td>
-                            <td>
+                            <td class="text-center">
                                 <button class="btn btn-sm btn-primary editBtnunit">แก้ไข</button>
                                 <button class="btn btn-sm btn-danger deleteBtnunit">ลบ</button>
                             </td>
                         </tr>`;
-                            // $("#unitSelect").append(
-                            //     `<option value="${loc.id}" ${(equipmentUnitId && equipmentUnitId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
-                            // );
+                            $("#unitSelect").append(
+                                `<option value="${loc.id}" ${(equipmentUnitId && equipmentUnitId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
+                            );
                         }
                     });
                     $('#unitTableBody').html(rows);
@@ -109,14 +109,14 @@
                             rows += `
                         <tr data-id="${loc.id}">
                             <td class="title-name">${loc.name}</td>
-                                                        <td>
+                                                        <td class="text-center">
                                 <button class="btn btn-sm btn-primary editBtntitle">แก้ไข</button>
-                                <button class="btn btn-sm btn-danger deleteBtntitle">ลบ</button>
+                                {{-- <button class="btn btn-sm btn-danger deleteBtntitle">ลบ</button> --}}
                             </td>
                         </tr>`;
-                            // $("#titleSelect").append(
-                            //     `<option value="${loc.id}" ${(equipmentTitleId && equipmentTitleId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
-                            // );
+                            $("#titleSelect").append(
+                                `<option value="${loc.id}" ${(equipmentTitleId && equipmentTitleId == loc.id) ? 'selected' : ''}>${loc.name}</option>`
+                            );
                         }
                     });
                     $('#titleTableBody').html(rows);
@@ -133,7 +133,10 @@
                         <tr data-id="${loc.id}">
                             <td class="title-name">${loc.name}</td>
                                                         <td class="text-center">
-            <a href="/titles/${loc.id}/clone" class="btn btn-primary">โคลน</a>
+                                                           ${!loc.is_locked
+            ? `<button class="btn btn-sm btn-primary editBtntitleforclone">แก้ไข</button>
+               <a href="/titles/${loc.id}/clone" class="btn btn-sm btn-success">โคลน</a>`
+            : '-'}
                             </td>
                         </tr>`;
                     });
@@ -266,6 +269,17 @@
                     `<button class="btn btn-success saveEditBtntitle">ตกลง</button>`);
             });
 
+            // แก้ไข หัวข้อ
+            $(document).on('click', '.editBtntitleforclone', function() {
+                const row = $(this).closest('tr');
+                const name = row.find('.title-name').text();
+                row.find('.title-name').html(
+                    `<input type="text" class="form-control editNameInput" value="${name}">`);
+
+                $(this).replaceWith(
+                    `<button class="btn btn-success saveEditBtntitleforclone">ตกลง</button>`);
+            });
+
             // บันทึกการแก้ไข ที่อยู่
             $(document).on('click', '.saveEditBtnlocation', function() {
                 const row = $(this).closest('tr');
@@ -285,7 +299,7 @@
                 });
             });
 
-            // บันทึกการแก้ไข ที่อยู่
+            // บันทึกการแก้ไข หน่วยนับ
             $(document).on('click', '.saveEditBtnunit', function() {
                 const row = $(this).closest('tr');
                 const id = row.data('id');
@@ -319,6 +333,25 @@
                     },
                     success: function() {
                         loadtitles();
+                    }
+                });
+            });
+
+            // บันทึกการแก้ไข หัวข้อจากปุ่มโคลน
+            $(document).on('click', '.saveEditBtntitleforclone', function() {
+                const row = $(this).closest('tr');
+                const id = row.data('id');
+                const name = row.find('.editNameInput').val();
+
+                $.ajax({
+                    url: `/titles/${id}`,
+                    method: 'PUT',
+                    data: {
+                        name: name,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function() {
+                        loadtitlesforclone();
                     }
                 });
             });
