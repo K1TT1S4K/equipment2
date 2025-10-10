@@ -129,6 +129,7 @@ class EquipmentController extends Controller
         // $equipmentsNoPaginate = Equipment::whereIn('id', $idFilterd)->orderBy('created_at', 'desc')->get();
 
         $equipments->appends($request->all());
+        // dd($request->all());
 
         return view('page.equipments.show', compact('fullEquipments', 'equipment_trash', 'equipments', 'equipment_units', 'locations', 'users', 'titles'));
     }

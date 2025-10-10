@@ -12,6 +12,7 @@
     {{-- {{ dd($fullEquipments, $fullEquipments->where('user_id', 4)->first()->title_id) }} --}}
     <h3 class="text-dark mb-4">จัดการครุภัณฑ์</h3>
     <form action="{{ route('equipment.index') }}" method="GET" class="mb-3">
+        <input type="hidden" name="check" value="{{request('check')}}">
         <div class="d-flex mb-2">
             <select class="form-control shadow-lg rounded" id="title_filter" name="title_filter">
                 @foreach ($titles as $t)
@@ -180,15 +181,18 @@
                             </tr>
                         </thead>
                         <tbody class="align-middle p-3">
-                            @php
+                            {{-- @php
                                 if (Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์') {
-                                    $equipments = collect($equipments) // ถ้ายังไม่เป็น Collection ให้ wrap
-                                        ->where('user_id', Auth::id())
-                                        ->values();
+                                    $equipments = $equipments
+                                        ->where('user_id', Auth::user()->id)
+                                        ->();
+                                        dd($equipments, Auth::user()->id, Auth::id());
                                 }
-                            @endphp
+                            @endphp --}}
+
                             @forelse ($equipments as $key => $equipment)
                                 @continue($equipment->title_id != request('title_filter') && $equipment->is_locked == 1)
+                                @continue(Auth::user()->user_type == 'ผู้ดูแลครุภัณฑ์' && $equipment->user_id != Auth::id())
                                 <tr class="text-center" style="cursor: pointer;">
                                     <td>
                                         @can('admin-or-branch')
