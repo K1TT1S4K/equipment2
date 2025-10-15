@@ -40,9 +40,9 @@
             function loadlocations() {
                 let equipmentLocationId = $("#currentEquipmentLocationId").val();
                 $.get("{{ route('locations.index') }}", function(data) {
-                    $("#locationSelect").html("")
+                    $("#locationSelect").html("");
 
-                    เพิ่ม option เริ่มต้น
+                    // เพิ่ม option เริ่มต้น
                     $("#locationSelect").append(`<option value="">-- เลือกที่อยู่ --</option>`);
 
                     let rows = '';
@@ -69,9 +69,9 @@
             function loadunits() {
                 let equipmentUnitId = $("#currentEquipmentUnitId").val();
                 $.get("{{ route('equipment_units.index') }}", function(data) {
-                    $("#unitSelect").html("")
+                    $("#unitSelect").html("");
 
-                    เพิ่ม option เริ่มต้น
+                    // เพิ่ม option เริ่มต้น
                     $("#unitSelect").append(`<option value="">-- เลือกหน่วยนับ --</option>`);
 
                     let rows = '';
@@ -98,9 +98,9 @@
             function loadtitles() {
                 let equipmentTitleId = $("#currentEquipmentTitleId").val();
                 $.get("{{ route('titles.index') }}", function(data) {
-                    $("#titleSelect").html("")
+                    $("#titleSelect").html("");
 
-                    เพิ่ม option เริ่มต้น
+                    // เพิ่ม option เริ่มต้น
                     $("#titleSelect").append(`<option value="">-- เลือกหัวข้อ --</option>`);
 
                     let rows = '';
